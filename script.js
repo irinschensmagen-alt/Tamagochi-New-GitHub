@@ -58,14 +58,13 @@ const tasks = {
 
 const nameCard = document.getElementById("nameCard");
 const gameArea = document.getElementById("gameArea");
-const actionArea = document.getElementById("actionArea");
+const welcomePanel = document.getElementById("welcomePanel");
 const taskArea = document.getElementById("taskArea");
 const fooddyArea = document.getElementById("fooddyArea");
 
 const startBtn = document.getElementById("startBtn");
 const petNameInput = document.getElementById("petName");
 const welcomeText = document.getElementById("welcomeText");
-
 const answersBox = document.getElementById("answers");
 const feedback = document.getElementById("feedback");
 
@@ -82,7 +81,9 @@ let fooddyFinished = false;
 startBtn.addEventListener("click", startGame);
 
 petNameInput.addEventListener("keydown", event => {
-  if (event.key === "Enter") startGame();
+  if (event.key === "Enter") {
+    startGame();
+  }
 });
 
 document.querySelectorAll("[data-action]").forEach(button => {
@@ -94,7 +95,9 @@ guessBtn.addEventListener("click", checkGuess);
 restartFooddy.addEventListener("click", startFooddy);
 
 guessInput.addEventListener("keydown", event => {
-  if (event.key === "Enter") checkGuess();
+  if (event.key === "Enter") {
+    checkGuess();
+  }
 });
 
 function startGame() {
@@ -105,13 +108,18 @@ function startGame() {
 
   nameCard.hidden = true;
   gameArea.hidden = false;
-  actionArea.hidden = false;
 
   renderStats();
 }
 
+function openPanel(panel) {
+  welcomePanel.hidden = panel !== "welcome";
+  taskArea.hidden = panel !== "task";
+  fooddyArea.hidden = panel !== "fooddy";
+}
+
 function showTask(action) {
-  fooddyArea.hidden = true;
+  openPanel("task");
 
   const task = tasks[action];
   const shuffledAnswers = shuffle([...task.answers]);
@@ -137,8 +145,6 @@ function showTask(action) {
 
     answersBox.appendChild(button);
   });
-
-  taskArea.hidden = false;
 }
 
 function checkAnswer(task, answer) {
@@ -159,14 +165,13 @@ function checkAnswer(task, answer) {
 }
 
 function startFooddy() {
-  taskArea.hidden = true;
-  fooddyArea.hidden = false;
+  openPanel("fooddy");
 
   fooddyFood = 0;
   attempts = 0;
   fooddyFinished = false;
 
-  updateFooddyNumbers();
+  updateFooddyProgress();
 
   document.getElementById("fooddyMessage").textContent =
     "Фудди: «Бип-бип! Я спрятала код от 1 до 100. Попробуй угадать!»";
@@ -185,7 +190,9 @@ function makeNewSecret() {
 }
 
 function checkGuess() {
-  if (fooddyFinished) return;
+  if (fooddyFinished) {
+    return;
+  }
 
   const value = Number(guessInput.value);
 
@@ -196,19 +203,17 @@ function checkGuess() {
   }
 
   attempts++;
-  updateFooddyNumbers();
+  document.getElementById("attempts").textContent = attempts;
 
   if (value < secretNumber) {
     document.getElementById("fooddyMessage").textContent =
       "Фудди: «Слишком мало! Мой код БОЛЬШЕ!»";
-  }
-  else if (value > secretNumber) {
+  } else if (value > secretNumber) {
     document.getElementById("fooddyMessage").textContent =
       "Фудди: «Ого, перелёт! Мой код МЕНЬШЕ!»";
-  }
-  else {
+  } else {
     fooddyFood++;
-    updateFooddyNumbers();
+    updateFooddyProgress();
 
     if (fooddyFood < 6) {
       document.getElementById("fooddyMessage").textContent =
@@ -243,9 +248,18 @@ function finishFooddy() {
   restartFooddy.hidden = false;
 }
 
-function updateFooddyNumbers() {
+function updateFooddyProgress() {
   document.getElementById("fooddyFood").textContent = fooddyFood;
   document.getElementById("attempts").textContent = attempts;
+
+  const percent = (fooddyFood / 6) * 100;
+  document.getElementById("fooddyProgress").style.width = `${percent}%`;
+
+  const steps = document.querySelectorAll("#progressSteps span");
+
+  steps.forEach((step, index) => {
+    step.classList.toggle("done", index < fooddyFood);
+  });
 }
 
 function reward(coins, experience) {

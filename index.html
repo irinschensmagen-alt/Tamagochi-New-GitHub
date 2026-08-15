@@ -8,18 +8,25 @@
 </head>
 <body>
   <main class="game-shell">
-    <section class="card hero-card">
+
+    <header class="topbar">
       <div class="pet-avatar">
-        <img src="assets/images/anfisa-baby.png" alt="Анфиса">
+        <img src="assets/images/anfisa-baby.png" alt="">
       </div>
-      <div>
+
+      <div class="title-block">
         <p class="eyebrow">Пробная веб-версия</p>
         <h1>Tamagotchi Deutsch</h1>
         <p id="welcomeText">Познакомься со своим питомцем и выполняй задания.</p>
       </div>
-    </section>
 
-    <section class="card" id="nameCard">
+      <div class="level-badge">
+        <span>🏆 Уровень</span>
+        <strong id="level">1</strong>
+      </div>
+    </header>
+
+    <section class="name-panel" id="nameCard">
       <label for="petName">Имя питомца</label>
       <div class="name-row">
         <input id="petName" type="text" maxlength="20" placeholder="Анфиса">
@@ -27,54 +34,79 @@
       </div>
     </section>
 
-    <section class="card" id="gameArea" hidden>
-      <div class="stats-grid">
-        <div class="stat">❤️ <strong>Здоровье</strong> <b id="health">100</b></div>
-        <div class="stat">🍎 <strong>Голод</strong> <b id="hunger">20</b></div>
-        <div class="stat">😊 <strong>Настроение</strong> <b id="mood">80</b></div>
-        <div class="stat">⚡ <strong>Энергия</strong> <b id="energy">100</b></div>
-        <div class="stat">💰 <strong>Монеты</strong> <b id="coins">0</b></div>
-        <div class="stat">⭐ <strong>Опыт</strong> <b id="experience">0</b></div>
-      </div>
-      <div class="level-line">🏆 Уровень <strong id="level">1</strong></div>
+    <section class="game-area" id="gameArea" hidden>
+
+      <aside class="sidebar">
+        <div class="stats-grid">
+          <div class="stat"><span>❤️</span><strong>Здоровье</strong><b id="health">100</b></div>
+          <div class="stat"><span>🍎</span><strong>Голод</strong><b id="hunger">20</b></div>
+          <div class="stat"><span>😊</span><strong>Настроение</strong><b id="mood">80</b></div>
+          <div class="stat"><span>⚡</span><strong>Энергия</strong><b id="energy">100</b></div>
+          <div class="stat"><span>💰</span><strong>Монеты</strong><b id="coins">0</b></div>
+          <div class="stat"><span>⭐</span><strong>Опыт</strong><b id="experience">0</b></div>
+        </div>
+
+        <div class="actions">
+          <button class="action-btn" data-action="feed">🍎 Покормить</button>
+          <button class="action-btn" data-action="play">🎮 Поиграть</button>
+          <button class="action-btn" data-action="heal">💊 Лечить</button>
+          <button class="action-btn special" id="fooddyBtn">🤖 Фудди</button>
+        </div>
+      </aside>
+
+      <section class="play-panel">
+
+        <div class="welcome-panel" id="welcomePanel">
+          <div class="welcome-icon">🐾</div>
+          <h2>Выбери действие</h2>
+          <p>Покорми Анфису, поиграй с ней, помоги ей выздороветь или открой Робо-Кормушку Фудди.</p>
+        </div>
+
+        <div id="taskArea" hidden>
+          <p class="task-topic" id="taskTopic"></p>
+          <h2 id="taskTitle"></h2>
+          <p class="task-question" id="taskQuestion"></p>
+          <div id="answers" class="answers"></div>
+          <div id="feedback" class="feedback"></div>
+        </div>
+
+        <div id="fooddyArea" hidden>
+          <div class="fooddy-heading">
+            <div>
+              <p class="task-topic">🤖 Робо-Кормушка Фудди</p>
+              <h2>Угадай секретный код</h2>
+            </div>
+            <strong class="fooddy-count"><span id="fooddyFood">0</span> / 6</strong>
+          </div>
+
+          <div class="progress-wrap" aria-label="Прогресс кормления">
+            <div class="progress-track">
+              <div class="progress-fill" id="fooddyProgress"></div>
+            </div>
+            <div class="progress-steps" id="progressSteps">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <p id="fooddyMessage" class="fooddy-message">
+            Фудди загадала число от 1 до 100.
+          </p>
+
+          <div class="guess-row">
+            <input id="guessInput" type="number" min="1" max="100" placeholder="Введите число 1–100">
+            <button id="guessBtn" class="primary">Проверить</button>
+          </div>
+
+          <div class="attempt-line">
+            Допустимых попыток: <strong id="attempts">0</strong>
+          </div>
+
+          <button id="restartFooddy" class="secondary" hidden>Сыграть ещё раз</button>
+        </div>
+
+      </section>
     </section>
 
-    <section class="card" id="actionArea" hidden>
-      <h2>Что ты хочешь сделать?</h2>
-      <div class="actions">
-        <button class="action-btn" data-action="feed">🍎 Покормить</button>
-        <button class="action-btn" data-action="play">🎮 Поиграть</button>
-        <button class="action-btn" data-action="heal">💊 Лечить</button>
-        <button class="action-btn special" id="fooddyBtn">🤖 Робо-Кормушка Фудди</button>
-      </div>
-    </section>
-
-    <section class="card" id="taskArea" hidden>
-      <p class="task-topic" id="taskTopic"></p>
-      <h2 id="taskTitle"></h2>
-      <p class="task-question" id="taskQuestion"></p>
-      <div id="answers" class="answers"></div>
-      <div id="feedback" class="feedback"></div>
-    </section>
-
-    <section class="card" id="fooddyArea" hidden>
-      <p class="task-topic">🤖 Робо-Кормушка Фудди</p>
-      <h2>Угадай секретный код</h2>
-      <p id="fooddyMessage">Фудди загадала число от 1 до 100.</p>
-
-      <div class="fooddy-status">
-        Сытость в мини-игре:
-        <strong><span id="fooddyFood">0</span> из 6</strong>
-      </div>
-
-      <div class="guess-row">
-        <input id="guessInput" type="number" min="1" max="100" placeholder="1–100">
-        <button id="guessBtn" class="primary">Проверить</button>
-      </div>
-
-      <p>Допустимых попыток: <strong id="attempts">0</strong></p>
-      <button id="restartFooddy" hidden>Сыграть ещё раз</button>
-    </section>
   </main>
 
   <script src="script.js"></script>
