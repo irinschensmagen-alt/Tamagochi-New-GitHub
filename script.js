@@ -104,6 +104,28 @@ fooddyBtn.addEventListener("click", startFooddy);
 guessBtn.addEventListener("click", checkGuess);
 restartFooddy.addEventListener("click", startFooddy);
 
+document.querySelectorAll("[data-progress-action]").forEach(button => {
+  button.addEventListener("click", () => {
+    const action = button.dataset.progressAction;
+
+    if (gameArea.hidden) {
+      state.petName = petNameInput.value.trim() || "Анфиса";
+      welcomeText.textContent =
+        `${state.petName} появилась! Выполняй задания и заботься о питомце.`;
+      nameCard.hidden = true;
+      gameArea.hidden = false;
+      renderStats();
+      updateGameProgress();
+    }
+
+    if (action === "fooddy") {
+      startFooddy();
+    } else {
+      showTask(action);
+    }
+  });
+});
+
 guessInput.addEventListener("keydown", event => {
   if (event.key === "Enter") {
     checkGuess();
