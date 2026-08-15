@@ -9,6 +9,13 @@ const state = {
   level: 1
 };
 
+// Баланс пробной версии:
+// Еда: 6 порций × (голод -10, настроение +2, монеты +1, опыт +5)
+// Игра: 6 заданий × (настроение +5, энергия -5, монеты +1, опыт +5)
+// Лечение: 6 заданий × (здоровье +5, настроение +2, монеты +1, опыт +5)
+// Максимум за 18 успешных заданий: 18 монет и 90 опыта.
+// Уровень: +1 каждые 30 опыта → после полного прохождения уровень 4.
+
 const progress = {
   feed: false,
   play: false,
@@ -45,6 +52,27 @@ const playTasks = [
     answers:["spielen","spielt","spielst"],
     correct:"spielen",
     success:"Richtig! Wir spielen am Wochenende Tennis."
+  },
+  {
+    title:"AUFGABE 4",
+    question:"Ich ___ gern Bücher.",
+    answers:["lese","liest","lesen"],
+    correct:"lese",
+    success:"Richtig! Ich lese gern Bücher."
+  },
+  {
+    title:"AUFGABE 5",
+    question:"Was passt zu einem Hobby?",
+    answers:["fotografieren","Kopfschmerzen","Tabletten"],
+    correct:"fotografieren",
+    success:"Richtig! Fotografieren ist ein Hobby."
+  },
+  {
+    title:"AUFGABE 6",
+    question:"Am Samstag ___ wir ins Kino.",
+    answers:["gehen","geht","gehst"],
+    correct:"gehen",
+    success:"Richtig! Am Samstag gehen wir ins Kino."
   }
 ];
 
@@ -69,6 +97,27 @@ const healTasks = [
     answers:["bleiben","tanzen","fahren"],
     correct:"bleiben",
     success:"Richtig! Du sollst im Bett bleiben."
+  },
+  {
+    title:"AUFGABE 4",
+    question:"Ich habe Halsschmerzen. Ich trinke warmen ...",
+    answers:["Tee","Ball","Schuh"],
+    correct:"Tee",
+    success:"Richtig! Ich trinke warmen Tee."
+  },
+  {
+    title:"AUFGABE 5",
+    question:"Bei Fieber soll man sich ...",
+    answers:["ausruhen","beeilen","verabreden"],
+    correct:"ausruhen",
+    success:"Richtig! Man soll sich ausruhen."
+  },
+  {
+    title:"AUFGABE 6",
+    question:"Der Arzt untersucht den ...",
+    answers:["Patienten","Kuchen","Fußball"],
+    correct:"Patienten",
+    success:"Richtig! Der Arzt untersucht den Patienten."
   }
 ];
 
@@ -344,7 +393,7 @@ function showSeriesTask(action) {
 
   if (progress[action]) {
     document.getElementById("seriesTaskTitle").textContent = "Geschafft!";
-    document.getElementById("seriesTaskNumber").textContent = "3";
+    document.getElementById("seriesTaskNumber").textContent = "6";
     document.getElementById("seriesQuestion").textContent =
       action === "play"
         ? "Alle Aufgaben sind richtig gelöst."
@@ -389,13 +438,17 @@ function checkSeriesAnswer(action, task, answer) {
   feedback.className = "feedback ok";
 
   if (action === "play") {
-    state.mood += 10;
-    state.energy -= 10;
+    // За каждое из 6 игровых заданий:
+    // настроение +5, энергия -5, 1 монета, 5 опыта.
+    state.mood += 5;
+    state.energy -= 5;
     state.coins += 1;
     state.experience += 5;
   } else {
-    state.health += 10;
-    state.mood += 3;
+    // За каждое из 6 заданий лечения:
+    // здоровье +5, настроение +2, 1 монета, 5 опыта.
+    state.health += 5;
+    state.mood += 2;
     state.coins += 1;
     state.experience += 5;
   }
@@ -407,12 +460,8 @@ function checkSeriesAnswer(action, task, answer) {
   renderStats();
   updateSeriesProgress(action);
 
-  if (seriesIndex[action] >= 3) {
+  if (seriesIndex[action] >= 6) {
     progress[action] = true;
-
-    if (action === "heal") {
-      state.health = 100;
-    }
 
     clampStats();
     renderStats();
@@ -432,7 +481,7 @@ function checkSeriesAnswer(action, task, answer) {
 
 function updateSeriesProgress(action) {
   const count = seriesIndex[action];
-  const percent = Math.round((count / 3) * 100);
+  const percent = Math.round((count / 6) * 100);
 
   document.getElementById("seriesCount").textContent = count;
   document.getElementById("seriesProgress").style.width = `${percent}%`;
@@ -466,7 +515,7 @@ function checkWholeGameFinished() {
 }
 
 function updateLevel() {
-  state.level = Math.floor(state.experience / 25) + 1;
+  state.level = Math.floor(state.experience / 30) + 1;
 }
 
 function clampStats() {

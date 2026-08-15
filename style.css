@@ -248,14 +248,11 @@ button {
   margin-top:8px;
 }
 
-.progress-dots.three { grid-template-columns:repeat(3,1fr); }
-
 .progress-dots span {
   height:9px; border-radius:999px; background:#e3e6ec;
 }
 
 .progress-dots span.done { background:#ffc05c; }
-.progress-dots.three span.done { background:#8f84ff; }
 
 .fooddy-box, .german-box {
   padding:16px;
@@ -317,4 +314,8 @@ button {
   }
   .stats-grid, .actions-panel, .game-steps { grid-template-columns:1fr; }
   .play-panel { min-height:280px; }
+}
+
+#seriesDots span.done {
+  background: #8f84ff;
 }
