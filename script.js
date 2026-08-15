@@ -22,6 +22,8 @@ const progress = {
   heal: false
 };
 
+let previousRenderedState = null;
+
 const germanFeedTasks = [
   { title:"AUFGABE 1", question:"___ Apfel", answers:["der","die","das"], correct:"der", success:"Richtig! Der Apfel." },
   { title:"AUFGABE 2", question:"Was trinkt man?", answers:["Wasser","Brot","Käse"], correct:"Wasser", success:"Richtig! Man trinkt Wasser." },
@@ -526,9 +528,39 @@ function clampStats() {
 }
 
 function renderStats() {
-  ["health","hunger","mood","energy","coins","experience","level"].forEach(key => {
-    document.getElementById(key).textContent = state[key];
+  const statKeys = ["health","hunger","mood","energy","coins","experience"];
+
+  statKeys.forEach(key => {
+    const element = document.getElementById(key);
+    const card = document.querySelector(`[data-stat="${key}"]`);
+    const newValue = state[key];
+
+    if (element) {
+      element.textContent = newValue;
+    }
+
+    if (card && previousRenderedState && previousRenderedState[key] !== newValue) {
+      card.classList.remove("changed");
+      void card.offsetWidth;
+      card.classList.add("changed");
+
+      setTimeout(() => {
+        card.classList.remove("changed");
+      }, 1100);
+    }
   });
+
+  document.getElementById("level").textContent = state.level;
+
+  previousRenderedState = {
+    health: state.health,
+    hunger: state.hunger,
+    mood: state.mood,
+    energy: state.energy,
+    coins: state.coins,
+    experience: state.experience,
+    level: state.level
+  };
 }
 
 function shuffle(items) {
