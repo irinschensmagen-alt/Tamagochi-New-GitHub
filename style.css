@@ -1,0 +1,163 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: #182235;
+  background: linear-gradient(135deg, #fff5fb, #eef8ff);
+}
+
+button, input { font: inherit; }
+button { cursor: pointer; }
+
+.game-shell {
+  width: min(900px, calc(100% - 28px));
+  margin: 28px auto;
+  display: grid;
+  gap: 18px;
+}
+
+.card {
+  background: rgba(255,255,255,.95);
+  border: 1px solid #e0e6ef;
+  border-radius: 22px;
+  padding: 24px;
+  box-shadow: 0 16px 44px rgba(72,91,130,.12);
+}
+
+.hero-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.pet-avatar {
+  width: 90px;
+  height: 90px;
+  display: grid;
+  place-items: center;
+  border-radius: 26px;
+  background: #f7edff;
+  font-size: 50px;
+}
+
+.eyebrow, .task-topic {
+  margin-top: 0;
+  font-weight: 800;
+  color: #6c63a8;
+}
+
+h1 { margin: 0 0 8px; }
+h2 { margin-top: 0; }
+
+.name-row, .guess-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #ccd5e3;
+  border-radius: 13px;
+  padding: 13px;
+}
+
+button {
+  border: 0;
+  border-radius: 13px;
+  padding: 13px 17px;
+  font-weight: 700;
+}
+
+.primary {
+  background: #27304d;
+  color: white;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px;
+  background: #f7f9fd;
+  border-radius: 15px;
+}
+
+.level-line {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e7ef;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.action-btn {
+  min-height: 60px;
+  background: #eef3ff;
+  color: #263557;
+}
+
+.special {
+  background: #fff2d9;
+}
+
+.task-question {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.answers {
+  display: grid;
+  gap: 10px;
+}
+
+.answer-btn {
+  text-align: left;
+  background: #f7f9fd;
+  color: #182235;
+  border: 1px solid #dbe2ef;
+}
+
+.feedback {
+  margin-top: 16px;
+  min-height: 24px;
+  font-weight: 700;
+}
+
+.ok { color: #217447; }
+.bad { color: #a43a45; }
+
+.fooddy-status {
+  padding: 12px 14px;
+  margin: 14px 0;
+  border-radius: 14px;
+  background: #fff7e8;
+}
+
+@media (max-width: 650px) {
+  .hero-card { align-items: flex-start; }
+  .name-row, .guess-row, .actions, .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .pet-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 40px;
+  }
+}
