@@ -9,6 +9,13 @@ const state = {
   level: 1
 };
 
+const globalProgress = {
+  feed: false,
+  play: false,
+  heal: false,
+  fooddy: false
+};
+
 const tasks = {
   feed: {
     topic: "Essen und Trinken",
@@ -20,6 +27,7 @@ const tasks = {
       state.hunger -= 20;
       state.mood += 5;
       reward(1, 5);
+      markProgress("feed");
       return `Правильно! Der Apfel — яблоко. ${state.petName} получает яблоко!`;
     },
     fail: "Неправильно. Правильный ответ: Apfel."
@@ -35,6 +43,7 @@ const tasks = {
       state.mood += 10;
       state.energy -= 15;
       reward(1, 5);
+      markProgress("play");
       return `Правильно! Anna spielt gern Fußball. ${state.petName} с удовольствием играет!`;
     },
     fail: "Неправильно. Правильный ответ: spielt."
@@ -50,6 +59,7 @@ const tasks = {
       state.health += 10;
       state.mood += 5;
       reward(1, 5);
+      markProgress("heal");
       return `Правильно! krank — больной. ${state.petName} получает лекарство.`;
     },
     fail: "Неправильно. Правильный ответ: krank."
@@ -110,6 +120,7 @@ function startGame() {
   gameArea.hidden = false;
 
   renderStats();
+  updateGameProgress();
 }
 
 function openPanel(panel) {
@@ -236,6 +247,7 @@ function finishFooddy() {
   state.mood += 10;
 
   reward(3, 15);
+  markProgress("fooddy");
 
   clampStats();
   renderStats();
@@ -249,16 +261,39 @@ function finishFooddy() {
 }
 
 function updateFooddyProgress() {
+  const percent = Math.round((fooddyFood / 6) * 100);
+
   document.getElementById("fooddyFood").textContent = fooddyFood;
   document.getElementById("attempts").textContent = attempts;
-
-  const percent = (fooddyFood / 6) * 100;
+  document.getElementById("progressPercent").textContent = `${percent}%`;
   document.getElementById("fooddyProgress").style.width = `${percent}%`;
 
-  const steps = document.querySelectorAll("#progressSteps span");
+  const dots = document.querySelectorAll("#progressDots span");
+
+  dots.forEach((dot, index) => {
+    dot.classList.toggle("done", index < fooddyFood);
+  });
+}
+
+function markProgress(key) {
+  if (!globalProgress[key]) {
+    globalProgress[key] = true;
+    updateGameProgress();
+  }
+}
+
+function updateGameProgress() {
+  const order = ["feed", "play", "heal", "fooddy"];
+  const completed = order.filter(key => globalProgress[key]).length;
+  const percent = Math.round((completed / order.length) * 100);
+
+  document.getElementById("gameProgressPercent").textContent = `${percent}%`;
+  document.getElementById("gameProgressFill").style.width = `${percent}%`;
+
+  const steps = document.querySelectorAll("#gameProgressSteps .step");
 
   steps.forEach((step, index) => {
-    step.classList.toggle("done", index < fooddyFood);
+    step.classList.toggle("done", index < completed);
   });
 }
 

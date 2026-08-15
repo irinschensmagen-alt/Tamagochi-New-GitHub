@@ -16,7 +16,6 @@ body {
 
 body {
   min-height: 100vh;
-  overflow: hidden;
 }
 
 button,
@@ -30,16 +29,16 @@ button {
 
 .game-shell {
   width: min(1180px, calc(100% - 28px));
-  height: calc(100vh - 28px);
-  margin: 14px auto;
+  margin: 14px auto 24px;
   display: grid;
-  grid-template-rows: auto auto 1fr;
   gap: 12px;
 }
 
 .topbar,
+.game-progress-panel,
 .name-panel,
-.sidebar,
+.stats-panel,
+.actions-panel,
 .play-panel {
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid #e0e6ef;
@@ -47,18 +46,18 @@ button {
 }
 
 .topbar {
-  min-height: 110px;
+  min-height: 118px;
   border-radius: 22px;
   padding: 16px 20px;
   display: grid;
-  grid-template-columns: 86px 1fr auto;
+  grid-template-columns: 92px 1fr auto;
   align-items: center;
   gap: 18px;
 }
 
 .pet-avatar {
-  width: 82px;
-  height: 82px;
+  width: 88px;
+  height: 88px;
   border-radius: 22px;
   background: #f7edff;
   overflow: hidden;
@@ -86,12 +85,17 @@ button {
 
 h1 {
   margin: 0 0 4px;
-  font-size: clamp(26px, 3vw, 40px);
+  font-size: clamp(28px, 3vw, 42px);
 }
 
 h2 {
   margin: 0 0 12px;
   font-size: clamp(24px, 2.4vw, 34px);
+}
+
+.compact-title {
+  font-size: 24px;
+  margin-bottom: 0;
 }
 
 p {
@@ -100,6 +104,7 @@ p {
 
 #welcomeText {
   margin: 0;
+  font-size: 18px;
 }
 
 .level-badge {
@@ -114,6 +119,80 @@ p {
 
 .level-badge strong {
   font-size: 24px;
+}
+
+.game-progress-panel {
+  border-radius: 20px;
+  padding: 16px 18px;
+}
+
+.game-progress-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.game-progress-percent {
+  font-size: 26px;
+  color: #27304d;
+}
+
+.progress-track {
+  height: 18px;
+  background: #edf0f5;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #ffd46b, #ff9f6b);
+  border-radius: inherit;
+  transition: width 0.35s ease;
+}
+
+.main-track {
+  height: 20px;
+}
+
+.main-fill {
+  background: linear-gradient(90deg, #7a77ff, #9d8cff, #ffbf6b);
+}
+
+.progress-steps {
+  margin-top: 10px;
+}
+
+.game-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.step {
+  text-align: center;
+}
+
+.step-dot {
+  width: 100%;
+  height: 10px;
+  display: block;
+  border-radius: 999px;
+  background: #e3e6ec;
+  margin-bottom: 6px;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.step.done .step-dot {
+  background: #8f84ff;
+  transform: scaleY(1.15);
+}
+
+.step small {
+  color: #4b5570;
 }
 
 .name-panel {
@@ -160,32 +239,21 @@ button {
   color: #263557;
 }
 
-.game-area {
-  min-height: 0;
+.main-panel {
   display: grid;
-  grid-template-columns: 330px 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
 }
 
-.sidebar,
-.play-panel {
-  min-height: 0;
-  border-radius: 22px;
-  padding: 16px;
-}
-
-.sidebar {
-  display: grid;
-  grid-template-rows: 1fr auto;
-  gap: 14px;
-  overflow: hidden;
+.stats-panel {
+  border-radius: 20px;
+  padding: 14px;
 }
 
 .stats-grid {
-  min-height: 0;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .stat {
@@ -193,7 +261,7 @@ button {
   grid-template-columns: 34px 1fr auto;
   align-items: center;
   gap: 8px;
-  min-height: 48px;
+  min-height: 54px;
   padding: 10px 12px;
   background: #f7f9fd;
   border-radius: 14px;
@@ -207,14 +275,16 @@ button {
   font-size: 18px;
 }
 
-.actions {
+.actions-panel {
+  border-radius: 20px;
+  padding: 12px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .action-btn {
-  min-height: 52px;
+  min-height: 54px;
   background: #eef3ff;
   color: #263557;
 }
@@ -224,26 +294,28 @@ button {
 }
 
 .play-panel {
-  overflow: hidden;
+  min-height: 320px;
+  border-radius: 22px;
+  padding: 20px;
   display: grid;
   align-content: center;
 }
 
 .welcome-panel {
   text-align: center;
-  max-width: 680px;
+  max-width: 760px;
   margin: auto;
 }
 
 .welcome-icon {
-  font-size: 56px;
+  font-size: 54px;
   margin-bottom: 10px;
 }
 
 #taskArea,
 #fooddyArea {
   width: 100%;
-  max-width: 760px;
+  max-width: 820px;
   margin: auto;
 }
 
@@ -300,38 +372,37 @@ button {
 
 .progress-wrap {
   margin: 18px 0 16px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #fff9ef;
+  border: 1px solid #f3e2bd;
 }
 
-.progress-track {
-  height: 18px;
-  background: #edf0f5;
-  border-radius: 999px;
-  overflow: hidden;
+.progress-label-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 16px;
 }
 
-.progress-fill {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, #ffd46b, #ff9f6b);
-  border-radius: inherit;
-  transition: width 0.35s ease;
-}
-
-.progress-steps {
+.progress-dots {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-  margin-top: 7px;
+  gap: 8px;
+  margin-top: 9px;
 }
 
-.progress-steps span {
-  height: 7px;
+.progress-dots span {
+  height: 10px;
   border-radius: 999px;
-  background: #e5e8ef;
+  background: #e3e6ec;
+  transition: background 0.25s ease, transform 0.25s ease;
 }
 
-.progress-steps span.done {
+.progress-dots span.done {
   background: #ffc05c;
+  transform: scaleY(1.15);
 }
 
 .fooddy-message {
@@ -347,19 +418,30 @@ button {
   margin-top: 12px;
 }
 
-@media (max-width: 820px) {
-  body {
-    overflow: auto;
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .actions-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
   .game-shell {
-    height: auto;
-    min-height: calc(100vh - 20px);
-    margin: 10px auto;
+    width: min(100% - 18px, 1180px);
+    margin: 9px auto 18px;
   }
 
   .topbar {
-    grid-template-columns: 70px 1fr;
+    grid-template-columns: 72px 1fr;
+    padding: 14px;
+  }
+
+  .pet-avatar {
+    width: 68px;
+    height: 68px;
   }
 
   .level-badge {
@@ -368,26 +450,20 @@ button {
     justify-content: space-between;
   }
 
-  .pet-avatar {
-    width: 66px;
-    height: 66px;
-  }
-
-  .game-area {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    overflow: visible;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
+  .game-progress-head,
   .name-row,
   .guess-row {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .stats-grid,
+  .actions-panel,
+  .game-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .play-panel {
+    min-height: 280px;
   }
 }

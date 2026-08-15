@@ -26,6 +26,39 @@
       </div>
     </header>
 
+    <section class="game-progress-panel">
+      <div class="game-progress-head">
+        <div>
+          <p class="eyebrow">Общий прогресс игры</p>
+          <h2 class="compact-title">Путь Анфисы</h2>
+        </div>
+        <strong class="game-progress-percent" id="gameProgressPercent">0%</strong>
+      </div>
+
+      <div class="progress-track main-track">
+        <div class="progress-fill main-fill" id="gameProgressFill"></div>
+      </div>
+
+      <div class="progress-steps game-steps" id="gameProgressSteps">
+        <div class="step">
+          <span class="step-dot"></span>
+          <small>Покормить</small>
+        </div>
+        <div class="step">
+          <span class="step-dot"></span>
+          <small>Поиграть</small>
+        </div>
+        <div class="step">
+          <span class="step-dot"></span>
+          <small>Лечить</small>
+        </div>
+        <div class="step">
+          <span class="step-dot"></span>
+          <small>Фудди</small>
+        </div>
+      </div>
+    </section>
+
     <section class="name-panel" id="nameCard">
       <label for="petName">Имя питомца</label>
       <div class="name-row">
@@ -34,9 +67,9 @@
       </div>
     </section>
 
-    <section class="game-area" id="gameArea" hidden>
+    <section class="main-panel" id="gameArea" hidden>
 
-      <aside class="sidebar">
+      <section class="stats-panel">
         <div class="stats-grid">
           <div class="stat"><span>❤️</span><strong>Здоровье</strong><b id="health">100</b></div>
           <div class="stat"><span>🍎</span><strong>Голод</strong><b id="hunger">20</b></div>
@@ -45,14 +78,14 @@
           <div class="stat"><span>💰</span><strong>Монеты</strong><b id="coins">0</b></div>
           <div class="stat"><span>⭐</span><strong>Опыт</strong><b id="experience">0</b></div>
         </div>
+      </section>
 
-        <div class="actions">
-          <button class="action-btn" data-action="feed">🍎 Покормить</button>
-          <button class="action-btn" data-action="play">🎮 Поиграть</button>
-          <button class="action-btn" data-action="heal">💊 Лечить</button>
-          <button class="action-btn special" id="fooddyBtn">🤖 Фудди</button>
-        </div>
-      </aside>
+      <section class="actions-panel">
+        <button class="action-btn" data-action="feed">🍎 Покормить</button>
+        <button class="action-btn" data-action="play">🎮 Поиграть</button>
+        <button class="action-btn" data-action="heal">💊 Лечить</button>
+        <button class="action-btn special" id="fooddyBtn">🤖 Фудди</button>
+      </section>
 
       <section class="play-panel">
 
@@ -79,12 +112,23 @@
             <strong class="fooddy-count"><span id="fooddyFood">0</span> / 6</strong>
           </div>
 
-          <div class="progress-wrap" aria-label="Прогресс кормления">
+          <div class="progress-wrap">
+            <div class="progress-label-row">
+              <span>Прогресс кормления</span>
+              <strong id="progressPercent">0%</strong>
+            </div>
+
             <div class="progress-track">
               <div class="progress-fill" id="fooddyProgress"></div>
             </div>
-            <div class="progress-steps" id="progressSteps">
-              <span></span><span></span><span></span><span></span><span></span><span></span>
+
+            <div class="progress-dots" id="progressDots">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
           </div>
 
