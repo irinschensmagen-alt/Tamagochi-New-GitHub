@@ -67,10 +67,10 @@
 
       <section class="stats-panel">
         <div class="stats-grid">
-          <div class="stat"><span>❤️</span><strong>Здоровье</strong><b id="health">80</b></div>
+          <div class="stat"><span>❤️</span><strong>Здоровье</strong><b id="health">70</b></div>
           <div class="stat"><span>🍎</span><strong>Голод</strong><b id="hunger">60</b></div>
-          <div class="stat"><span>😊</span><strong>Настроение</strong><b id="mood">70</b></div>
-          <div class="stat"><span>⚡</span><strong>Энергия</strong><b id="energy">90</b></div>
+          <div class="stat"><span>😊</span><strong>Настроение</strong><b id="mood">55</b></div>
+          <div class="stat"><span>⚡</span><strong>Энергия</strong><b id="energy">100</b></div>
           <div class="stat"><span>💰</span><strong>Монеты</strong><b id="coins">0</b></div>
           <div class="stat"><span>⭐</span><strong>Опыт</strong><b id="experience">0</b></div>
         </div>
@@ -88,11 +88,12 @@
           <div class="welcome-icon">🐾</div>
           <h2>Выбери действие</h2>
           <p>
-            Каждое действие связано со своей мини-игрой.
-            Выполни три блока заботы, чтобы пройти пробную часть.
+            Каждый блок состоит из нескольких заданий.
+            Показатели Анфисы меняются после каждого правильного ответа.
           </p>
         </div>
 
+        <!-- ЕДА -->
         <div id="feedArea" hidden>
           <div class="section-heading">
             <div>
@@ -112,11 +113,9 @@
               <span>Сытость</span>
               <strong><span id="feedCount">0</span> / 6</strong>
             </div>
-
             <div class="progress-track">
               <div class="progress-fill fooddy-fill" id="feedProgress"></div>
             </div>
-
             <div class="progress-dots" id="feedDots">
               <span></span><span></span><span></span>
               <span></span><span></span><span></span>
@@ -161,18 +160,42 @@
           </div>
         </div>
 
-        <div id="taskArea" hidden>
+        <!-- ИГРА / ЛЕЧЕНИЕ -->
+        <div id="seriesArea" hidden>
           <div class="section-heading">
             <div>
-              <p class="task-topic" id="taskTopic"></p>
-              <h2 id="taskTitle"></h2>
+              <p class="task-topic" id="seriesTopic"></p>
+              <h2 id="seriesTitle"></h2>
             </div>
-            <span class="status-badge" id="taskStatus">Не выполнено</span>
+            <span class="status-badge" id="seriesStatus">Не выполнено</span>
           </div>
 
-          <p class="task-question" id="taskQuestion"></p>
-          <div id="answers" class="answers"></div>
-          <div id="feedback" class="feedback"></div>
+          <div class="progress-wrap series-progress-wrap">
+            <div class="progress-label-row">
+              <span id="seriesProgressLabel">Прогресс</span>
+              <strong><span id="seriesCount">0</span> / 3</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill series-fill" id="seriesProgress"></div>
+            </div>
+            <div class="progress-dots three" id="seriesDots">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <div class="german-box">
+            <div class="fooddy-heading">
+              <div>
+                <p class="task-topic">🇩🇪 Deutsch</p>
+                <h3 id="seriesTaskTitle">AUFGABE 1</h3>
+              </div>
+              <strong class="round-badge">Задание <span id="seriesTaskNumber">1</span> / 3</strong>
+            </div>
+
+            <p class="task-question" id="seriesQuestion"></p>
+            <div class="answers" id="seriesAnswers"></div>
+            <div class="feedback" id="seriesFeedback"></div>
+          </div>
         </div>
 
         <div id="finishArea" hidden>
@@ -186,7 +209,6 @@
 
       </section>
     </section>
-
   </main>
 
   <script src="script.js"></script>
