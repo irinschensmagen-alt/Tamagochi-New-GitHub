@@ -164,12 +164,6 @@ button {
   color: white;
 }
 
-.secondary {
-  margin-top: 12px;
-  background: #eef3ff;
-  color: #263557;
-}
-
 .game-progress-panel {
   border-radius: 20px;
   padding: 15px 18px;
@@ -324,7 +318,7 @@ button {
 #taskArea,
 #finishArea {
   width: 100%;
-  max-width: 840px;
+  max-width: 860px;
   margin: auto;
 }
 
@@ -337,7 +331,7 @@ button {
 }
 
 .status-badge,
-.fooddy-count {
+.round-badge {
   flex: 0 0 auto;
   padding: 9px 13px;
   border-radius: 14px;
@@ -355,15 +349,12 @@ button {
   line-height: 1.45;
 }
 
-.fooddy-box {
-  padding: 16px;
-  border-radius: 18px;
-  background: #fffaf1;
+.feed-progress-wrap {
+  padding: 14px;
+  border-radius: 16px;
+  background: #fff9ef;
   border: 1px solid #f0dfb9;
-}
-
-.progress-wrap {
-  margin: 16px 0;
+  margin-bottom: 14px;
 }
 
 .progress-label-row {
@@ -390,8 +381,25 @@ button {
   background: #ffc05c;
 }
 
+.fooddy-box,
+.german-box {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid #f0dfb9;
+}
+
+.fooddy-box {
+  background: #fffaf1;
+}
+
+.german-box {
+  background: #f8f7ff;
+  border-color: #ddd8ff;
+}
+
 .fooddy-message {
   min-height: 52px;
+  margin-top: 14px;
   padding: 13px 15px;
   border-radius: 14px;
   background: #fff5df;
@@ -406,6 +414,7 @@ button {
 .task-question {
   font-size: 22px;
   font-weight: 700;
+  line-height: 1.35;
 }
 
 .answers {

@@ -52,12 +52,10 @@
           <span class="step-dot"></span>
           <small>🍎 Еда</small>
         </button>
-
         <button class="step" type="button" data-main-action="play">
           <span class="step-dot"></span>
           <small>🎮 Игра</small>
         </button>
-
         <button class="step" type="button" data-main-action="heal">
           <span class="step-dot"></span>
           <small>💊 Здоровье</small>
@@ -105,33 +103,33 @@
           </div>
 
           <p class="intro-text">
-            Еду охраняет Робо-Кормушка Фудди. Разгадай 6 секретных кодов —
-            и Анфиса получит 6 порций еды.
+            Каждая порция еды открывается в два шага:
+            сначала разгадай код Фудди, затем выполни задание по немецкому языку.
           </p>
 
-          <div class="fooddy-box">
-            <div class="fooddy-heading">
-              <div>
-                <p class="task-topic">🤖 Робо-Кормушка Фудди</p>
-                <h3>Угадай секретный код</h3>
-              </div>
-              <strong class="fooddy-count"><span id="fooddyFood">0</span> / 6</strong>
+          <div class="progress-wrap feed-progress-wrap">
+            <div class="progress-label-row">
+              <span>Сытость</span>
+              <strong><span id="feedCount">0</span> / 6</strong>
             </div>
 
-            <div class="progress-wrap">
-              <div class="progress-label-row">
-                <span>Сытость в мини-игре</span>
-                <strong id="fooddyPercent">0%</strong>
-              </div>
+            <div class="progress-track">
+              <div class="progress-fill fooddy-fill" id="feedProgress"></div>
+            </div>
 
-              <div class="progress-track">
-                <div class="progress-fill fooddy-fill" id="fooddyProgress"></div>
-              </div>
+            <div class="progress-dots" id="feedDots">
+              <span></span><span></span><span></span>
+              <span></span><span></span><span></span>
+            </div>
+          </div>
 
-              <div class="progress-dots" id="fooddyDots">
-                <span></span><span></span><span></span>
-                <span></span><span></span><span></span>
+          <div class="fooddy-box" id="fooddyBox">
+            <div class="fooddy-heading">
+              <div>
+                <p class="task-topic">🤖 Шаг 1. Робо-Кормушка Фудди</p>
+                <h3>Угадай секретный код</h3>
               </div>
+              <strong class="round-badge">Раунд <span id="roundNumber">1</span> / 6</strong>
             </div>
 
             <p id="fooddyMessage" class="fooddy-message">
@@ -140,14 +138,26 @@
 
             <div class="guess-row">
               <input id="guessInput" type="number" min="1" max="100" placeholder="Введите число 1–100">
-              <button id="guessBtn" class="primary">Проверить</button>
+              <button id="guessBtn" class="primary">Проверить код</button>
             </div>
 
             <div class="attempt-line">
-              Допустимых попыток: <strong id="attempts">0</strong>
+              Допустимых попыток в этом раунде: <strong id="attempts">0</strong>
+            </div>
+          </div>
+
+          <div class="german-box" id="germanBox" hidden>
+            <div class="fooddy-heading">
+              <div>
+                <p class="task-topic">🇩🇪 Шаг 2. Deutsch</p>
+                <h3 id="germanTaskTitle">AUFGABE 1</h3>
+              </div>
+              <strong class="round-badge">Порция <span id="portionNumber">1</span> / 6</strong>
             </div>
 
-            <button id="restartFooddy" class="secondary" hidden>Сыграть ещё раз</button>
+            <p class="task-question" id="germanQuestion"></p>
+            <div class="answers" id="germanAnswers"></div>
+            <div class="feedback" id="germanFeedback"></div>
           </div>
         </div>
 

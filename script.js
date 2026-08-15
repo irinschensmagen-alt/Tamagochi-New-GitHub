@@ -15,6 +15,51 @@ const progress = {
   heal: false
 };
 
+const germanFeedTasks = [
+  {
+    title: "AUFGABE 1",
+    question: "___ Apfel",
+    answers: ["der", "die", "das"],
+    correct: "der",
+    success: "Richtig! Der Apfel."
+  },
+  {
+    title: "AUFGABE 2",
+    question: "Was trinkt man?",
+    answers: ["Wasser", "Brot", "Käse"],
+    correct: "Wasser",
+    success: "Richtig! Man trinkt Wasser."
+  },
+  {
+    title: "AUFGABE 3",
+    question: "Zum Frühstück esse ich Brot mit ...",
+    answers: ["Käse", "Wasser", "Saft"],
+    correct: "Käse",
+    success: "Richtig! Brot mit Käse."
+  },
+  {
+    title: "AUFGABE 4",
+    question: "Möchtest du einen Tee?",
+    answers: ["Ja, gern.", "Ich heiße Anna.", "Das ist mein Bruder."],
+    correct: "Ja, gern.",
+    success: "Richtig! Ja, gern."
+  },
+  {
+    title: "AUFGABE 5",
+    question: "Was passt nicht?",
+    answers: ["die Banane", "der Apfel", "die Orange", "die Milch"],
+    correct: "die Milch",
+    success: "Richtig! Die Milch passt nicht."
+  },
+  {
+    title: "AUFGABE 6",
+    question: "Ich möchte eine Pizza ...",
+    answers: ["bestellen", "trinken", "fahren"],
+    correct: "bestellen",
+    success: "Richtig! Ich möchte eine Pizza bestellen."
+  }
+];
+
 const tasks = {
   play: {
     topic: "🎮 Hobbys und Freizeit",
@@ -22,7 +67,7 @@ const tasks = {
     question: "Anna ___ gern Fußball.",
     answers: ["spiele", "spielt", "spielen"],
     correct: "spielt",
-    successText: "Richtig! Anna spielt gern Fußball. Анфиса с удовольствием играет!"
+    successText: "Richtig! Anna spielt gern Fußball."
   },
 
   heal: {
@@ -31,7 +76,7 @@ const tasks = {
     question: "Anfisa hat Kopfschmerzen. Sie ist ...",
     answers: ["krank", "lecker", "sportlich"],
     correct: "krank",
-    successText: "Richtig! Anfisa ist krank. Анфиса получает лекарство."
+    successText: "Richtig! Anfisa ist krank."
   }
 };
 
@@ -51,16 +96,18 @@ const answersBox = document.getElementById("answers");
 const feedback = document.getElementById("feedback");
 const taskStatus = document.getElementById("taskStatus");
 
+const fooddyBox = document.getElementById("fooddyBox");
+const germanBox = document.getElementById("germanBox");
 const guessInput = document.getElementById("guessInput");
 const guessBtn = document.getElementById("guessBtn");
-const restartFooddy = document.getElementById("restartFooddy");
 
 let currentTask = null;
 
 let secretNumber = 0;
-let fooddyFood = 0;
-let attempts = 0;
-let fooddyFinished = false;
+let feedCount = 0;
+let currentFeedTaskIndex = 0;
+let attemptsThisRound = 0;
+let codeSolved = false;
 
 startBtn.addEventListener("click", startGame);
 
@@ -74,7 +121,7 @@ document.querySelectorAll("[data-main-action]").forEach(button => {
   button.addEventListener("click", () => {
     const action = button.dataset.mainAction;
 
-    if (nameCard.hidden === false) {
+    if (!nameCard.hidden) {
       startGame();
     }
 
@@ -89,8 +136,6 @@ guessInput.addEventListener("keydown", event => {
     checkGuess();
   }
 });
-
-restartFooddy.addEventListener("click", startFooddy);
 
 document.getElementById("continueBtn").addEventListener("click", () => {
   openPanel("welcome");
@@ -132,14 +177,184 @@ function openAction(action) {
   if (action === "feed") {
     openPanel("feed");
 
-    if (!fooddyFinished) {
-      startFooddy();
+    if (!progress.feed && feedCount === 0 && currentFeedTaskIndex === 0 && !codeSolved) {
+      startFooddyRound();
     }
 
     updateFeedStatus();
+    updateFeedProgress();
   } else {
     showTask(action);
   }
+}
+
+function startFooddyRound() {
+  codeSolved = false;
+  attemptsThisRound = 0;
+  secretNumber = Math.floor(Math.random() * 100) + 1;
+
+  fooddyBox.hidden = false;
+  germanBox.hidden = true;
+
+  document.getElementById("roundNumber").textContent = currentFeedTaskIndex + 1;
+  document.getElementById("attempts").textContent = attemptsThisRound;
+
+  document.getElementById("fooddyMessage").textContent =
+    `Фудди: «Бип-бип! Код №${currentFeedTaskIndex + 1} спрятан. Угадай число от 1 до 100!»`;
+
+  guessInput.value = "";
+  guessInput.disabled = false;
+  guessBtn.disabled = false;
+  guessInput.focus();
+}
+
+function checkGuess() {
+  if (codeSolved || progress.feed) {
+    return;
+  }
+
+  const value = Number(guessInput.value);
+
+  if (!Number.isInteger(value) || value < 1 || value > 100) {
+    document.getElementById("fooddyMessage").textContent =
+      "Фудди: «Бип-бип! Введи целое число от 1 до 100.»";
+    return;
+  }
+
+  attemptsThisRound++;
+  document.getElementById("attempts").textContent = attemptsThisRound;
+
+  if (value < secretNumber) {
+    document.getElementById("fooddyMessage").textContent =
+      "Фудди: «Слишком мало! Мой код БОЛЬШЕ!»";
+  } else if (value > secretNumber) {
+    document.getElementById("fooddyMessage").textContent =
+      "Фудди: «Ого, перелёт! Мой код МЕНЬШЕ!»";
+  } else {
+    codeSolved = true;
+    guessInput.disabled = true;
+    guessBtn.disabled = true;
+
+    document.getElementById("fooddyMessage").textContent =
+      "Фудди: «Super! Der Code stimmt. Jetzt löse die Aufgabe!»";
+
+    showGermanFeedTask();
+  }
+
+  guessInput.value = "";
+}
+
+function showGermanFeedTask() {
+  const task = germanFeedTasks[currentFeedTaskIndex];
+
+  fooddyBox.hidden = true;
+  germanBox.hidden = false;
+
+  document.getElementById("germanTaskTitle").textContent = task.title;
+  document.getElementById("portionNumber").textContent = currentFeedTaskIndex + 1;
+  document.getElementById("germanQuestion").textContent = task.question;
+  document.getElementById("germanFeedback").textContent = "";
+  document.getElementById("germanFeedback").className = "feedback";
+
+  const box = document.getElementById("germanAnswers");
+  box.innerHTML = "";
+
+  const shuffled = shuffle([...task.answers]);
+
+  shuffled.forEach(answer => {
+    const button = document.createElement("button");
+    button.className = "answer-btn";
+    button.textContent = answer;
+
+    button.addEventListener("click", () => {
+      checkGermanFeedAnswer(task, answer);
+    });
+
+    box.appendChild(button);
+  });
+}
+
+function checkGermanFeedAnswer(task, answer) {
+  const box = document.getElementById("germanAnswers");
+  const feedbackBox = document.getElementById("germanFeedback");
+
+  if (answer === task.correct) {
+    box.querySelectorAll("button").forEach(button => {
+      button.disabled = true;
+    });
+
+    feedbackBox.textContent =
+      `${task.success} ${state.petName} получает порцию еды!`;
+
+    feedbackBox.className = "feedback ok";
+
+    feedCount++;
+    currentFeedTaskIndex++;
+
+    state.hunger -= 10;
+    state.mood += 2;
+    state.coins += 1;
+    state.experience += 5;
+    updateLevel();
+
+    clampStats();
+    renderStats();
+    updateFeedProgress();
+
+    if (feedCount >= 6) {
+      finishFeedBlock();
+    } else {
+      setTimeout(() => {
+        startFooddyRound();
+      }, 900);
+    }
+  } else {
+    feedbackBox.textContent =
+      "Leider falsch. Versuch es noch einmal.";
+
+    feedbackBox.className = "feedback bad";
+  }
+}
+
+function finishFeedBlock() {
+  progress.feed = true;
+  state.hunger = 0;
+  state.mood += 5;
+
+  clampStats();
+  renderStats();
+  updateFeedStatus();
+  updateGameProgress();
+
+  germanBox.hidden = true;
+  fooddyBox.hidden = false;
+
+  document.getElementById("fooddyMessage").textContent =
+    `Geschafft! ${state.petName} hat alle 6 Portionen bekommen.`;
+
+  document.getElementById("roundNumber").textContent = "6";
+  guessInput.disabled = true;
+  guessBtn.disabled = true;
+
+  checkWholeGameFinished();
+}
+
+function updateFeedProgress() {
+  const percent = Math.round((feedCount / 6) * 100);
+
+  document.getElementById("feedCount").textContent = feedCount;
+  document.getElementById("feedProgress").style.width = `${percent}%`;
+
+  document.querySelectorAll("#feedDots span").forEach((dot, index) => {
+    dot.classList.toggle("done", index < feedCount);
+  });
+}
+
+function updateFeedStatus() {
+  const badge = document.getElementById("feedStatus");
+
+  badge.textContent = progress.feed ? "Выполнено" : "Не выполнено";
+  badge.classList.toggle("done", progress.feed);
 }
 
 function showTask(action) {
@@ -178,11 +393,11 @@ function showTask(action) {
 function checkTaskAnswer(action, answer) {
   const task = tasks[action];
 
-  answersBox.querySelectorAll("button").forEach(button => {
-    button.disabled = true;
-  });
-
   if (answer === task.correct) {
+    answersBox.querySelectorAll("button").forEach(button => {
+      button.disabled = true;
+    });
+
     feedback.textContent = task.successText;
     feedback.className = "feedback ok";
 
@@ -191,9 +406,7 @@ function checkTaskAnswer(action, answer) {
     }
   } else {
     feedback.textContent =
-      action === "play"
-        ? "Leider falsch. Richtig ist: spielt."
-        : "Leider falsch. Richtig ist: krank.";
+      "Leider falsch. Versuch es noch einmal.";
 
     feedback.className = "feedback bad";
   }
@@ -205,15 +418,18 @@ function completeTask(action) {
   if (action === "play") {
     state.mood += 15;
     state.energy -= 15;
-    reward(1, 10);
+    state.coins += 1;
+    state.experience += 10;
   }
 
   if (action === "heal") {
     state.health += 20;
     state.mood += 5;
-    reward(1, 10);
+    state.coins += 1;
+    state.experience += 10;
   }
 
+  updateLevel();
   clampStats();
   renderStats();
   updateGameProgress();
@@ -222,114 +438,6 @@ function completeTask(action) {
   taskStatus.classList.add("done");
 
   checkWholeGameFinished();
-}
-
-function startFooddy() {
-  fooddyFood = 0;
-  attempts = 0;
-  fooddyFinished = false;
-
-  guessInput.disabled = false;
-  guessBtn.disabled = false;
-  restartFooddy.hidden = true;
-  guessInput.value = "";
-
-  makeNewSecret();
-  updateFooddyProgress();
-
-  document.getElementById("fooddyMessage").textContent =
-    "Фудди: «Бип-бип! Я спрятала код от 1 до 100. Попробуй угадать!»";
-
-  guessInput.focus();
-}
-
-function makeNewSecret() {
-  secretNumber = Math.floor(Math.random() * 100) + 1;
-}
-
-function checkGuess() {
-  if (fooddyFinished) {
-    return;
-  }
-
-  const value = Number(guessInput.value);
-
-  if (!Number.isInteger(value) || value < 1 || value > 100) {
-    document.getElementById("fooddyMessage").textContent =
-      "Фудди: «Бип-бип! Введи целое число от 1 до 100.»";
-    return;
-  }
-
-  attempts++;
-  document.getElementById("attempts").textContent = attempts;
-
-  if (value < secretNumber) {
-    document.getElementById("fooddyMessage").textContent =
-      "Фудди: «Слишком мало! Мой код БОЛЬШЕ!»";
-  } else if (value > secretNumber) {
-    document.getElementById("fooddyMessage").textContent =
-      "Фудди: «Ого, перелёт! Мой код МЕНЬШЕ!»";
-  } else {
-    fooddyFood++;
-    updateFooddyProgress();
-
-    if (fooddyFood < 6) {
-      document.getElementById("fooddyMessage").textContent =
-        `Фудди: «Код верный! ${state.petName} получает порцию еды. Новый код уже спрятан!»`;
-
-      makeNewSecret();
-    } else {
-      finishFooddy();
-    }
-  }
-
-  guessInput.value = "";
-  guessInput.focus();
-}
-
-function finishFooddy() {
-  fooddyFinished = true;
-
-  state.hunger = 0;
-  state.mood += 10;
-
-  reward(2, 15);
-
-  progress.feed = true;
-
-  clampStats();
-  renderStats();
-  updateFeedStatus();
-  updateGameProgress();
-
-  document.getElementById("fooddyMessage").textContent =
-    `ПОБЕДА! ${state.petName} получила все 6 порций и полностью сыта. Награда: +2 монеты, +15 опыта, +10 настроения.`;
-
-  guessInput.disabled = true;
-  guessBtn.disabled = true;
-  restartFooddy.hidden = false;
-
-  checkWholeGameFinished();
-}
-
-function updateFooddyProgress() {
-  const percent = Math.round((fooddyFood / 6) * 100);
-
-  document.getElementById("fooddyFood").textContent = fooddyFood;
-  document.getElementById("attempts").textContent = attempts;
-  document.getElementById("fooddyPercent").textContent = `${percent}%`;
-  document.getElementById("fooddyProgress").style.width = `${percent}%`;
-
-  document.querySelectorAll("#fooddyDots span").forEach((dot, index) => {
-    dot.classList.toggle("done", index < fooddyFood);
-  });
-}
-
-function updateFeedStatus() {
-  const badge = document.getElementById("feedStatus");
-
-  badge.textContent = progress.feed ? "Выполнено" : "Не выполнено";
-  badge.classList.toggle("done", progress.feed);
 }
 
 function updateGameProgress() {
@@ -356,9 +464,7 @@ function checkWholeGameFinished() {
   }
 }
 
-function reward(coins, experience) {
-  state.coins += coins;
-  state.experience += experience;
+function updateLevel() {
   state.level = Math.floor(state.experience / 25) + 1;
 }
 
@@ -386,9 +492,7 @@ function renderStats() {
 function shuffle(items) {
   for (let i = items.length - 1; i > 0; i--) {
     const randomIndex = Math.floor(Math.random() * (i + 1));
-
-    [items[i], items[randomIndex]] =
-      [items[randomIndex], items[i]];
+    [items[i], items[randomIndex]] = [items[randomIndex], items[i]];
   }
 
   return items;
