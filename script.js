@@ -1,87 +1,61 @@
 const state = {
   petName: "Анфиса",
-  health: 100,
-  hunger: 20,
-  mood: 80,
-  energy: 100,
+  health: 80,
+  hunger: 60,
+  mood: 70,
+  energy: 90,
   coins: 0,
   experience: 0,
   level: 1
 };
 
-const globalProgress = {
+const progress = {
   feed: false,
   play: false,
-  heal: false,
-  fooddy: false
+  heal: false
 };
 
 const tasks = {
-  feed: {
-    topic: "Essen und Trinken",
-    title: "Выбери правильное слово",
-    question: "Ich esse einen ...",
-    answers: ["Apfel", "Wasser", "Milch"],
-    correct: "Apfel",
-    success() {
-      state.hunger -= 20;
-      state.mood += 5;
-      reward(1, 5);
-      markProgress("feed");
-      return `Правильно! Der Apfel — яблоко. ${state.petName} получает яблоко!`;
-    },
-    fail: "Неправильно. Правильный ответ: Apfel."
-  },
-
   play: {
-    topic: "Hobbys und Freizeit",
-    title: "Выбери правильную форму глагола",
+    topic: "🎮 Hobbys und Freizeit",
+    title: "Поиграй с Анфисой",
     question: "Anna ___ gern Fußball.",
     answers: ["spiele", "spielt", "spielen"],
     correct: "spielt",
-    success() {
-      state.mood += 10;
-      state.energy -= 15;
-      reward(1, 5);
-      markProgress("play");
-      return `Правильно! Anna spielt gern Fußball. ${state.petName} с удовольствием играет!`;
-    },
-    fail: "Неправильно. Правильный ответ: spielt."
+    successText: "Richtig! Anna spielt gern Fußball. Анфиса с удовольствием играет!"
   },
 
   heal: {
-    topic: "Gesundheit",
-    title: "Выбери правильный вариант",
-    question: "",
+    topic: "💊 Gesundheit",
+    title: "Помоги Анфисе выздороветь",
+    question: "Anfisa hat Kopfschmerzen. Sie ist ...",
     answers: ["krank", "lecker", "sportlich"],
     correct: "krank",
-    success() {
-      state.health += 10;
-      state.mood += 5;
-      reward(1, 5);
-      markProgress("heal");
-      return `Правильно! krank — больной. ${state.petName} получает лекарство.`;
-    },
-    fail: "Неправильно. Правильный ответ: krank."
+    successText: "Richtig! Anfisa ist krank. Анфиса получает лекарство."
   }
 };
 
 const nameCard = document.getElementById("nameCard");
 const gameArea = document.getElementById("gameArea");
+const gameProgressPanel = document.getElementById("gameProgressPanel");
 const welcomePanel = document.getElementById("welcomePanel");
+const feedArea = document.getElementById("feedArea");
 const taskArea = document.getElementById("taskArea");
-const fooddyArea = document.getElementById("fooddyArea");
+const finishArea = document.getElementById("finishArea");
 
 const startBtn = document.getElementById("startBtn");
 const petNameInput = document.getElementById("petName");
 const welcomeText = document.getElementById("welcomeText");
+
 const answersBox = document.getElementById("answers");
 const feedback = document.getElementById("feedback");
+const taskStatus = document.getElementById("taskStatus");
 
-const fooddyBtn = document.getElementById("fooddyBtn");
 const guessInput = document.getElementById("guessInput");
 const guessBtn = document.getElementById("guessBtn");
 const restartFooddy = document.getElementById("restartFooddy");
+
+let currentTask = null;
 
 let secretNumber = 0;
 let fooddyFood = 0;
@@ -96,40 +70,30 @@ petNameInput.addEventListener("keydown", event => {
   }
 });
 
-document.querySelectorAll("[data-action]").forEach(button => {
-  button.addEventListener("click", () => showTask(button.dataset.action));
-});
-
-fooddyBtn.addEventListener("click", startFooddy);
-guessBtn.addEventListener("click", checkGuess);
-restartFooddy.addEventListener("click", startFooddy);
-
-document.querySelectorAll("[data-progress-action]").forEach(button => {
+document.querySelectorAll("[data-main-action]").forEach(button => {
   button.addEventListener("click", () => {
-    const action = button.dataset.progressAction;
+    const action = button.dataset.mainAction;
 
-    if (gameArea.hidden) {
-      state.petName = petNameInput.value.trim() || "Анфиса";
-      welcomeText.textContent =
-        `${state.petName} появилась! Выполняй задания и заботься о питомце.`;
-      nameCard.hidden = true;
-      gameArea.hidden = false;
-      renderStats();
-      updateGameProgress();
+    if (nameCard.hidden === false) {
+      startGame();
     }
 
-    if (action === "fooddy") {
-      startFooddy();
-    } else {
-      showTask(action);
-    }
+    openAction(action);
   });
 });
+
+guessBtn.addEventListener("click", checkGuess);
 
 guessInput.addEventListener("keydown", event => {
   if (event.key === "Enter") {
     checkGuess();
   }
+});
+
+restartFooddy.addEventListener("click", startFooddy);
+
+document.getElementById("continueBtn").addEventListener("click", () => {
+  openPanel("welcome");
 });
 
 function startGame() {
@@ -140,6 +104,7 @@ function startGame() {
 
   nameCard.hidden = true;
   gameArea.hidden = false;
+  gameProgressPanel.hidden = false;
 
   renderStats();
   updateGameProgress();
@@ -147,11 +112,38 @@ function startGame() {
 
 function openPanel(panel) {
   welcomePanel.hidden = panel !== "welcome";
+  feedArea.hidden = panel !== "feed";
   taskArea.hidden = panel !== "task";
-  fooddyArea.hidden = panel !== "fooddy";
+  finishArea.hidden = panel !== "finish";
+}
+
+function setActiveAction(action) {
+  document.querySelectorAll(".action-btn").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.mainAction === action
+    );
+  });
+}
+
+function openAction(action) {
+  setActiveAction(action);
+
+  if (action === "feed") {
+    openPanel("feed");
+
+    if (!fooddyFinished) {
+      startFooddy();
+    }
+
+    updateFeedStatus();
+  } else {
+    showTask(action);
+  }
 }
 
 function showTask(action) {
+  currentTask = action;
   openPanel("task");
 
   const task = tasks[action];
@@ -159,7 +151,6 @@ function showTask(action) {
 
   document.getElementById("taskTopic").textContent = task.topic;
   document.getElementById("taskTitle").textContent = task.title;
-
   document.getElementById("taskQuestion").textContent =
     action === "heal"
       ? `${state.petName} hat Kopfschmerzen. Sie ist ...`
@@ -167,6 +158,10 @@ function showTask(action) {
 
   feedback.textContent = "";
   feedback.className = "feedback";
+
+  taskStatus.textContent = progress[action] ? "Выполнено" : "Не выполнено";
+  taskStatus.classList.toggle("done", progress[action]);
+
   answersBox.innerHTML = "";
 
   shuffledAnswers.forEach(answer => {
@@ -174,47 +169,77 @@ function showTask(action) {
     button.className = "answer-btn";
     button.textContent = answer;
 
-    button.addEventListener("click", () => checkAnswer(task, answer));
+    button.addEventListener("click", () => checkTaskAnswer(action, answer));
 
     answersBox.appendChild(button);
   });
 }
 
-function checkAnswer(task, answer) {
+function checkTaskAnswer(action, answer) {
+  const task = tasks[action];
+
   answersBox.querySelectorAll("button").forEach(button => {
     button.disabled = true;
   });
 
   if (answer === task.correct) {
-    feedback.textContent = task.success();
+    feedback.textContent = task.successText;
     feedback.className = "feedback ok";
 
-    clampStats();
-    renderStats();
+    if (!progress[action]) {
+      completeTask(action);
+    }
   } else {
-    feedback.textContent = task.fail;
+    feedback.textContent =
+      action === "play"
+        ? "Leider falsch. Richtig ist: spielt."
+        : "Leider falsch. Richtig ist: krank.";
+
     feedback.className = "feedback bad";
   }
 }
 
-function startFooddy() {
-  openPanel("fooddy");
+function completeTask(action) {
+  progress[action] = true;
 
+  if (action === "play") {
+    state.mood += 15;
+    state.energy -= 15;
+    reward(1, 10);
+  }
+
+  if (action === "heal") {
+    state.health += 20;
+    state.mood += 5;
+    reward(1, 10);
+  }
+
+  clampStats();
+  renderStats();
+  updateGameProgress();
+
+  taskStatus.textContent = "Выполнено";
+  taskStatus.classList.add("done");
+
+  checkWholeGameFinished();
+}
+
+function startFooddy() {
   fooddyFood = 0;
   attempts = 0;
   fooddyFinished = false;
 
+  guessInput.disabled = false;
+  guessBtn.disabled = false;
+  restartFooddy.hidden = true;
+  guessInput.value = "";
+
+  makeNewSecret();
   updateFooddyProgress();
 
   document.getElementById("fooddyMessage").textContent =
     "Фудди: «Бип-бип! Я спрятала код от 1 до 100. Попробуй угадать!»";
 
-  restartFooddy.hidden = true;
-  guessInput.disabled = false;
-  guessBtn.disabled = false;
-  guessInput.value = "";
-
-  makeNewSecret();
   guessInput.focus();
 }
 
@@ -268,18 +293,23 @@ function finishFooddy() {
   state.hunger = 0;
   state.mood += 10;
 
-  reward(3, 15);
-  markProgress("fooddy");
+  reward(2, 15);
+
+  progress.feed = true;
 
   clampStats();
   renderStats();
+  updateFeedStatus();
+  updateGameProgress();
 
   document.getElementById("fooddyMessage").textContent =
-    `ПОБЕДА! ${state.petName} полностью сыта. Всего попыток: ${attempts}. Награда: +3 монеты, +15 опыта, +10 настроения.`;
+    `ПОБЕДА! ${state.petName} получила все 6 порций и полностью сыта. Награда: +2 монеты, +15 опыта, +10 настроения.`;
 
   guessInput.disabled = true;
   guessBtn.disabled = true;
   restartFooddy.hidden = false;
+
+  checkWholeGameFinished();
 }
 
 function updateFooddyProgress() {
@@ -287,26 +317,24 @@ function updateFooddyProgress() {
 
   document.getElementById("fooddyFood").textContent = fooddyFood;
   document.getElementById("attempts").textContent = attempts;
-  document.getElementById("progressPercent").textContent = `${percent}%`;
+  document.getElementById("fooddyPercent").textContent = `${percent}%`;
   document.getElementById("fooddyProgress").style.width = `${percent}%`;
 
-  const dots = document.querySelectorAll("#progressDots span");
-
-  dots.forEach((dot, index) => {
+  document.querySelectorAll("#fooddyDots span").forEach((dot, index) => {
     dot.classList.toggle("done", index < fooddyFood);
   });
 }
 
-function markProgress(key) {
-  if (!globalProgress[key]) {
-    globalProgress[key] = true;
-    updateGameProgress();
-  }
+function updateFeedStatus() {
+  const badge = document.getElementById("feedStatus");
+
+  badge.textContent = progress.feed ? "Выполнено" : "Не выполнено";
+  badge.classList.toggle("done", progress.feed);
 }
 
 function updateGameProgress() {
-  const order = ["feed", "play", "heal", "fooddy"];
-  const completed = order.filter(key => globalProgress[key]).length;
+  const order = ["feed", "play", "heal"];
+  const completed = order.filter(key => progress[key]).length;
   const percent = Math.round((completed / order.length) * 100);
 
   document.getElementById("gameProgressPercent").textContent = `${percent}%`;
@@ -315,14 +343,23 @@ function updateGameProgress() {
   const steps = document.querySelectorAll("#gameProgressSteps .step");
 
   steps.forEach((step, index) => {
-    step.classList.toggle("done", index < completed);
+    step.classList.toggle("done", progress[order[index]]);
   });
+}
+
+function checkWholeGameFinished() {
+  if (progress.feed && progress.play && progress.heal) {
+    openPanel("finish");
+
+    document.getElementById("finishText").textContent =
+      `${state.petName} сыта, здорова и в хорошем настроении. Все три блока заботы успешно пройдены!`;
+  }
 }
 
 function reward(coins, experience) {
   state.coins += coins;
   state.experience += experience;
-  state.level = Math.floor(state.experience / 20) + 1;
+  state.level = Math.floor(state.experience / 25) + 1;
 }
 
 function clampStats() {
