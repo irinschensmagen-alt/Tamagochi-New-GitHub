@@ -101,7 +101,7 @@ function startGame() {
   state.petName = petNameInput.value.trim() || "Анфиса";
 
   welcomeText.textContent =
-    `${state.petName} появился! Выполняй задания и заботься о питомце.`;
+    `${state.petName} появилась! Выполняй задания и заботься о питомце.`;
 
   nameCard.hidden = true;
   gameArea.hidden = false;
