@@ -18,7 +18,7 @@ const i18n = {
     demoLabel: "",
     namePlaceholder: "Name des Tamagotchis",
     nameRequired: "Bitte gib deinem Tamagotchi zuerst einen Namen.",
-    levelLabel: "🏆 Level",
+    levelLabel: "🏆 Stufe",
     overallProgressLabel: "Gesamtfortschritt",
     careTitle: "Für dein Tamagotchi sorgen",
     stepFeedLabel: "🍎 Füttern",
@@ -58,6 +58,9 @@ const i18n = {
     statusNotDone: "Nicht erledigt",
     calm: "Ruhig",
     fooddyReady: "Fooddy ist bereit",
+    fooddyZoomHint: "🔍 Vergrößern",
+    fooddyModalLabel: "Nachricht von Fooddy",
+    closeLabel: "Schließen",
     fooddyDispensing: "Fooddy gibt eine Portion aus!",
     fooddyDispensed: "Portion ausgegeben ✓",
     codePrompt: n => `Fooddy: „Piep-piep! Code Nr. ${n} ist versteckt. Errate eine Zahl von 1 bis 100!“`,
@@ -117,13 +120,16 @@ const i18n = {
     birthTextEgg: "Внутри кто-то есть… Дай будущему Тамагочи имя.",
     birthTitleWake: "Яйцо просыпается…",
     birthTextWake: "Неоновый свет становится ярче. Смотри внимательно!",
-    birthBorn: name => `${name} родилась!`,
-    birthBornText: name => `Вот она — новорождённая ${name}! Рассмотри её и нажми кнопку, когда будешь готов продолжить.`,
-    welcomeText: name => `${name} родилась! Выполняй задания и заботься о питомце.`,
+    birthBorn: name => `Тамагочи ${name} появился!`,
+    birthBornText: name => `Вот твой новый Тамагочи — ${name}! Рассмотри питомца и нажми кнопку, когда будешь готов продолжить.`,
+    welcomeText: name => `${name} появился! Выполняй задания и заботься о питомце.`,
     statusDone: "Выполнено",
     statusNotDone: "Не выполнено",
     calm: "Спокойна",
     fooddyReady: "Фудди готова",
+    fooddyZoomHint: "🔍 Увеличить",
+    fooddyModalLabel: "Сообщение Фудди",
+    closeLabel: "Закрыть",
     fooddyDispensing: "Фудди выдаёт порцию!",
     fooddyDispensed: "Порция выдана ✓",
     codePrompt: n => `Фудди: «Бип-бип! Код №${n} спрятан. Угадай число от 1 до 100!»`,
@@ -286,6 +292,12 @@ const guessInput = document.getElementById("guessInput");
 const guessBtn = document.getElementById("guessBtn");
 const foodPellets = document.getElementById("foodPellets");
 const fooddyDispenseLabel = document.getElementById("fooddyDispenseLabel");
+const fooddyZoomTrigger = document.getElementById("fooddyZoomTrigger");
+const fooddyZoomHint = document.getElementById("fooddyZoomHint");
+const fooddyModal = document.getElementById("fooddyModal");
+const fooddyModalClose = document.getElementById("fooddyModalClose");
+const fooddyModalMessage = document.getElementById("fooddyModalMessage");
+const fooddyModalLabel = document.getElementById("fooddyModalLabel");
 
 let secretNumber = 0;
 let feedCount = 0;
@@ -312,6 +324,26 @@ document.querySelectorAll("[data-main-action]").forEach(button => {
 guessBtn.addEventListener("click", checkGuess);
 guessInput.addEventListener("keydown", e => {
   if (e.key === "Enter") checkGuess();
+});
+
+function openFooddyModal() {
+  fooddyModalMessage.textContent = document.getElementById("fooddyMessage").textContent;
+  fooddyModal.hidden = false;
+  document.body.classList.add("modal-open");
+  fooddyModalClose.focus();
+}
+
+function closeFooddyModal() {
+  fooddyModal.hidden = true;
+  document.body.classList.remove("modal-open");
+  fooddyZoomTrigger.focus();
+}
+
+fooddyZoomTrigger.addEventListener("click", openFooddyModal);
+fooddyModalClose.addEventListener("click", closeFooddyModal);
+document.querySelectorAll("[data-close-fooddy-modal]").forEach(el => el.addEventListener("click", closeFooddyModal));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !fooddyModal.hidden) closeFooddyModal();
 });
 
 document.getElementById("continueBtn").addEventListener("click", () => {
@@ -359,6 +391,10 @@ function setLanguage(lang) {
   setText("satietyLabel", t.satietyLabel);
   setText("fooddyStepLabel", t.fooddyStepLabel);
   setText("fooddyTitle", t.fooddyTitle);
+  setText("fooddyZoomHint", t.fooddyZoomHint);
+  setText("fooddyModalLabel", t.fooddyModalLabel);
+  if (fooddyZoomTrigger) fooddyZoomTrigger.setAttribute("aria-label", t.fooddyZoomHint.replace("🔍 ", ""));
+  if (fooddyModalClose) fooddyModalClose.setAttribute("aria-label", t.closeLabel);
   setText("roundLabel", t.roundLabel);
   setText("attemptsLabel", t.attemptsLabel);
   setText("deStepLabel", t.deStepLabel);
@@ -506,8 +542,8 @@ function showBlockGrowth(action) {
   const blockName = getBlockName(action);
 
   const message = currentLanguage === "de"
-    ? `Geschafft! Der Block „${blockName}“ ist mit 6 von 6 Aufgaben abgeschlossen. ${state.petName} ist gewachsen! Neuer Status: ${stage.de}.`
-    : `Ура! Блок «${blockName}» пройден: 6 из 6 заданий. ${state.petName} вырос! Новый статус: ${stage.ru}.`;
+    ? `Geschafft! Der Block „${blockName}“ ist mit 6 von 6 Aufgaben abgeschlossen. Neuer Status für ${state.petName}: ${stage.de}.`
+    : `Ура! Блок «${blockName}» пройден: 6 из 6 заданий. Новый статус питомца ${state.petName}: ${stage.ru}.`;
 
   setPetVisual(
     stage.key,
@@ -968,7 +1004,7 @@ function checkWholeGameFinished() {
     openPanel("finish");
     document.getElementById("finishText").textContent =
       i18n[currentLanguage].finishText(state.petName);
-    showCurrentGrowth(currentLanguage === "de" ? `Ich bin gewachsen! Danke, dass du dich um mich gekümmert hast! 💛` : `Я выросла! Спасибо, что заботилась обо мне! 💛`);
+    showCurrentGrowth(currentLanguage === "de" ? `Ich bin gewachsen! Danke, dass du dich um mich gekümmert hast! 💛` : `Я вырос! Спасибо за твою заботу! 💛`);
   }
 }
 
@@ -1030,3 +1066,12 @@ function clamp(value,min,max) {
 }
 
 setLanguage("de");
+
+
+// Если сообщение Fooddy меняется, в увеличенном окне показывается тот же полный текст.
+const fooddyMessageNode = document.getElementById("fooddyMessage");
+if (fooddyMessageNode && fooddyModalMessage) {
+  const syncFooddyModal = () => { fooddyModalMessage.textContent = fooddyMessageNode.textContent; };
+  new MutationObserver(syncFooddyModal).observe(fooddyMessageNode, { childList: true, characterData: true, subtree: true });
+  syncFooddyModal();
+}
