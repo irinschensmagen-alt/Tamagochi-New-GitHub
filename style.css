@@ -530,3 +530,220 @@ h3 { margin: 0; font-size: 19px; }
   .birth-card > img { max-height: 48vh; }
   .birth-copy { padding: 24px; }
 }
+
+
+/* ===== v2: исправления по экрану ===== */
+.game-shell {
+  grid-template-rows: 86px 80px 58px 54px minmax(0, 1fr);
+}
+
+/* Шапка: текст больше не подрезается */
+.topbar {
+  padding-top: 9px;
+  padding-bottom: 9px;
+  overflow: hidden;
+}
+
+.title-block {
+  min-height: 0;
+}
+
+.title-block h1 {
+  font-size: clamp(23px, 2.1vw, 32px);
+  line-height: 1.05;
+}
+
+.title-block p:last-child {
+  line-height: 1.2;
+}
+
+/* Общий прогресс компактнее, подписи не вылезают вниз */
+.game-progress-panel {
+  padding: 6px 12px 7px;
+  overflow: hidden;
+}
+
+.game-progress-head {
+  margin-bottom: 3px;
+}
+
+.game-steps {
+  margin-top: 3px;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  min-height: 22px;
+}
+
+.step-dot {
+  height: 4px;
+  margin-bottom: 1px;
+}
+
+.step small {
+  line-height: 1.05;
+}
+
+/* Анфиса показывается целиком */
+.pet-picture {
+  padding: 4px 4px 2px;
+}
+
+.pet-picture img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 96% !important;
+  max-height: 96% !important;
+  object-fit: contain !important;
+  object-position: center bottom !important;
+}
+
+/* Компактный стартовый блок справа */
+.task-stage {
+  align-content: start;
+}
+
+.compact-welcome {
+  width: 100%;
+  max-width: none;
+  min-height: 86px;
+  margin: 0;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  text-align: left;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #fbfaff, #ffffff);
+}
+
+.compact-welcome .welcome-icon {
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: 34px;
+}
+
+.compact-welcome h2 {
+  margin: 0 0 4px;
+  font-size: 23px;
+}
+
+.compact-welcome p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Рождение: новорождённая остаётся на экране, пока игрок не нажмёт кнопку */
+.birth-continue {
+  width: 100%;
+  margin-top: 14px;
+  min-height: 48px;
+  font-size: 17px;
+}
+
+/* Фудди — полноценный персонаж блока еды */
+.fooddy-layout {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.fooddy-visual {
+  position: relative;
+  min-height: 178px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #eff7ff, #f7efff);
+  border: 1px solid #d7e4ff;
+}
+
+.fooddy-visual img {
+  width: 100%;
+  height: 100%;
+  min-height: 178px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.fooddy-dispense-label {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 7px;
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.92);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: #52598b;
+}
+
+.fooddy-content {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+}
+
+.food-pellets {
+  position: absolute;
+  left: 48%;
+  bottom: 23px;
+  width: 60px;
+  height: 58px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.food-pellets span {
+  position: absolute;
+  color: #9a5d1e;
+  font-size: 12px;
+  text-shadow: 0 1px 1px rgba(0,0,0,.15);
+}
+
+.food-pellets span:nth-child(1) { left: 3px; top: 0; }
+.food-pellets span:nth-child(2) { left: 20px; top: 5px; }
+.food-pellets span:nth-child(3) { left: 34px; top: 1px; }
+.food-pellets span:nth-child(4) { left: 13px; top: 18px; }
+.food-pellets span:nth-child(5) { left: 29px; top: 22px; }
+
+.food-pellets.dispensing {
+  opacity: 1;
+}
+
+.food-pellets.dispensing span {
+  animation: pelletDrop .85s ease-in forwards;
+}
+
+.food-pellets.dispensing span:nth-child(2) { animation-delay: .08s; }
+.food-pellets.dispensing span:nth-child(3) { animation-delay: .14s; }
+.food-pellets.dispensing span:nth-child(4) { animation-delay: .20s; }
+.food-pellets.dispensing span:nth-child(5) { animation-delay: .26s; }
+
+@keyframes pelletDrop {
+  0% { transform: translateY(-15px) rotate(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(38px) rotate(150deg); opacity: 0; }
+}
+
+@media (max-height: 720px) and (min-width: 900px) {
+  .game-shell {
+    grid-template-rows: 76px 70px 50px 46px minmax(0,1fr);
+  }
+
+  .fooddy-layout {
+    grid-template-columns: 165px minmax(0,1fr);
+  }
+
+  .fooddy-visual,
+  .fooddy-visual img {
+    min-height: 140px;
+  }
+}

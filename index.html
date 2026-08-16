@@ -20,6 +20,10 @@
           <input id="petName" type="text" maxlength="20" placeholder="Анфиса" value="Анфиса">
           <button id="startBtn" class="primary">Разбудить яйцо</button>
         </div>
+
+        <button id="birthContinueBtn" class="primary birth-continue" hidden>
+          Познакомиться с Анфисой
+        </button>
       </div>
     </div>
   </section>
@@ -106,10 +110,12 @@
 
       <section class="task-stage">
 
-        <div class="welcome-panel" id="welcomePanel">
+        <div class="welcome-panel compact-welcome" id="welcomePanel">
           <div class="welcome-icon">🐾</div>
-          <h2>Выбери действие</h2>
-          <p>Анфиса всегда рядом. После каждого правильного ответа ты увидишь её реакцию и изменение показателей.</p>
+          <div>
+            <h2>Выбери действие</h2>
+            <p>Покорми, поиграй или помоги Анфисе выздороветь.</p>
+          </div>
         </div>
 
         <div id="feedArea" hidden>
@@ -135,6 +141,16 @@
           </div>
 
           <div class="fooddy-box" id="fooddyBox">
+            <div class="fooddy-layout">
+              <div class="fooddy-visual">
+                <img src="assets/images/fooddy_feeder.png" alt="Робо-Кормушка Фудди">
+                <div class="food-pellets" id="foodPellets" aria-hidden="true">
+                  <span>●</span><span>●</span><span>●</span><span>●</span><span>●</span>
+                </div>
+                <div class="fooddy-dispense-label" id="fooddyDispenseLabel">Фудди готова</div>
+              </div>
+
+              <div class="fooddy-content">
             <div class="fooddy-heading">
               <div>
                 <p class="task-topic">🤖 Шаг 1. Робо-Кормушка Фудди</p>
@@ -152,6 +168,8 @@
 
             <div class="attempt-line">
               Допустимых попыток: <strong id="attempts">0</strong>
+            </div>
+              </div>
             </div>
           </div>
 

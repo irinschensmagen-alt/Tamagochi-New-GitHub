@@ -70,6 +70,7 @@ const birthText = document.getElementById("birthText");
 const birthControls = document.getElementById("birthControls");
 const petNameInput = document.getElementById("petName");
 const startBtn = document.getElementById("startBtn");
+const birthContinueBtn = document.getElementById("birthContinueBtn");
 
 const petImage = document.getElementById("petImage");
 const miniPetImage = document.getElementById("miniPetImage");
@@ -86,6 +87,8 @@ const fooddyBox = document.getElementById("fooddyBox");
 const germanBox = document.getElementById("germanBox");
 const guessInput = document.getElementById("guessInput");
 const guessBtn = document.getElementById("guessBtn");
+const foodPellets = document.getElementById("foodPellets");
+const fooddyDispenseLabel = document.getElementById("fooddyDispenseLabel");
 
 let secretNumber = 0;
 let feedCount = 0;
@@ -96,6 +99,7 @@ let currentSeries = null;
 let seriesIndex = { play: 0, heal: 0 };
 
 startBtn.addEventListener("click", startBirthSequence);
+birthContinueBtn.addEventListener("click", enterGameAfterBirth);
 petNameInput.addEventListener("keydown", e => {
   if (e.key === "Enter") startBirthSequence();
 });
@@ -118,24 +122,30 @@ function startBirthSequence() {
   state.petName = petNameInput.value.trim() || "Анфиса";
 
   birthControls.hidden = true;
+  birthContinueBtn.hidden = true;
   birthTitle.textContent = "Яйцо просыпается…";
-  birthText.textContent = "Неоновый свет становится ярче.";
+  birthText.textContent = "Неоновый свет становится ярче. Смотри внимательно!";
+  birthImage.src = petImages.egg;
 
   setTimeout(() => {
     birthImage.src = petImages.hatching;
-    birthTitle.textContent = `${state.petName} рождается!`;
-    birthText.textContent = "Из космического яйца появился маленький Тамагочи.";
-  }, 800);
+    birthTitle.textContent = `${state.petName} родилась!`;
+    birthText.textContent =
+      "Вот она — новорождённая Анфиса! Рассмотри её и нажми кнопку, когда будешь готов продолжить.";
+    birthContinueBtn.hidden = false;
+  }, 1200);
+}
 
-  setTimeout(() => {
-    birthScreen.hidden = true;
-    gameShell.hidden = false;
-    document.getElementById("welcomeText").textContent =
-      `${state.petName} родилась! Выполняй задания и заботься о питомце.`;
-    renderStats();
-    updateGameProgress();
-    showCurrentGrowth(`Мяу! Я ${state.petName}. Позаботься обо мне!`);
-  }, 2000);
+function enterGameAfterBirth() {
+  birthScreen.hidden = true;
+  gameShell.hidden = false;
+
+  document.getElementById("welcomeText").textContent =
+    `${state.petName} родилась! Выполняй задания и заботься о питомце.`;
+
+  renderStats();
+  updateGameProgress();
+  showCurrentGrowth(`Мяу! Я ${state.petName}. Позаботься обо мне!`);
 }
 
 function getGrowthStage() {
@@ -236,6 +246,19 @@ function openAction(action) {
   showSeriesTask(action);
 }
 
+
+function dispenseFooddyPortion() {
+  fooddyDispenseLabel.textContent = "Фудди выдаёт порцию!";
+  foodPellets.classList.remove("dispensing");
+  void foodPellets.offsetWidth;
+  foodPellets.classList.add("dispensing");
+
+  setTimeout(() => {
+    foodPellets.classList.remove("dispensing");
+    fooddyDispenseLabel.textContent = "Порция выдана ✓";
+  }, 1000);
+}
+
 /* ---------- ЕДА ---------- */
 function startFooddyRound() {
   codeSolved = false;
@@ -250,6 +273,7 @@ function startFooddyRound() {
   document.getElementById("fooddyMessage").textContent =
     `Фудди: «Бип-бип! Код №${currentFeedTaskIndex + 1} спрятан. Угадай число от 1 до 100!»`;
 
+  fooddyDispenseLabel.textContent = "Фудди готова";
   guessInput.value = "";
   guessInput.disabled = false;
   guessBtn.disabled = false;
@@ -334,12 +358,18 @@ function checkGermanFeedAnswer(task, answer) {
   clampStats();
   renderStats();
   updateFeedProgress();
-  showReaction("eating");
+
+  // Сначала Фудди физически выдаёт порцию, затем Анфиса её ест.
+  dispenseFooddyPortion();
+
+  setTimeout(() => {
+    showReaction("eating");
+  }, 650);
 
   if (feedCount >= 6) {
-    setTimeout(finishFeedBlock, 900);
+    setTimeout(finishFeedBlock, 1700);
   } else {
-    setTimeout(startFooddyRound, 1500);
+    setTimeout(startFooddyRound, 2100);
   }
 }
 
