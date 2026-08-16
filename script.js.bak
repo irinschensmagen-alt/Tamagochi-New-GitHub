@@ -35,7 +35,7 @@ const i18n = {
     careTitle: "Für dein Tamagotchi sorgen",
     stepFeedLabel: "🍎 Füttern",
     stepPlayLabel: "🎮 Spielen",
-    stepHealLabel: "💊 Heilen",
+    stepHealLabel: "💊 Gesundheit",
     healthLabel: "Gesundheit",
     hungerLabel: "Hunger",
     moodLabel: "Stimmung",
@@ -73,7 +73,7 @@ const i18n = {
     welcomeText: name => `${name} ist geboren! Löse Aufgaben und kümmere dich um dein Tamagotchi.`,
     statusDone: "Erledigt",
     statusNotDone: "Nicht erledigt",
-    calm: "",
+    calm: "Ruhig",
     fooddyReady: "Fooddy ist bereit",
     fooddyZoomHint: "🔍 Vergrößern",
     fooddyModalLabel: "Nachricht von Fooddy",
@@ -109,7 +109,7 @@ const i18n = {
     careTitle: "Забота о Тамагочи",
     stepFeedLabel: "🍎 Еда",
     stepPlayLabel: "🎮 Игра",
-    stepHealLabel: "💊 Лечение",
+    stepHealLabel: "💊 Здоровье",
     healthLabel: "Здоровье",
     hungerLabel: "Голод",
     moodLabel: "Настроение",
@@ -147,7 +147,7 @@ const i18n = {
     welcomeText: name => `Тамагочи ${name} уже с тобой! Выполняй задания и заботься о питомце.`,
     statusDone: "Выполнено",
     statusNotDone: "Не выполнено",
-    calm: "",
+    calm: "Спокойна",
     fooddyReady: "Фудди готова",
     fooddyZoomHint: "🔍 Увеличить",
     fooddyModalLabel: "Сообщение Фудди",
@@ -243,33 +243,6 @@ const petImages = {
   playing: "assets/images/tamagotchi_playing.png",
   sick: "assets/images/tamagotchi_sick.png",
   healing: "assets/images/tamagotchi_healing.png"
-};
-
-const taskSceneImages = {
-  feed: [
-    "assets/images/tasks/feed_01_fruit.png",
-    "assets/images/tasks/feed_02_water.png",
-    "assets/images/tasks/feed_03_bread_cheese.png",
-    "assets/images/tasks/feed_04_tea.png",
-    "assets/images/tasks/feed_05_fruits.png",
-    "assets/images/tasks/feed_06_order_food.png"
-  ],
-  play: [
-    "assets/images/tasks/play_01_ball.png",
-    "assets/images/tasks/play_02_music.png",
-    "assets/images/tasks/play_03_tennis.png",
-    "assets/images/tasks/play_04_read.png",
-    "assets/images/tasks/play_05_camera.png",
-    "assets/images/tasks/play_06_cinema.png"
-  ],
-  heal: [
-    "assets/images/tasks/heal_01_headache.png",
-    "assets/images/tasks/heal_02_medicine.png",
-    "assets/images/tasks/heal_03_rest.png",
-    "assets/images/tasks/heal_04_tea.png",
-    "assets/images/tasks/heal_05_fever.png",
-    "assets/images/tasks/heal_06_doctor.png"
-  ]
 };
 
 const growthStages = [
@@ -390,27 +363,6 @@ const growthLabel = document.getElementById("growthLabel");
 const reactionLabel = document.getElementById("reactionLabel");
 const petSparkles = document.getElementById("petSparkles");
 
-let petActionBadge = document.querySelector(".pet-action-badge");
-if (!petActionBadge && petPicture) {
-  petActionBadge = document.createElement("div");
-  petActionBadge.className = "pet-action-badge";
-  petActionBadge.hidden = true;
-  petPicture.appendChild(petActionBadge);
-}
-
-function setPetActionBadge(icon = "", label = "") {
-  if (!petActionBadge) return;
-  if (!icon) {
-    petActionBadge.hidden = true;
-    petActionBadge.textContent = "";
-    petActionBadge.removeAttribute("aria-label");
-    return;
-  }
-  petActionBadge.hidden = false;
-  petActionBadge.textContent = icon;
-  if (label) petActionBadge.setAttribute("aria-label", label);
-}
-
 const welcomePanel = document.getElementById("welcomePanel");
 const feedArea = document.getElementById("feedArea");
 const seriesArea = document.getElementById("seriesArea");
@@ -427,11 +379,6 @@ const fooddyModal = document.getElementById("fooddyModal");
 const fooddyModalClose = document.getElementById("fooddyModalClose");
 const fooddyModalMessage = document.getElementById("fooddyModalMessage");
 const fooddyModalLabel = document.getElementById("fooddyModalLabel");
-const petCloseupModal = document.getElementById("petCloseupModal");
-const petCloseupClose = document.getElementById("petCloseupClose");
-const petCloseupImage = document.getElementById("petCloseupImage");
-const petCloseupTitle = document.getElementById("petCloseupTitle");
-const petCloseupText = document.getElementById("petCloseupText");
 
 let secretNumber = 0;
 let feedCount = 0;
@@ -489,7 +436,9 @@ document.addEventListener("keydown", e => {
 });
 
 document.getElementById("continueBtn").addEventListener("click", () => {
-  showPetCloseup();
+  stopEndingAudio();
+  openPanel("welcome");
+  showCurrentGrowth(currentLanguage === "de" ? "Ich bin dank deiner Fürsorge gewachsen! ✨" : "Я выросла благодаря твоей заботе! ✨");
 });
 
 function markTaskMistake(action, index) {
@@ -688,17 +637,16 @@ function setLanguage(lang) {
     document.getElementById("welcomeText").textContent = t.welcomeText(state.petName);
     document.getElementById("careTitle").textContent = getCareTitle();
     document.getElementById("welcomeActionText").textContent = getWelcomeIntro();
-    updateGrowthChip();
+    reactionLabel.textContent = t.calm;
     updateFeedStatus();
     updateGameProgress();
 
     if (!feedArea.hidden) {
-      if (progress.feed) {
-        showFeedCompletedPanel();
-      } else if (!germanBox.hidden && currentFeedTaskIndex < 6) {
+      if (!germanBox.hidden && currentFeedTaskIndex < 6) {
         showGermanFeedTask();
       } else if (!fooddyBox.hidden && !progress.feed) {
-        document.getElementById("fooddyMessage").textContent = t.codePrompt();
+        document.getElementById("fooddyMessage").textContent =
+          t.codePrompt();
       }
     }
 
@@ -794,19 +742,6 @@ function getCompletedBlocksCount() {
   return [progress.feed, progress.play, progress.heal].filter(Boolean).length;
 }
 
-function getCurrentStage() {
-  return growthStages[Math.min(getCompletedBlocksCount(), growthStages.length - 1)];
-}
-
-function getStageLabelForLanguage(stage) {
-  return stage ? stage[currentLanguage] : "";
-}
-
-function updateGrowthChip() {
-  const stage = getCurrentStage();
-  if (growthLabel && stage) growthLabel.textContent = getStageLabelForLanguage(stage);
-}
-
 function getGrowthStage() {
   const completedBlocks = getCompletedBlocksCount();
   return growthStages[Math.min(completedBlocks, growthStages.length - 1)];
@@ -822,7 +757,6 @@ function getBlockName(action) {
 
 function showBlockGrowth(action) {
   setEndingVisual(null);
-  petPicture.classList.remove("task-scene");
   const stage = getGrowthStage();
   const blockName = getBlockName(action);
 
@@ -832,7 +766,7 @@ function showBlockGrowth(action) {
 
   setPetVisual(
     stage.key,
-    "",
+    currentLanguage === "de" ? `Neuer Status: ${stage.de}` : `Новый статус: ${stage.ru}`,
     message,
     false
   );
@@ -841,10 +775,8 @@ function showBlockGrowth(action) {
 
 function showCurrentGrowth(message = null) {
   setEndingVisual(null);
-  petPicture.classList.remove("task-scene");
-  setPetActionBadge("");
   const stage = getGrowthStage();
-  setPetVisual(stage.key, "", message || defaultGrowthSpeech(stage.key), false);
+  setPetVisual(stage.key, stage[currentLanguage], message || defaultGrowthSpeech(stage.key), false);
   miniPetImage.src = petImages[stage.key];
 }
 
@@ -870,12 +802,8 @@ function defaultGrowthSpeech(key) {
 function setPetVisual(key, reaction, speech, temporary = true, duration = 1400) {
   clearTimeout(reactionTimer);
 
-  const stage = getCurrentStage();
-  updateGrowthChip();
-
   petImage.src = petImages[key];
-  reactionLabel.hidden = !reaction;
-  reactionLabel.textContent = reaction || "";
+  reactionLabel.textContent = reaction;
   petSpeech.textContent = speech;
   petImage.classList.remove("pop");
   void petImage.offsetWidth;
@@ -886,183 +814,34 @@ function setPetVisual(key, reaction, speech, temporary = true, duration = 1400) 
     reactionTimer = setTimeout(() => {
       petSparkles.classList.remove("show");
       petImage.classList.remove("pop");
-      setPetActionBadge("");
       showCurrentGrowth();
+      reactionLabel.textContent = i18n[currentLanguage].calm;
     }, duration);
   } else {
     setTimeout(() => petSparkles.classList.remove("show"), 700);
-    if (!reaction && stage) {
-      reactionLabel.hidden = false;
-      reactionLabel.textContent = getStageLabelForLanguage(stage);
-    }
+    reactionLabel.textContent = i18n[currentLanguage].calm;
   }
 }
-
 
 function showReaction(type) {
   const reactions = {
     de: {
-      eating: ["eating", "Frisst", "Lecker! Das schmeckt mir!", "🍽️"],
-      playing: ["playing", "Spielt", "Das macht Spaß! Noch einmal!", "⚽"],
-      sick: ["sick", "Krank", "Mir geht es nicht gut … Hilf mir bitte.", "🤒"],
-      healing: ["healing", "Besser!", "Mir geht es besser! Danke!", "💊"]
+      eating: ["eating", "Frisst", "Lecker! Das schmeckt mir!"],
+      playing: ["playing", "Spielt", "Das macht Spaß! Noch einmal!"],
+      sick: ["sick", "Krank", "Mir geht es nicht gut … Hilf mir bitte."],
+      healing: ["healing", "Besser!", "Mir geht es besser! Danke!"]
     },
     ru: {
-      eating: ["eating", "Ест", "Вкусно! Мне очень нравится!", "🍽️"],
-      playing: ["playing", "Играет", "Как весело! Ещё раз!", "⚽"],
-      sick: ["sick", "Болеет", "Мне нездоровится… Помоги мне.", "🤒"],
-      healing: ["healing", "Лучше!", "Мне уже лучше! Спасибо!", "💊"]
+      eating: ["eating", "Ест", "Вкусно! Мне очень нравится!"],
+      playing: ["playing", "Играет", "Как весело! Ещё раз!"],
+      sick: ["sick", "Болеет", "Мне нездоровится… Помоги мне."],
+      healing: ["healing", "Лучше!", "Мне уже лучше! Спасибо!"]
     }
   };
 
   const [imageKey, label, speech] = reactions[currentLanguage][type];
-  setPetActionBadge("");
   setPetVisual(imageKey, label, speech, true);
 }
-
-function showTaskReaction(action, taskIndex) {
-  const taskReactions = {
-    de: {
-      play: [
-        ["Spielt Fußball", "Toll! Ich kicke den Ball!"],
-        ["Hört Musik", "La-la! Ich höre Musik."],
-        ["Spielt Tennis", "Schau mal, ich spiele Tennis!"],
-        ["Liest", "Ich lese jetzt ein spannendes Buch!"],
-        ["Fotografiert", "Klick-klick! Ich fotografiere!"],
-        ["Im Kino", "Ich schaue einen Film!"]
-      ],
-      heal: [
-        ["Kopfschmerzen", "Mein Kopf tut weh …"],
-        ["Nimmt Medizin", "Die Medizin hilft mir."],
-        ["Ruht sich aus", "Ich bleibe im Bett und ruhe mich aus."],
-        ["Trinkt Tee", "Warmer Tee tut gut."],
-        ["Erholt sich", "Ich ruhe mich bei Fieber aus."],
-        ["Beim Arzt", "Der Arzt untersucht mich."]
-      ]
-    },
-    ru: {
-      play: [
-        ["Играет в футбол", "Ура! Я гоняю мяч!"],
-        ["Слушает музыку", "Ла-ла! Я слушаю музыку."],
-        ["Играет в теннис", "Смотри, я играю в теннис!"],
-        ["Читает книгу", "Я читаю интересную книгу!"],
-        ["Фотографирует", "Щёлк-щёлк! Я фотографирую!"],
-        ["Смотрит фильм", "Я смотрю фильм!"]
-      ],
-      heal: [
-        ["Голова болит", "Ой, у меня болит голова…"],
-        ["Принимает лекарство", "Лекарство помогает мне."],
-        ["Отдыхает", "Я отдыхаю в кроватке."],
-        ["Пьёт чай", "Тёплый чай меня согревает."],
-        ["Лечится", "Я отдыхаю и выздоравливаю."],
-        ["У врача", "Доктор меня осматривает."]
-      ]
-    }
-  };
-
-  const entry = taskReactions[currentLanguage]?.[action]?.[taskIndex];
-  const imagePath = taskSceneImages[action]?.[taskIndex];
-  if (!entry || !imagePath) {
-    showCurrentGrowth();
-    return;
-  }
-
-  clearTimeout(reactionTimer);
-  const [label, speech] = entry;
-  updateGrowthChip();
-  setPetActionBadge("");
-  petPicture.classList.add("task-scene");
-  petImage.src = imagePath;
-  reactionLabel.hidden = false;
-  reactionLabel.textContent = label;
-  petSpeech.textContent = speech;
-  petImage.classList.remove("pop");
-  void petImage.offsetWidth;
-  petImage.classList.add("pop");
-  petSparkles.classList.add("show");
-
-  reactionTimer = setTimeout(() => {
-    petSparkles.classList.remove("show");
-    petImage.classList.remove("pop");
-    showCurrentGrowth();
-  }, 1900);
-}
-
-function showFeedTaskReaction(taskIndex) {
-  const imagePath = taskSceneImages.feed[taskIndex];
-  if (!imagePath) {
-    showReaction("eating");
-    return;
-  }
-
-  const lines = currentLanguage === "de"
-    ? [
-        ["Obst", "Lecker! Obst ist eine gute Wahl."],
-        ["Trinkt Wasser", "Schluck, schluck! Wasser tut gut."],
-        ["Frühstück", "Brot mit Käse schmeckt mir!"],
-        ["Trinkt Tee", "Ja, gern! Ein warmer Tee."],
-        ["Obst", "Jetzt kenne ich Obst noch besser!"],
-        ["Bestellt Essen", "Die Bestellung ist da. Guten Appetit!"]
-      ]
-    : [
-        ["Фрукты", "Вкусно! Фрукты — хороший выбор."],
-        ["Пьёт воду", "Хлюп-хлюп! Вода очень нужна."],
-        ["Завтракает", "Хлеб с сыром — вкусно!"],
-        ["Пьёт чай", "Да, с удовольствием! Тёплый чай."],
-        ["Фрукты", "Теперь я ещё лучше знаю фрукты!"],
-        ["Получает заказ", "Заказ готов. Приятного аппетита!"]
-      ];
-
-  clearTimeout(reactionTimer);
-  const [label, speech] = lines[taskIndex];
-  updateGrowthChip();
-  setPetActionBadge("");
-  petPicture.classList.add("task-scene");
-  petImage.src = imagePath;
-  reactionLabel.hidden = false;
-  reactionLabel.textContent = label;
-  petSpeech.textContent = speech;
-  petImage.classList.remove("pop");
-  void petImage.offsetWidth;
-  petImage.classList.add("pop");
-  petSparkles.classList.add("show");
-
-  reactionTimer = setTimeout(() => {
-    petSparkles.classList.remove("show");
-    petImage.classList.remove("pop");
-    showCurrentGrowth();
-  }, 1900);
-}
-
-function showPetCloseup() {
-  stopEndingAudio();
-  const stage = getCurrentStage();
-  petCloseupImage.src = petImages[stage.key];
-  petCloseupTitle.textContent = currentLanguage === "de"
-    ? `${state.petName} ganz nah`
-    : `${state.petName} крупным планом`;
-  petCloseupText.textContent = currentLanguage === "de"
-    ? "Mrrr... Ich schnurre zufrieden und freue mich, dich zu sehen!"
-    : "Мурр... Я довольно мурлычу и рада тебя видеть!";
-  petCloseupClose.setAttribute("aria-label", currentLanguage === "de" ? "Schließen" : "Закрыть");
-  petCloseupModal.hidden = false;
-  document.body.classList.add("modal-open");
-  playEndingAudio("happy");
-  petCloseupClose.focus();
-}
-
-function closePetCloseup() {
-  if (!petCloseupModal || petCloseupModal.hidden) return;
-  petCloseupModal.hidden = true;
-  document.body.classList.remove("modal-open");
-  stopEndingAudio();
-}
-
-if (petCloseupClose) petCloseupClose.addEventListener("click", closePetCloseup);
-document.querySelectorAll("[data-close-pet-closeup]").forEach(el => el.addEventListener("click", closePetCloseup));
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape" && petCloseupModal && !petCloseupModal.hidden) closePetCloseup();
-});
 
 function openPanel(panel) {
   welcomePanel.hidden = panel !== "welcome";
@@ -1089,9 +868,7 @@ function openAction(action) {
         ? "Fooddy bewacht das Futter. Hilf mir, eine Portion zu bekommen!"
         : `Фудди хранит еду. Помоги ${ruName("dat")} получить порцию!`
     );
-    if (progress.feed) {
-      showFeedCompletedPanel();
-    } else if (feedCount === 0 && currentFeedTaskIndex === 0 && !codeSolved) {
+    if (!progress.feed && feedCount === 0 && currentFeedTaskIndex === 0 && !codeSolved) {
       startFooddyRound();
     }
     updateFeedStatus();
@@ -1227,7 +1004,6 @@ function checkGermanFeedAnswer(task, answer, clickedButton) {
   feedbackBox.textContent = `${task.success} ${i18n[currentLanguage].correctPortion(state.petName)}`;
   feedbackBox.className = "feedback ok";
 
-  const completedFeedTaskIndex = currentFeedTaskIndex;
   markTaskCorrect();
   feedCount++;
   currentFeedTaskIndex++;
@@ -1250,7 +1026,7 @@ function checkGermanFeedAnswer(task, answer, clickedButton) {
   dispenseFooddyPortion();
 
   setTimeout(() => {
-    showFeedTaskReaction(completedFeedTaskIndex);
+    showReaction("eating");
   }, 650);
 
   if (feedCount >= 6) {
@@ -1260,19 +1036,6 @@ function checkGermanFeedAnswer(task, answer, clickedButton) {
     // ребёнок выполняет оставшиеся задания подряд и за каждое получает порцию.
     setTimeout(showGermanFeedTask, 1700);
   }
-}
-
-function showFeedCompletedPanel() {
-  fooddyBox.hidden = true;
-  germanBox.hidden = false;
-  document.getElementById("germanTaskTitle").textContent = currentLanguage === "de" ? "GESCHAFFT!" : "ГОТОВО!";
-  document.getElementById("portionNumber").textContent = "6";
-  document.getElementById("germanQuestion").textContent = i18n[currentLanguage].feedComplete(state.petName);
-  document.getElementById("germanAnswers").innerHTML = "";
-  document.getElementById("germanFeedback").textContent = currentLanguage === "de"
-    ? "Der Fütterungsblock ist abgeschlossen. Als Nächstes leuchtet Spielen grün auf."
-    : "Блок кормления завершён. Следующим зелёным подсвечен блок «Поиграть».";
-  document.getElementById("germanFeedback").className = "feedback ok";
 }
 
 function finishFeedBlock() {
@@ -1286,9 +1049,13 @@ function finishFeedBlock() {
   updateGameProgress();
   updateLevel();
 
+  germanBox.hidden = true;
+  fooddyBox.hidden = false;
+  document.getElementById("fooddyMessage").textContent =
+    i18n[currentLanguage].feedComplete(state.petName);
+
   guessInput.disabled = true;
   guessBtn.disabled = true;
-  showFeedCompletedPanel();
   showBlockGrowth("feed");
   checkWholeGameFinished();
 }
@@ -1337,7 +1104,7 @@ function showSeriesTask(action) {
   updateSeriesProgress(action);
 
   if (progress[action]) {
-    document.getElementById("seriesTaskTitle").textContent = currentLanguage === "de" ? "GESCHAFFT!" : "ГОТОВО!";
+    document.getElementById("seriesTaskTitle").textContent = "Geschafft!";
     document.getElementById("seriesTaskNumber").textContent = "6";
     document.getElementById("seriesQuestion").textContent =
       action === "play"
@@ -1399,14 +1166,15 @@ function checkSeriesAnswer(action, task, answer, clickedButton) {
     state.energy -= 5;
     state.coins += 1;
     state.experience += 5;
+    showReaction("playing");
   } else {
     state.health += 5;
     state.mood += 2;
     state.coins += 1;
     state.experience += 5;
+    showReaction("healing");
   }
 
-  showTaskReaction(action, seriesIndex[action]);
   seriesIndex[action]++;
   updateLevel();
   clampStats();
@@ -1429,8 +1197,9 @@ function checkSeriesAnswer(action, task, answer, clickedButton) {
     setTimeout(() => showSeriesTask(action), 1500);
   } else {
     setTimeout(() => {
+      if (action === "heal") showReaction("sick");
       showSeriesTask(action);
-    }, 1700);
+    }, 1500);
   }
 }
 
@@ -1445,25 +1214,11 @@ function updateSeriesProgress(action) {
 }
 
 /* ---------- ОБЩЕЕ ---------- */
-function updateActionFlow() {
-  const order = ["feed", "play", "heal"];
-  const nextAction = !progress.feed ? "feed" : !progress.play ? "play" : !progress.heal ? "heal" : null;
-
-  document.querySelectorAll(".action-btn").forEach(button => {
-    const action = button.dataset.mainAction;
-    button.classList.toggle("done-block", !!progress[action]);
-    button.classList.toggle("next-action", nextAction === action && !progress[action]);
-  });
-
-  document.querySelectorAll("#gameProgressSteps .step").forEach((step, i) => {
-    const action = order[i];
-    step.classList.toggle("done", progress[action]);
-    step.classList.toggle("next-action", nextAction === action && !progress[action]);
-  });
-}
-
 function updateGameProgress() {
+  const order = ["feed","play","heal"];
   const totalTasks = 18;
+  // За каждое правильно выполненное задание начисляется 5 опыта.
+  // Поэтому общий прогресс всегда синхронизирован с реальным числом завершённых заданий.
   const completedTasks = Math.min(totalTasks, Math.floor(state.experience / 5));
   const percent = Math.round((completedTasks / totalTasks) * 100);
 
@@ -1475,7 +1230,9 @@ function updateGameProgress() {
     fillNode.setAttribute("aria-valuenow", String(percent));
   }
 
-  updateActionFlow();
+  document.querySelectorAll("#gameProgressSteps .step").forEach((step, i) => {
+    step.classList.toggle("done", progress[order[i]]);
+  });
 }
 
 function checkWholeGameFinished() {
@@ -1549,7 +1306,6 @@ function renderStats() {
   });
 
   document.getElementById("level").textContent = state.level;
-  updateGrowthChip();
 
   previousRenderedState = {
     health: state.health,

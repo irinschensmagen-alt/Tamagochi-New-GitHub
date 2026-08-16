@@ -116,7 +116,7 @@
       <aside class="pet-stage">
         <div class="pet-stage-top">
           <span class="stage-chip" id="growthLabel">Baby</span>
-          <span class="reaction-chip" id="reactionLabel">Ruhig</span>
+          <span class="reaction-chip" id="reactionLabel" hidden></span>
         </div>
 
         <div class="pet-picture">
@@ -178,7 +178,7 @@
                 <p class="task-topic" id="fooddyStepLabel">🤖 Schritt 1. Robo-Futterautomat Fooddy</p>
                 <h3 id="fooddyTitle">Errate den Geheimcode</h3>
               </div>
-              <strong class="round-badge"><span id="roundLabel">Zugangscode</span> <span id="roundNumber">1</span> / 1</strong>
+              <strong class="round-badge"><span id="roundLabel">Runde</span> <span id="roundNumber">1</span> / 6</strong>
             </div>
 
             <p id="fooddyMessage" class="fooddy-message">Fooddy: „Piep-piep! Ich habe einen Code von 1 bis 100 versteckt.“</p>
@@ -275,6 +275,18 @@
           <p class="fooddy-modal-message" id="fooddyModalMessage"></p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="pet-closeup-modal" id="petCloseupModal" hidden role="dialog" aria-modal="true" aria-labelledby="petCloseupTitle">
+    <div class="pet-closeup-backdrop" data-close-pet-closeup></div>
+    <div class="pet-closeup-card">
+      <button class="pet-closeup-close" id="petCloseupClose" type="button" aria-label="Закрыть">×</button>
+      <h2 id="petCloseupTitle">Tamagotchi</h2>
+      <div class="pet-closeup-image-wrap">
+        <img id="petCloseupImage" src="assets/images/tamagotchi_adult.png" alt="Tamagotchi">
+      </div>
+      <p id="petCloseupText"></p>
     </div>
   </div>
 
