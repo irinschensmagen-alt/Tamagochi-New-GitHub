@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tamagotchi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <section class="birth-screen" id="birthScreen">
+    <div class="birth-card">
+      <div class="birth-visual" id="birthVisual">
+        <img id="birthImage" src="assets/images/tamagotchi_egg.png" alt="Kosmisches Ei">
+        <div class="egg-cracks" id="eggCracks" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="shell-shards" id="shellShards" aria-hidden="true">
+          <b></b><b></b><b></b><b></b><b></b><b></b>
+        </div>
+      </div>
+      <div class="birth-copy">
+        <div class="language-switch birth-language-switch">
+          <button type="button" class="lang-btn active" data-lang="de">DE</button>
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+        </div>
+        <p class="eyebrow">Tamagotchi</p>
+        <h1 id="birthTitle">Kosmisches Ei</h1>
+        <p id="birthText">Da ist jemand drin … Gib deinem Tamagotchi einen Namen.</p>
+
+        <div class="birth-controls" id="birthControls">
+          <input id="petName" type="text" maxlength="20" placeholder="Name" value="">
+          <button id="startBtn" class="primary">Das Ei wecken</button>
+        </div>
+
+        <button id="birthContinueBtn" class="primary birth-continue" hidden>
+          Weiter
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <main class="game-shell" id="gameShell" hidden>
+
+    <header class="topbar">
+      <div class="mini-avatar">
+        <img id="miniPetImage" src="assets/images/tamagotchi_baby.png" alt="Tamagotchi">
+      </div>
+
+      <div class="title-block">
+        <p class="eyebrow" id="demoLabel">Demo-Webversion</p>
+        <h1>Tamagotchi</h1>
+        <p id="welcomeText">Dein Tamagotchi ist geboren!</p>
+      </div>
+
+      <div class="top-controls">
+        <div class="language-switch">
+          <button type="button" class="lang-btn active" data-lang="de">DE</button>
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+        </div>
+
+        <div class="level-badge">
+          <span id="levelLabel">🏆 Level</span>
+          <strong id="level">1</strong>
+        </div>
+      </div>
+    </header>
+
+    <section class="game-progress-panel">
+      <div class="game-progress-head">
+        <div>
+          <p class="eyebrow" id="overallProgressLabel">Gesamtfortschritt</p>
+          <h2 class="compact-title" id="careTitle">Für dein Tamagotchi sorgen</h2>
+        </div>
+        <strong class="game-progress-percent" id="gameProgressPercent">0%</strong>
+      </div>
+
+      <div class="progress-track main-track">
+        <div class="progress-fill main-fill" id="gameProgressFill"></div>
+      </div>
+
+      <div class="game-steps" id="gameProgressSteps">
+        <button class="step" type="button" data-main-action="feed">
+          <span class="step-dot"></span><small id="stepFeedLabel">🍎 Füttern</small>
+        </button>
+        <button class="step" type="button" data-main-action="play">
+          <span class="step-dot"></span><small id="stepPlayLabel">🎮 Spielen</small>
+        </button>
+        <button class="step" type="button" data-main-action="heal">
+          <span class="step-dot"></span><small id="stepHealLabel">💊 Gesundheit</small>
+        </button>
+      </div>
+    </section>
+
+    <section class="stats-panel">
+      <div class="stats-grid">
+        <div class="stat" data-stat="health"><span>❤️</span><strong id="healthLabel">Gesundheit</strong><b id="health">70</b></div>
+        <div class="stat" data-stat="hunger"><span>🍎</span><strong id="hungerLabel">Hunger</strong><b id="hunger">60</b></div>
+        <div class="stat" data-stat="mood"><span>😊</span><strong id="moodLabel">Stimmung</strong><b id="mood">55</b></div>
+        <div class="stat" data-stat="energy"><span>⚡</span><strong id="energyLabel">Energie</strong><b id="energy">100</b></div>
+        <div class="stat" data-stat="coins"><span>💰</span><strong id="coinsLabel">Münzen</strong><b id="coins">0</b></div>
+        <div class="stat" data-stat="experience"><span>⭐</span><strong id="experienceLabel">Erfahrung</strong><b id="experience">0</b></div>
+      </div>
+    </section>
+
+    <section class="actions-panel">
+      <button class="action-btn" data-main-action="feed" id="feedButton">🍎 Füttern</button>
+      <button class="action-btn" data-main-action="play" id="playButton">🎮 Spielen</button>
+      <button class="action-btn" data-main-action="heal" id="healButton">💊 Heilen</button>
+    </section>
+
+    <section class="content-zone">
+
+      <aside class="pet-stage">
+        <div class="pet-stage-top">
+          <span class="stage-chip" id="growthLabel">Baby</span>
+          <span class="reaction-chip" id="reactionLabel">Ruhig</span>
+        </div>
+
+        <div class="pet-picture">
+          <img id="petImage" src="assets/images/tamagotchi_baby.png" alt="Tamagotchi">
+          <div class="pet-sparkles" id="petSparkles">✨</div>
+        </div>
+
+        <div class="pet-speech" id="petSpeech">
+          Miau!
+        </div>
+      </aside>
+
+      <section class="task-stage">
+
+        <div class="welcome-panel compact-welcome" id="welcomePanel">
+          <div class="welcome-icon">🐾</div>
+          <div>
+            <h2 id="welcomeActionTitle">Wähle eine Aktion</h2>
+            <p id="welcomeActionText">Wähle eine Aktion für dein Tamagotchi.</p>
+          </div>
+        </div>
+
+        <div id="feedArea" hidden>
+          <div class="section-heading">
+            <div>
+              <p class="task-topic">🍎 Essen und Trinken</p>
+              <h2 id="feedTitle">Füttern</h2>
+            </div>
+            <span class="status-badge" id="feedStatus">Nicht erledigt</span>
+          </div>
+
+          <div class="progress-wrap feed-progress-wrap">
+            <div class="progress-label-row">
+              <span id="satietyLabel">Sättigung</span>
+              <strong><span id="feedCount">0</span> / 6</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill fooddy-fill" id="feedProgress"></div>
+            </div>
+            <div class="progress-dots" id="feedDots">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <div class="fooddy-box" id="fooddyBox">
+            <div class="fooddy-layout">
+              <div class="fooddy-visual">
+                <img src="assets/images/fooddy_feeder.png" alt="Robo-Futterautomat Fooddy">
+                <div class="food-pellets" id="foodPellets" aria-hidden="true">
+                  <span>●</span><span>●</span><span>●</span><span>●</span><span>●</span>
+                </div>
+                <div class="fooddy-dispense-label" id="fooddyDispenseLabel">Fooddy ist bereit</div>
+              </div>
+
+              <div class="fooddy-content">
+            <div class="fooddy-heading">
+              <div>
+                <p class="task-topic" id="fooddyStepLabel">🤖 Schritt 1. Robo-Futterautomat Fooddy</p>
+                <h3 id="fooddyTitle">Errate den Geheimcode</h3>
+              </div>
+              <strong class="round-badge"><span id="roundLabel">Runde</span> <span id="roundNumber">1</span> / 6</strong>
+            </div>
+
+            <p id="fooddyMessage" class="fooddy-message">Fooddy: „Piep-piep! Ich habe einen Code von 1 bis 100 versteckt.“</p>
+
+            <div class="guess-row">
+              <input id="guessInput" type="number" min="1" max="100" placeholder="Zahl von 1 bis 100 eingeben">
+              <button id="guessBtn" class="primary">Code prüfen</button>
+            </div>
+
+            <div class="attempt-line">
+              <span id="attemptsLabel">Gültige Versuche:</span> <strong id="attempts">0</strong>
+            </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="german-box" id="germanBox" hidden>
+            <div class="fooddy-heading">
+              <div>
+                <p class="task-topic" id="deStepLabel">🇩🇪 Schritt 2. Deutsch</p>
+                <h3 id="germanTaskTitle">AUFGABE 1</h3>
+              </div>
+              <strong class="round-badge"><span id="portionLabel">Portion</span> <span id="portionNumber">1</span> / 6</strong>
+            </div>
+            <p class="task-question" id="germanQuestion"></p>
+            <div class="answers" id="germanAnswers"></div>
+            <div class="feedback" id="germanFeedback"></div>
+          </div>
+        </div>
+
+        <div id="seriesArea" hidden>
+          <div class="section-heading">
+            <div>
+              <p class="task-topic" id="seriesTopic"></p>
+              <h2 id="seriesTitle"></h2>
+            </div>
+            <span class="status-badge" id="seriesStatus">Nicht erledigt</span>
+          </div>
+
+          <div class="progress-wrap series-progress-wrap">
+            <div class="progress-label-row">
+              <span id="seriesProgressLabel">Fortschritt</span>
+              <strong><span id="seriesCount">0</span> / 6</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill series-fill" id="seriesProgress"></div>
+            </div>
+            <div class="progress-dots" id="seriesDots">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <div class="german-box">
+            <div class="fooddy-heading">
+              <div>
+                <p class="task-topic">🇩🇪 Deutsch</p>
+                <h3 id="seriesTaskTitle">AUFGABE 1</h3>
+              </div>
+              <strong class="round-badge"><span id="taskNumberLabel">Aufgabe</span> <span id="seriesTaskNumber">1</span> / 6</strong>
+            </div>
+            <p class="task-question" id="seriesQuestion"></p>
+            <div class="answers" id="seriesAnswers"></div>
+            <div class="feedback" id="seriesFeedback"></div>
+          </div>
+        </div>
+
+        <div id="finishArea" hidden>
+          <div class="finish-box">
+            <div class="finish-icon">🏆</div>
+            <h2 id="finishTitle">Demo geschafft!</h2>
+            <p id="finishText"></p>
+            <button id="continueBtn" class="primary">Tamagotchi ansehen</button>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
