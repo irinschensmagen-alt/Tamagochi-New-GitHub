@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Unbounded:wght@700;800;900&display=swap");
+
 * { box-sizing: border-box; }
 
 :root {
@@ -1999,4 +2001,106 @@ body{
   25% { transform: translateY(1px) rotate(-1deg); }
   50% { transform: translateY(2px) rotate(1deg); }
   75% { transform: translateY(1px) rotate(-1deg); }
+}
+
+
+/* ===== FINAL PATCH: typography, RU language purity, game controls, 50% sleep ending ===== */
+:root, body, input {
+  font-family: "Rubik", system-ui, sans-serif !important;
+}
+h1, h2, h3, .primary, .secondary-btn, .action-btn, .answer-btn, .status-badge, .round-badge, .level-badge {
+  font-family: "Rubik", system-ui, sans-serif !important;
+}
+.finish-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.finish-actions .primary, .secondary-btn {
+  min-width: 180px;
+  min-height: 46px;
+  border-radius: 14px;
+  padding: 10px 18px;
+  font-weight: 900;
+}
+.secondary-btn {
+  border: 2px solid #bca6ff;
+  background: linear-gradient(180deg,#fff,#f4efff);
+  color: #5f49b7;
+  cursor: pointer;
+}
+.secondary-btn:hover {
+  box-shadow: 0 7px 18px rgba(99,74,173,.14);
+  transform: translateY(-1px);
+}
+.pet-picture.final-sleep {
+  overflow: visible !important;
+}
+.pet-picture.final-sleep img {
+  animation: eggSleep 2.8s ease-in-out infinite;
+}
+.pet-picture.final-sleep::after {
+  content: "Zzz";
+  position: absolute;
+  right: 22px;
+  top: 24px;
+  font-family: "Rubik", system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: #765be0;
+  animation: zzzFloat 2s ease-in-out infinite;
+}
+@keyframes eggSleep {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(3px) scale(.99); }
+}
+@keyframes zzzFloat {
+  0%,100% { opacity: .55; transform: translateY(4px); }
+  50% { opacity: 1; transform: translateY(-4px); }
+}
+/* Play/heal: the third answer must remain visible without changing the rest of the layout. */
+#seriesArea {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-gutter: stable;
+}
+#seriesArea .german-box {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: max-content !important;
+}
+#seriesArea .answers {
+  padding-bottom: 8px !important;
+}
+@media (min-width: 900px) and (max-height: 820px) {
+  #seriesArea .task-question { margin: 5px 0 7px !important; font-size: 18px !important; }
+  #seriesArea .answer-btn { min-height: 34px !important; padding: 6px 10px !important; font-size: 15px !important; }
+  #seriesArea .answers { gap: 5px !important; }
+}
+
+/* Two-font rule: Rubik + Unbounded only */
+.title-block h1, .birth-copy .eyebrow { font-family: "Unbounded", "Rubik", system-ui, sans-serif !important; }
+
+
+/* ===== FINAL PATCH: early game exit ===== */
+.early-end-btn {
+  min-height: 42px;
+  padding: 8px 14px;
+  border: 2px solid #d3c1ff;
+  border-radius: 14px;
+  background: linear-gradient(180deg,#fff,#f7f2ff);
+  color: #6450b7;
+  font-family: "Rubik", system-ui, sans-serif;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.early-end-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(99,74,173,.14);
+}
+@media (max-width: 980px) {
+  .early-end-btn { padding: 7px 10px; font-size: 13px; }
 }

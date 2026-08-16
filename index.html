@@ -59,6 +59,8 @@
           <button type="button" class="lang-btn" data-lang="ru">RU</button>
         </div>
 
+        <button id="earlyEndBtn" class="early-end-btn" type="button">Spiel beenden</button>
+
         <div class="level-badge">
           <span id="levelLabel">🏆 Stufe</span>
           <strong id="level">1</strong>
@@ -140,7 +142,7 @@
         <div id="feedArea" hidden>
           <div class="section-heading">
             <div>
-              <p class="task-topic">🍎 Essen und Trinken</p>
+              <p class="task-topic" id="feedTopic">🍎 Essen und Trinken</p>
               <h2 id="feedTitle">Füttern</h2>
             </div>
             <span class="status-badge" id="feedStatus">Nicht erledigt</span>
@@ -232,7 +234,7 @@
           <div class="german-box">
             <div class="fooddy-heading">
               <div>
-                <p class="task-topic">🇩🇪 Deutsch</p>
+                <p class="task-topic" id="seriesLanguageLabel">🇩🇪 Deutsch</p>
                 <h3 id="seriesTaskTitle">AUFGABE 1</h3>
               </div>
               <strong class="round-badge"><span id="taskNumberLabel">Aufgabe</span> <span id="seriesTaskNumber">1</span> / 6</strong>
@@ -249,6 +251,10 @@
             <h2 id="finishTitle">Geschafft!</h2>
             <p id="finishText"></p>
             <button id="continueBtn" class="primary">Tamagotchi ansehen</button>
+            <div class="finish-actions">
+              <button id="playAgainBtn" class="primary" type="button">Spielen</button>
+              <button id="endGameBtn" class="secondary-btn" type="button">Spiel beenden</button>
+            </div>
           </div>
         </div>
       </section>
