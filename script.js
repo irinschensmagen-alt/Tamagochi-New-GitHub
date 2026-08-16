@@ -59,14 +59,14 @@ const i18n = {
     fooddyDispensing: "Fooddy gibt eine Portion aus!",
     fooddyDispensed: "Portion ausgegeben ✓",
     codePrompt: n => `Fooddy: „Piep-piep! Code Nr. ${n} ist versteckt. Errate eine Zahl von 1 bis 100!“`,
-    invalidNumber: i18n[currentLanguage].invalidNumber,
-    tooLow: i18n[currentLanguage].tooLow,
-    tooHigh: i18n[currentLanguage].tooHigh,
-    codeCorrect: i18n[currentLanguage].codeCorrect,
-    wrong: i18n[currentLanguage].wrong,
+    invalidNumber: "Fooddy: „Piep-piep! Gib eine ganze Zahl von 1 bis 100 ein.“",
+    tooLow: "Fooddy: „Zu klein! Mein Code ist GRÖSSER!“",
+    tooHigh: "Fooddy: „Zu groß! Mein Code ist KLEINER!“",
+    codeCorrect: "Fooddy: „Super! Der Code stimmt. Jetzt löse die Aufgabe!“",
+    wrong: "Leider falsch. Versuch es noch einmal.",
     correctPortion: name => `${name} bekommt eine Portion Futter!`,
     hungerChanged: value => `Richtig! Fooddy gibt eine Portion aus. Hunger: ${value}.`,
-    fullyFed: i18n[currentLanguage].fullyFed,
+    fullyFed: "Ich bin satt! Danke!",
     feedComplete: name => `Geschafft! ${name} hat alle 6 Portionen bekommen.`,
     playTopic: "🎮 Hobbys und Freizeit",
     healTopic: "💊 Gesundheit",
@@ -401,7 +401,11 @@ function enterGameAfterBirth() {
 
   renderStats();
   updateGameProgress();
-  showCurrentGrowth(`Miau! Ich bin ${state.petName}. Kümmere dich um mich!`);
+  showCurrentGrowth(
+    currentLanguage === "de"
+      ? `Miau! Ich bin ${state.petName}. Kümmere dich um mich!`
+      : `Мяу! Я ${state.petName}. Позаботься обо мне!`
+  );
 }
 
 function getGrowthStage() {
@@ -414,7 +418,7 @@ function getGrowthStage() {
 
 function showCurrentGrowth(message = null) {
   const stage = getGrowthStage();
-  setPetVisual(stage.key, stage.label, message || defaultGrowthSpeech(stage.key), false);
+  setPetVisual(stage.key, stage[currentLanguage], message || defaultGrowthSpeech(stage.key), false);
   miniPetImage.src = petImages[stage.key];
 }
 
@@ -499,7 +503,11 @@ function openAction(action) {
 
   if (action === "feed") {
     openPanel("feed");
-    showCurrentGrowth("Fooddy bewacht das Futter. Hilf mir, eine Portion zu bekommen!");
+    showCurrentGrowth(
+      currentLanguage === "de"
+        ? "Fooddy bewacht das Futter. Hilf mir, eine Portion zu bekommen!"
+        : "Фудди хранит еду. Помоги мне получить порцию!"
+    );
     if (!progress.feed && feedCount === 0 && currentFeedTaskIndex === 0 && !codeSolved) {
       startFooddyRound();
     }
@@ -514,7 +522,11 @@ function openAction(action) {
   if (action === "heal" && !progress.heal) {
     showReaction("sick");
   } else {
-    showCurrentGrowth(action === "play" ? "Spielen wir? Ich bin bereit!" : "Danke, mir geht es schon besser!");
+    showCurrentGrowth(
+      action === "play"
+        ? (currentLanguage === "de" ? "Spielen wir? Ich bin bereit!" : "Поиграем? Я готова!")
+        : (currentLanguage === "de" ? "Danke, mir geht es schon besser!" : "Спасибо, мне уже лучше!")
+    );
   }
 
   showSeriesTask(action);
@@ -861,7 +873,7 @@ function updateLevel() {
     previousLevel = newLevel;
     setTimeout(() => {
       const stage = getGrowthStage();
-      setPetVisual(stage.key, "Ich bin gewachsen!", `Hurra! Jetzt bin ich: ${stage.label}!`, true, 1800);
+      setPetVisual(stage.key, "Ich bin gewachsen!", currentLanguage === "de" ? `Hurra! Jetzt bin ich: ${stage.de}!` : `Ура! Теперь я — ${stage.ru}!`, true, 1800);
       miniPetImage.src = petImages[stage.key];
     }, 250);
   }
