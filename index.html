@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tamagotchi Deutsch — Anfisa</title>
+  <title>Tamagotchi</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,17 +16,17 @@
           <button type="button" class="lang-btn active" data-lang="de">DE</button>
           <button type="button" class="lang-btn" data-lang="ru">RU</button>
         </div>
-        <p class="eyebrow">Tamagotchi Deutsch</p>
+        <p class="eyebrow">Tamagotchi</p>
         <h1 id="birthTitle">Kosmisches Ei</h1>
         <p id="birthText">Da ist jemand drin … Gib deinem Tamagotchi einen Namen.</p>
 
         <div class="birth-controls" id="birthControls">
-          <input id="petName" type="text" maxlength="20" placeholder="Anfisa" value="Anfisa">
+          <input id="petName" type="text" maxlength="20" placeholder="Name" value="">
           <button id="startBtn" class="primary">Das Ei wecken</button>
         </div>
 
         <button id="birthContinueBtn" class="primary birth-continue" hidden>
-          Anfisa kennenlernen
+          Weiter
         </button>
       </div>
     </div>
@@ -36,13 +36,13 @@
 
     <header class="topbar">
       <div class="mini-avatar">
-        <img id="miniPetImage" src="assets/images/anfisa_baby.png" alt="Anfisa">
+        <img id="miniPetImage" src="assets/images/anfisa_baby.png" alt="Tamagotchi">
       </div>
 
       <div class="title-block">
         <p class="eyebrow" id="demoLabel">Demo-Webversion</p>
-        <h1>Tamagotchi Deutsch</h1>
-        <p id="welcomeText">Anfisa ist geboren! Kümmere dich um sie und löse die Aufgaben.</p>
+        <h1>Tamagotchi</h1>
+        <p id="welcomeText">Dein Tamagotchi ist geboren!</p>
       </div>
 
       <div class="top-controls">
@@ -62,7 +62,7 @@
       <div class="game-progress-head">
         <div>
           <p class="eyebrow" id="overallProgressLabel">Gesamtfortschritt</p>
-          <h2 class="compact-title" id="careTitle">Für Anfisa sorgen</h2>
+          <h2 class="compact-title" id="careTitle">Für dein Tamagotchi sorgen</h2>
         </div>
         <strong class="game-progress-percent" id="gameProgressPercent">0%</strong>
       </div>
@@ -110,12 +110,12 @@
         </div>
 
         <div class="pet-picture">
-          <img id="petImage" src="assets/images/anfisa_baby.png" alt="Anfisa">
+          <img id="petImage" src="assets/images/anfisa_baby.png" alt="Tamagotchi">
           <div class="pet-sparkles" id="petSparkles">✨</div>
         </div>
 
         <div class="pet-speech" id="petSpeech">
-          Miau! Ich bin Anfisa. Kümmere dich um mich!
+          Miau!
         </div>
       </aside>
 
@@ -125,7 +125,7 @@
           <div class="welcome-icon">🐾</div>
           <div>
             <h2 id="welcomeActionTitle">Wähle eine Aktion</h2>
-            <p id="welcomeActionText">Füttere Anfisa, spiele mit ihr oder hilf ihr, wieder gesund zu werden.</p>
+            <p id="welcomeActionText">Wähle eine Aktion für dein Tamagotchi.</p>
           </div>
         </div>
 
@@ -133,7 +133,7 @@
           <div class="section-heading">
             <div>
               <p class="task-topic">🍎 Essen und Trinken</p>
-              <h2 id="feedTitle">Füttere Anfisa</h2>
+              <h2 id="feedTitle">Füttern</h2>
             </div>
             <span class="status-badge" id="feedStatus">Nicht erledigt</span>
           </div>
@@ -239,7 +239,7 @@
             <div class="finish-icon">🏆</div>
             <h2 id="finishTitle">Demo geschafft!</h2>
             <p id="finishText"></p>
-            <button id="continueBtn" class="primary">Anfisa ansehen</button>
+            <button id="continueBtn" class="primary">Tamagotchi ansehen</button>
           </div>
         </div>
       </section>

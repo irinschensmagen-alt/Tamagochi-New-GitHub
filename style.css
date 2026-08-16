@@ -58,7 +58,6 @@ button { cursor: pointer; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 38%;
 }
 
 .birth-copy {
@@ -1084,3 +1083,149 @@ h3 { margin: 0; font-size: 19px; }
     justify-content: center;
   }
 }
+
+
+/* ===== v11: compact layout, full birth image, no demo label, single progress ===== */
+.birth-card > img {
+  object-fit: contain !important;
+  object-position: center center !important;
+  background: radial-gradient(circle at 50% 45%, rgba(138,102,255,.18), transparent 40%), #12133a;
+  padding: 16px;
+}
+
+#demoLabel { display: none !important; }
+
+.topbar {
+  padding: 6px 12px !important;
+}
+
+.game-shell {
+  grid-template-rows: 70px 54px 56px 52px minmax(0, 1fr) !important;
+  gap: 5px !important;
+}
+
+.title-block h1 {
+  font-size: clamp(22px, 2vw, 30px) !important;
+}
+
+.title-block p:last-child {
+  font-size: 12px !important;
+}
+
+.game-progress-panel {
+  padding: 6px 12px !important;
+}
+
+.game-progress-head {
+  margin-bottom: 4px !important;
+}
+
+.compact-title { font-size: 16px !important; }
+.game-progress-head .eyebrow { font-size: 11px !important; }
+.game-progress-percent { font-size: 18px !important; }
+.progress-track.main-track { height: 8px !important; background: #edf1f8; box-shadow: inset 0 0 0 1px #e2e7f0; }
+.progress-fill.main-fill { box-shadow: 0 0 12px rgba(122,119,255,.28); }
+.game-steps { display: none !important; }
+
+.stats-panel { padding: 6px 8px !important; }
+.stat { padding: 5px 8px !important; }
+.stat strong { font-size: 12px !important; }
+.stat b { font-size: 14px !important; }
+
+.actions-panel { padding: 5px !important; }
+.action-btn { font-size: 15px; }
+
+.content-zone { gap: 6px !important; }
+.pet-stage, .task-stage { padding: 8px 10px !important; }
+
+.pet-stage {
+  grid-template-rows: 32px minmax(0, 1fr) 64px !important;
+}
+
+.pet-picture {
+  background: linear-gradient(180deg, #faf6ff, #f6f1ff) !important;
+}
+
+.pet-picture > img#petImage {
+  max-width: 74% !important;
+  max-height: 74% !important;
+  animation: petIdle 3.2s ease-in-out infinite;
+}
+
+@keyframes petIdle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.pet-picture > img#petImage.pop {
+  animation: petPop .5s ease, petIdle 3.2s ease-in-out .5s infinite;
+}
+
+@keyframes petPop {
+  0% { transform: scale(.98); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.pet-speech {
+  height: 64px !important;
+  min-height: 64px !important;
+  max-height: 64px !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+}
+
+.compact-welcome {
+  min-height: 68px !important;
+  padding: 10px 14px !important;
+}
+.compact-welcome .welcome-icon { font-size: 28px !important; }
+.compact-welcome h2 { font-size: 19px !important; }
+.compact-welcome p { font-size: 13px !important; }
+
+.feed-progress-wrap, .series-progress-wrap {
+  display: none !important;
+}
+
+#feedArea, #seriesArea, #finishArea {
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+.section-heading h2 { font-size: 20px !important; margin-bottom: 4px !important; }
+h3 { font-size: 17px !important; }
+.status-badge, .round-badge { padding: 5px 8px !important; font-size: 11px !important; }
+
+.fooddy-layout {
+  grid-template-columns: 185px minmax(0, 1fr) !important;
+  gap: 10px !important;
+}
+.fooddy-visual, .fooddy-visual img { min-height: 150px !important; }
+.fooddy-content { align-content: start !important; }
+.fooddy-message { margin: 6px 0 !important; padding: 7px 9px !important; font-size: 13px !important; }
+.guess-row input { padding: 8px 10px !important; }
+.attempt-line { margin-top: 4px !important; font-size: 12px !important; }
+
+.task-question {
+  margin: 6px 0 !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+}
+.answers { gap: 4px !important; }
+.answer-btn {
+  min-height: 30px !important;
+  padding: 6px 9px !important;
+  font-size: 14px !important;
+}
+.feedback { margin-top: 4px !important; font-size: 12px !important; min-height: 18px !important; }
+
+@media (min-width: 900px) and (max-height: 900px) {
+  .game-shell {
+    grid-template-rows: 68px 52px 54px 50px minmax(0, 1fr) !important;
+  }
+  .fooddy-layout { grid-template-columns: 165px minmax(0, 1fr) !important; }
+  .fooddy-visual, .fooddy-visual img { min-height: 132px !important; }
+  .pet-picture > img#petImage { max-width: 68% !important; max-height: 68% !important; }
+  .pet-speech { height: 60px !important; min-height: 60px !important; max-height: 60px !important; }
+}
+\n\n/* ===== v12: player chooses the pet name ===== */\n.birth-controls input.name-error {\n  border-color: #ef6680 !important;\n  box-shadow: 0 0 0 4px rgba(239,102,128,.16) !important;\n  animation: nameShake .28s ease-in-out 2;\n}\n\n@keyframes nameShake {\n  0%, 100% { transform: translateX(0); }\n  25% { transform: translateX(-5px); }\n  75% { transform: translateX(5px); }\n}\n

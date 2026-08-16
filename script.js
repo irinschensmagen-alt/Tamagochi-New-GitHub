@@ -1,5 +1,5 @@
 const state = {
-  petName: "Anfisa",
+  petName: "",
   health: 70,
   hunger: 60,
   mood: 55,
@@ -15,10 +15,12 @@ let currentLanguage = "de";
 
 const i18n = {
   de: {
-    demoLabel: "Demo-Webversion",
+    demoLabel: "",
+    namePlaceholder: "Name des Tamagotchis",
+    nameRequired: "Bitte gib deinem Tamagotchi zuerst einen Namen.",
     levelLabel: "🏆 Level",
     overallProgressLabel: "Gesamtfortschritt",
-    careTitle: "Für Anfisa sorgen",
+    careTitle: "Für dein Tamagotchi sorgen",
     stepFeedLabel: "🍎 Füttern",
     stepPlayLabel: "🎮 Spielen",
     stepHealLabel: "💊 Gesundheit",
@@ -32,8 +34,8 @@ const i18n = {
     playButton: "🎮 Spielen",
     healButton: "💊 Heilen",
     welcomeActionTitle: "Wähle eine Aktion",
-    welcomeActionText: "Füttere Anfisa, spiele mit ihr oder hilf ihr, wieder gesund zu werden.",
-    feedTitle: "Füttere Anfisa",
+    welcomeActionText: "Wähle eine Aktion für dein Tamagotchi.",
+    feedTitle: "Füttern",
     satietyLabel: "Sättigung",
     fooddyStepLabel: "🤖 Schritt 1. Robo-Futterautomat Fooddy",
     fooddyTitle: "Errate den Geheimcode",
@@ -44,13 +46,13 @@ const i18n = {
     taskNumberLabel: "Aufgabe",
     finishTitle: "Demo geschafft!",
     startBtn: "Das Ei wecken",
-    birthContinueBtn: "Anfisa kennenlernen",
+    birthContinueBtn: "Weiter",
     birthTitleEgg: "Kosmisches Ei",
     birthTextEgg: "Da ist jemand drin … Gib deinem Tamagotchi einen Namen.",
     birthTitleWake: "Das Ei wacht auf …",
     birthTextWake: "Das Neonlicht wird heller. Schau genau hin!",
     birthBorn: name => `${name} ist geboren!`,
-    birthBornText: "Da ist sie – die neugeborene Anfisa! Schau sie dir in Ruhe an und klicke weiter, wenn du bereit bist.",
+    birthBornText: name => `Da ist sie – die neugeborene ${name}! Schau sie dir in Ruhe an und klicke weiter, wenn du bereit bist.`,
     welcomeText: name => `${name} ist geboren! Löse Aufgaben und kümmere dich um dein Tamagotchi.`,
     statusDone: "Erledigt",
     statusNotDone: "Nicht erledigt",
@@ -70,19 +72,21 @@ const i18n = {
     feedComplete: name => `Geschafft! ${name} hat alle 6 Portionen bekommen.`,
     playTopic: "🎮 Hobbys und Freizeit",
     healTopic: "💊 Gesundheit",
-    playTitle: "Spiele mit Anfisa",
-    healTitle: "Hilf Anfisa, wieder gesund zu werden",
+    playTitle: "Spielen",
+    healTitle: "Heilen",
     playProgress: "Spielfortschritt",
     healProgress: "Heilungsfortschritt",
     finishText: name => `${name} ist satt, gesund, glücklich und dank deiner Fürsorge gewachsen!`,
-    continueBtn: "Anfisa ansehen"
+    continueBtn: "Tamagotchi ansehen"
   },
 
   ru: {
-    demoLabel: "Пробная веб-версия",
+    demoLabel: "",
+    namePlaceholder: "Имя Тамагочи",
+    nameRequired: "Сначала введи имя своего Тамагочи.",
     levelLabel: "🏆 Уровень",
     overallProgressLabel: "Общий прогресс",
-    careTitle: "Забота об Анфисе",
+    careTitle: "Забота о Тамагочи",
     stepFeedLabel: "🍎 Еда",
     stepPlayLabel: "🎮 Игра",
     stepHealLabel: "💊 Здоровье",
@@ -96,8 +100,8 @@ const i18n = {
     playButton: "🎮 Поиграть",
     healButton: "💊 Лечить",
     welcomeActionTitle: "Выбери действие",
-    welcomeActionText: "Покорми Анфису, поиграй с ней или помоги ей выздороветь.",
-    feedTitle: "Покорми Анфису",
+    welcomeActionText: "Выбери действие для своего Тамагочи.",
+    feedTitle: "Кормление",
     satietyLabel: "Сытость",
     fooddyStepLabel: "🤖 Шаг 1. Робо-Кормушка Фудди",
     fooddyTitle: "Угадай секретный код",
@@ -108,13 +112,13 @@ const i18n = {
     taskNumberLabel: "Задание",
     finishTitle: "Пробная часть пройдена!",
     startBtn: "Разбудить яйцо",
-    birthContinueBtn: "Познакомиться с Анфисой",
+    birthContinueBtn: "Дальше",
     birthTitleEgg: "Космическое яйцо",
     birthTextEgg: "Внутри кто-то есть… Дай будущему Тамагочи имя.",
     birthTitleWake: "Яйцо просыпается…",
     birthTextWake: "Неоновый свет становится ярче. Смотри внимательно!",
     birthBorn: name => `${name} родилась!`,
-    birthBornText: "Вот она — новорождённая Анфиса! Рассмотри её и нажми кнопку, когда будешь готов продолжить.",
+    birthBornText: name => `Вот она — новорождённая ${name}! Рассмотри её и нажми кнопку, когда будешь готов продолжить.`,
     welcomeText: name => `${name} родилась! Выполняй задания и заботься о питомце.`,
     statusDone: "Выполнено",
     statusNotDone: "Не выполнено",
@@ -134,12 +138,12 @@ const i18n = {
     feedComplete: name => `Готово! ${name} получила все 6 порций.`,
     playTopic: "🎮 Игры и досуг",
     healTopic: "💊 Здоровье",
-    playTitle: "Поиграй с Анфисой",
-    healTitle: "Помоги Анфисе выздороветь",
+    playTitle: "Игра",
+    healTitle: "Лечение",
     playProgress: "Прогресс игры",
     healProgress: "Прогресс лечения",
     finishText: name => `${name} сыта, здорова, счастлива и выросла благодаря твоей заботе!`,
-    continueBtn: "Посмотреть на Анфису"
+    continueBtn: "Посмотреть на Тамагочи"
   }
 };
 
@@ -162,7 +166,7 @@ const localizedTasks = {
       {title:"AUFGABE 6", question:"Am Samstag ___ wir ins Kino.", answers:["gehen","geht","gehst"], correct:"gehen", success:"Richtig! Am Samstag gehen wir ins Kino."}
     ],
     heal: [
-      {title:"AUFGABE 1", question:"Anfisa hat Kopfschmerzen. Sie ist ...", answers:["krank","lecker","sportlich"], correct:"krank", success:"Richtig! Anfisa ist krank."},
+      {title:"AUFGABE 1", question:"{name} hat Kopfschmerzen. Sie ist ...", answers:["krank","lecker","sportlich"], correct:"krank", success:"Richtig! {name} ist krank."},
       {title:"AUFGABE 2", question:"Was hilft bei Krankheit?", answers:["Medizin","Fußball","Pizza"], correct:"Medizin", success:"Richtig! Medizin hilft."},
       {title:"AUFGABE 3", question:"Der Arzt sagt: Du sollst im Bett ...", answers:["bleiben","tanzen","fahren"], correct:"bleiben", success:"Richtig! Du sollst im Bett bleiben."},
       {title:"AUFGABE 4", question:"Ich habe Halsschmerzen. Ich trinke warmen ...", answers:["Tee","Ball","Schuh"], correct:"Tee", success:"Richtig! Ich trinke warmen Tee."},
@@ -189,7 +193,7 @@ const localizedTasks = {
       {title:"ЗАДАНИЕ 6", question:"Куда можно пойти смотреть фильм?", answers:["в кино","в аптеку","к врачу"], correct:"в кино", success:"Правильно! Фильм смотрят в кино."}
     ],
     heal: [
-      {title:"ЗАДАНИЕ 1", question:"У Анфисы болит голова. Она ...", answers:["болеет","вкусная","спортивная"], correct:"болеет", success:"Правильно! Анфиса болеет."},
+      {title:"ЗАДАНИЕ 1", question:"У {name} болит голова. Она ...", answers:["болеет","вкусная","спортивная"], correct:"болеет", success:"Правильно! {name} болеет."},
       {title:"ЗАДАНИЕ 2", question:"Что помогает при болезни?", answers:["лекарство","футбол","пицца"], correct:"лекарство", success:"Правильно! Лекарство помогает."},
       {title:"ЗАДАНИЕ 3", question:"Что советуют делать при болезни?", answers:["отдыхать","танцевать","бегать"], correct:"отдыхать", success:"Правильно! Нужно отдыхать."},
       {title:"ЗАДАНИЕ 4", question:"Что можно пить при больном горле?", answers:["тёплый чай","мяч","ботинок"], correct:"тёплый чай", success:"Правильно!"},
@@ -235,6 +239,21 @@ function getPlayTasks() {
 function getHealTasks() {
   return localizedTasks[currentLanguage].heal;
 }
+
+function withPetName(text) {
+  return String(text).replaceAll("{name}", state.petName);
+}
+
+function getCareTitle() {
+  return currentLanguage === "de" ? `Für ${state.petName} sorgen` : `Забота о ${state.petName}`;
+}
+
+function getWelcomeIntro() {
+  return currentLanguage === "de"
+    ? `Füttere ${state.petName}, spiele mit ihr oder hilf ihr, wieder gesund zu werden.`
+    : `Покорми ${state.petName}, поиграй с ней или помоги ей выздороветь.`;
+}
+
 
 const birthScreen = document.getElementById("birthScreen");
 const languageButtons = document.querySelectorAll(".lang-btn");
@@ -294,7 +313,7 @@ guessInput.addEventListener("keydown", e => {
 
 document.getElementById("continueBtn").addEventListener("click", () => {
   openPanel("welcome");
-  showCurrentGrowth("Ich bin dank deiner Fürsorge gewachsen! ✨");
+  showCurrentGrowth(currentLanguage === "de" ? "Ich bin dank deiner Fürsorge gewachsen! ✨" : "Я выросла благодаря твоей заботе! ✨");
 });
 
 
@@ -308,6 +327,7 @@ function setLanguage(lang) {
   });
 
   const t = i18n[lang];
+  petNameInput.placeholder = t.namePlaceholder;
 
   const setText = (id, value) => {
     const el = document.getElementById(id);
@@ -317,7 +337,7 @@ function setLanguage(lang) {
   setText("demoLabel", t.demoLabel);
   setText("levelLabel", t.levelLabel);
   setText("overallProgressLabel", t.overallProgressLabel);
-  setText("careTitle", t.careTitle);
+  setText("careTitle", getCareTitle());
   setText("stepFeedLabel", t.stepFeedLabel);
   setText("stepPlayLabel", t.stepPlayLabel);
   setText("stepHealLabel", t.stepHealLabel);
@@ -331,8 +351,8 @@ function setLanguage(lang) {
   setText("playButton", t.playButton);
   setText("healButton", t.healButton);
   setText("welcomeActionTitle", t.welcomeActionTitle);
-  setText("welcomeActionText", t.welcomeActionText);
-  setText("feedTitle", t.feedTitle);
+  setText("welcomeActionText", getWelcomeIntro());
+  setText("feedTitle", currentLanguage === "de" ? `Füttere ${state.petName}` : `Покорми ${state.petName}`);
   setText("satietyLabel", t.satietyLabel);
   setText("fooddyStepLabel", t.fooddyStepLabel);
   setText("fooddyTitle", t.fooddyTitle);
@@ -344,8 +364,12 @@ function setLanguage(lang) {
   setText("finishTitle", t.finishTitle);
 
   startBtn.textContent = t.startBtn;
-  birthContinueBtn.textContent = t.birthContinueBtn;
-  document.getElementById("continueBtn").textContent = t.continueBtn;
+  birthContinueBtn.textContent = state.petName
+    ? (currentLanguage === "de" ? `${state.petName} kennenlernen` : `Познакомиться с ${state.petName}`)
+    : (currentLanguage === "de" ? "Weiter" : "Дальше");
+  document.getElementById("continueBtn").textContent = state.petName
+    ? (currentLanguage === "de" ? `${state.petName} ansehen` : `Посмотреть на ${state.petName}`)
+    : t.continueBtn;
 
   if (!birthControls.hidden) {
     birthTitle.textContent = t.birthTitleEgg;
@@ -354,6 +378,8 @@ function setLanguage(lang) {
 
   if (!gameShell.hidden) {
     document.getElementById("welcomeText").textContent = t.welcomeText(state.petName);
+    document.getElementById("careTitle").textContent = getCareTitle();
+    document.getElementById("welcomeActionText").textContent = getWelcomeIntro();
     reactionLabel.textContent = t.calm;
     updateFeedStatus();
     updateGameProgress();
@@ -376,7 +402,19 @@ function setLanguage(lang) {
 }
 
 function startBirthSequence() {
-  state.petName = petNameInput.value.trim() || "Anfisa";
+  const chosenName = petNameInput.value.trim();
+
+  if (!chosenName) {
+    birthText.textContent = i18n[currentLanguage].nameRequired;
+    petNameInput.focus();
+    petNameInput.classList.remove("name-error");
+    void petNameInput.offsetWidth;
+    petNameInput.classList.add("name-error");
+    setTimeout(() => petNameInput.classList.remove("name-error"), 800);
+    return;
+  }
+
+  state.petName = chosenName;
 
   birthControls.hidden = true;
   birthContinueBtn.hidden = true;
@@ -387,7 +425,10 @@ function startBirthSequence() {
   setTimeout(() => {
     birthImage.src = petImages.hatching;
     birthTitle.textContent = i18n[currentLanguage].birthBorn(state.petName);
-    birthText.textContent = i18n[currentLanguage].birthBornText;
+    birthText.textContent = i18n[currentLanguage].birthBornText(state.petName);
+    birthContinueBtn.textContent = state.petName
+    ? (currentLanguage === "de" ? `${state.petName} kennenlernen` : `Познакомиться с ${state.petName}`)
+    : (currentLanguage === "de" ? "Weiter" : "Дальше");
     birthContinueBtn.hidden = false;
   }, 1200);
 }
@@ -398,6 +439,8 @@ function enterGameAfterBirth() {
 
   document.getElementById("welcomeText").textContent =
     i18n[currentLanguage].welcomeText(state.petName);
+  document.getElementById("careTitle").textContent = getCareTitle();
+  document.getElementById("welcomeActionText").textContent = getWelcomeIntro();
 
   renderStats();
   updateGameProgress();
@@ -724,7 +767,9 @@ function showSeriesTask(action) {
     action === "play" ? t.playTopic : t.healTopic;
 
   document.getElementById("seriesTitle").textContent =
-    action === "play" ? t.playTitle : t.healTitle;
+    action === "play"
+      ? (currentLanguage === "de" ? `Spiele mit ${state.petName}` : `Поиграй с ${state.petName}`)
+      : (currentLanguage === "de" ? `Hilf ${state.petName}, wieder gesund zu werden` : `Помоги ${state.petName} выздороветь`);
 
   document.getElementById("seriesProgressLabel").textContent =
     action === "play" ? t.playProgress : t.healProgress;
@@ -739,7 +784,9 @@ function showSeriesTask(action) {
     document.getElementById("seriesTaskTitle").textContent = "Geschafft!";
     document.getElementById("seriesTaskNumber").textContent = "6";
     document.getElementById("seriesQuestion").textContent =
-      action === "play" ? "Alle Aufgaben sind richtig gelöst." : "Anfisa ist wieder gesund.";
+      action === "play"
+        ? (currentLanguage === "de" ? "Alle Aufgaben sind richtig gelöst." : "Все задания выполнены правильно.")
+        : (currentLanguage === "de" ? `${state.petName} ist wieder gesund.` : `${state.petName} снова здорова.`);
     document.getElementById("seriesAnswers").innerHTML = "";
     document.getElementById("seriesFeedback").textContent = "";
     return;
@@ -748,7 +795,7 @@ function showSeriesTask(action) {
   const task = tasks[index];
   document.getElementById("seriesTaskTitle").textContent = task.title;
   document.getElementById("seriesTaskNumber").textContent = index + 1;
-  document.getElementById("seriesQuestion").textContent = task.question;
+  document.getElementById("seriesQuestion").textContent = withPetName(task.question);
   document.getElementById("seriesFeedback").textContent = "";
   document.getElementById("seriesFeedback").className = "feedback";
 
@@ -785,7 +832,7 @@ function checkSeriesAnswer(action, task, answer, clickedButton) {
   }
 
   document.querySelectorAll("#seriesAnswers button").forEach(b => b.disabled = true);
-  feedback.textContent = task.success;
+  feedback.textContent = withPetName(task.success);
   feedback.className = "feedback ok";
 
   if (action === "play") {
@@ -817,9 +864,9 @@ function checkSeriesAnswer(action, task, answer, clickedButton) {
     status.classList.add("done");
 
     if (action === "heal") {
-      setTimeout(() => showCurrentGrowth("Ich bin wieder gesund! Vielen Dank!"), 1450);
+      setTimeout(() => showCurrentGrowth(currentLanguage === "de" ? `Ich bin wieder gesund! Vielen Dank!` : `Я снова здорова! Большое спасибо!`), 1450);
     } else {
-      setTimeout(() => showCurrentGrowth("Das Spielen war toll!"), 1450);
+      setTimeout(() => showCurrentGrowth(currentLanguage === "de" ? `Das Spielen war toll!` : `Играть было очень весело!`), 1450);
     }
 
     checkWholeGameFinished();
@@ -861,7 +908,7 @@ function checkWholeGameFinished() {
     openPanel("finish");
     document.getElementById("finishText").textContent =
       i18n[currentLanguage].finishText(state.petName);
-    showCurrentGrowth("Ich bin gewachsen! Danke, dass du dich um mich gekümmert hast! 💛");
+    showCurrentGrowth(currentLanguage === "de" ? `Ich bin gewachsen! Danke, dass du dich um mich gekümmert hast! 💛` : `Я выросла! Спасибо, что заботилась обо мне! 💛`);
   }
 }
 
@@ -873,7 +920,7 @@ function updateLevel() {
     previousLevel = newLevel;
     setTimeout(() => {
       const stage = getGrowthStage();
-      setPetVisual(stage.key, "Ich bin gewachsen!", currentLanguage === "de" ? `Hurra! Jetzt bin ich: ${stage.de}!` : `Ура! Теперь я — ${stage.ru}!`, true, 1800);
+      setPetVisual(stage.key, currentLanguage === "de" ? "Ich bin gewachsen!" : "Я выросла!", currentLanguage === "de" ? `Hurra! Jetzt bin ich: ${stage.de}!` : `Ура! Теперь я — ${stage.ru}!`, true, 1800);
       miniPetImage.src = petImages[stage.key];
     }, 250);
   }
