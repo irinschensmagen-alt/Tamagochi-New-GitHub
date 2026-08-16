@@ -18,7 +18,7 @@ const i18n = {
     demoLabel: "",
     namePlaceholder: "Name des Tamagotchis",
     nameRequired: "Bitte gib deinem Tamagotchi zuerst einen Namen.",
-    levelLabel: "🏆 Level",
+    levelLabel: "🏆 Stufe",
     overallProgressLabel: "Gesamtfortschritt",
     careTitle: "Für dein Tamagotchi sorgen",
     stepFeedLabel: "🍎 Füttern",
@@ -58,6 +58,9 @@ const i18n = {
     statusNotDone: "Nicht erledigt",
     calm: "Ruhig",
     fooddyReady: "Fooddy ist bereit",
+    fooddyZoomHint: "🔍 Vergrößern",
+    fooddyModalLabel: "Nachricht von Fooddy",
+    closeLabel: "Schließen",
     fooddyDispensing: "Fooddy gibt eine Portion aus!",
     fooddyDispensed: "Portion ausgegeben ✓",
     codePrompt: n => `Fooddy: „Piep-piep! Code Nr. ${n} ist versteckt. Errate eine Zahl von 1 bis 100!“`,
@@ -117,13 +120,16 @@ const i18n = {
     birthTextEgg: "Внутри кто-то есть… Дай будущему Тамагочи имя.",
     birthTitleWake: "Яйцо просыпается…",
     birthTextWake: "Неоновый свет становится ярче. Смотри внимательно!",
-    birthBorn: name => `${name} родилась!`,
-    birthBornText: name => `Вот она — новорождённая ${name}! Рассмотри её и нажми кнопку, когда будешь готов продолжить.`,
-    welcomeText: name => `${name} родилась! Выполняй задания и заботься о питомце.`,
+    birthBorn: name => `Тамагочи ${name} появился!`,
+    birthBornText: name => `Вот твой новый Тамагочи — ${name}! Рассмотри питомца и нажми кнопку, когда будешь готов продолжить.`,
+    welcomeText: name => `${name} появился! Выполняй задания и заботься о питомце.`,
     statusDone: "Выполнено",
     statusNotDone: "Не выполнено",
     calm: "Спокойна",
     fooddyReady: "Фудди готова",
+    fooddyZoomHint: "🔍 Увеличить",
+    fooddyModalLabel: "Сообщение Фудди",
+    closeLabel: "Закрыть",
     fooddyDispensing: "Фудди выдаёт порцию!",
     fooddyDispensed: "Порция выдана ✓",
     codePrompt: n => `Фудди: «Бип-бип! Код №${n} спрятан. Угадай число от 1 до 100!»`,
@@ -205,23 +211,23 @@ const localizedTasks = {
 
 
 const petImages = {
-  egg: "assets/images/anfisa_egg.png",
-  hatching: "assets/images/anfisa_hatching.png",
-  baby: "assets/images/anfisa_baby.png",
-  kitten: "assets/images/anfisa_kitten.png",
-  growing: "assets/images/anfisa_growing.png",
-  adult: "assets/images/anfisa_adult.png",
-  eating: "assets/images/anfisa_eating.png",
-  playing: "assets/images/anfisa_playing.png",
-  sick: "assets/images/anfisa_sick.png",
-  healing: "assets/images/anfisa_healing.png"
+  egg: "assets/images/tamagotchi_egg.png",
+  hatching: "assets/images/tamagotchi_hatching.png",
+  baby: "assets/images/tamagotchi_baby.png",
+  kitten: "assets/images/tamagotchi_kitten.png",
+  growing: "assets/images/tamagotchi_growing.png",
+  adult: "assets/images/tamagotchi_adult.png",
+  eating: "assets/images/tamagotchi_eating.png",
+  playing: "assets/images/tamagotchi_playing.png",
+  sick: "assets/images/tamagotchi_sick.png",
+  healing: "assets/images/tamagotchi_healing.png"
 };
 
 const growthStages = [
-  { minLevel: 1, key: "baby", de: "Baby", ru: "Малышка" },
+  { minLevel: 1, key: "baby", de: "Baby", ru: "Малыш" },
   { minLevel: 2, key: "kitten", de: "Kätzchen", ru: "Котёнок" },
-  { minLevel: 3, key: "growing", de: "Wächst", ru: "Подрастает" },
-  { minLevel: 4, key: "adult", de: "Erwachsen", ru: "Взрослая" }
+  { minLevel: 3, key: "growing", de: "Jungtier", ru: "Подросток" },
+  { minLevel: 4, key: "adult", de: "Erwachsen", ru: "Взрослый" }
 ];
 
 let previousRenderedState = null;
@@ -286,6 +292,12 @@ const guessInput = document.getElementById("guessInput");
 const guessBtn = document.getElementById("guessBtn");
 const foodPellets = document.getElementById("foodPellets");
 const fooddyDispenseLabel = document.getElementById("fooddyDispenseLabel");
+const fooddyZoomTrigger = document.getElementById("fooddyZoomTrigger");
+const fooddyZoomHint = document.getElementById("fooddyZoomHint");
+const fooddyModal = document.getElementById("fooddyModal");
+const fooddyModalClose = document.getElementById("fooddyModalClose");
+const fooddyModalMessage = document.getElementById("fooddyModalMessage");
+const fooddyModalLabel = document.getElementById("fooddyModalLabel");
 
 let secretNumber = 0;
 let feedCount = 0;
@@ -312,6 +324,26 @@ document.querySelectorAll("[data-main-action]").forEach(button => {
 guessBtn.addEventListener("click", checkGuess);
 guessInput.addEventListener("keydown", e => {
   if (e.key === "Enter") checkGuess();
+});
+
+function openFooddyModal() {
+  fooddyModalMessage.textContent = document.getElementById("fooddyMessage").textContent;
+  fooddyModal.hidden = false;
+  document.body.classList.add("modal-open");
+  fooddyModalClose.focus();
+}
+
+function closeFooddyModal() {
+  fooddyModal.hidden = true;
+  document.body.classList.remove("modal-open");
+  fooddyZoomTrigger.focus();
+}
+
+fooddyZoomTrigger.addEventListener("click", openFooddyModal);
+fooddyModalClose.addEventListener("click", closeFooddyModal);
+document.querySelectorAll("[data-close-fooddy-modal]").forEach(el => el.addEventListener("click", closeFooddyModal));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !fooddyModal.hidden) closeFooddyModal();
 });
 
 document.getElementById("continueBtn").addEventListener("click", () => {
@@ -359,6 +391,10 @@ function setLanguage(lang) {
   setText("satietyLabel", t.satietyLabel);
   setText("fooddyStepLabel", t.fooddyStepLabel);
   setText("fooddyTitle", t.fooddyTitle);
+  setText("fooddyZoomHint", t.fooddyZoomHint);
+  setText("fooddyModalLabel", t.fooddyModalLabel);
+  if (fooddyZoomTrigger) fooddyZoomTrigger.setAttribute("aria-label", t.fooddyZoomHint.replace("🔍 ", ""));
+  if (fooddyModalClose) fooddyModalClose.setAttribute("aria-label", t.closeLabel);
   setText("roundLabel", t.roundLabel);
   setText("attemptsLabel", t.attemptsLabel);
   setText("deStepLabel", t.deStepLabel);
@@ -484,12 +520,38 @@ function enterGameAfterBirth() {
   openAction("feed");
 }
 
+function getCompletedBlocksCount() {
+  return [progress.feed, progress.play, progress.heal].filter(Boolean).length;
+}
+
 function getGrowthStage() {
-  let current = growthStages[0];
-  growthStages.forEach(stage => {
-    if (state.level >= stage.minLevel) current = stage;
-  });
-  return current;
+  const completedBlocks = getCompletedBlocksCount();
+  return growthStages[Math.min(completedBlocks, growthStages.length - 1)];
+}
+
+function getBlockName(action) {
+  const names = {
+    de: { feed: "Füttern", play: "Spielen", heal: "Heilen" },
+    ru: { feed: "Еда", play: "Игра", heal: "Лечение" }
+  };
+  return names[currentLanguage][action];
+}
+
+function showBlockGrowth(action) {
+  const stage = getGrowthStage();
+  const blockName = getBlockName(action);
+
+  const message = currentLanguage === "de"
+    ? `Geschafft! Der Block „${blockName}“ ist mit 6 von 6 Aufgaben abgeschlossen. Neuer Status für ${state.petName}: ${stage.de}.`
+    : `Ура! Блок «${blockName}» пройден: 6 из 6 заданий. Новый статус питомца ${state.petName}: ${stage.ru}.`;
+
+  setPetVisual(
+    stage.key,
+    currentLanguage === "de" ? `Neuer Status: ${stage.de}` : `Новый статус: ${stage.ru}`,
+    message,
+    false
+  );
+  miniPetImage.src = petImages[stage.key];
 }
 
 function showCurrentGrowth(message = null) {
@@ -731,11 +793,12 @@ function checkGermanFeedAnswer(task, answer, clickedButton) {
   clampStats();
   renderStats();
   updateFeedProgress();
+  updateGameProgress();
 
   // Голод изменился только сейчас — после правильного немецкого ответа.
   petSpeech.textContent = i18n[currentLanguage].hungerChanged(state.hunger);
 
-  // Сначала Фудди физически выдаёт порцию, затем Анфиса её ест.
+  // Сначала Фудди физически выдаёт порцию, затем питомец её ест.
   dispenseFooddyPortion();
 
   setTimeout(() => {
@@ -758,6 +821,7 @@ function finishFeedBlock() {
   renderStats();
   updateFeedStatus();
   updateGameProgress();
+  updateLevel();
 
   germanBox.hidden = true;
   fooddyBox.hidden = false;
@@ -766,7 +830,7 @@ function finishFeedBlock() {
 
   guessInput.disabled = true;
   guessBtn.disabled = true;
-  showCurrentGrowth(i18n[currentLanguage].fullyFed);
+  showBlockGrowth("feed");
   checkWholeGameFinished();
 }
 
@@ -887,20 +951,18 @@ function checkSeriesAnswer(action, task, answer, clickedButton) {
   clampStats();
   renderStats();
   updateSeriesProgress(action);
+  updateGameProgress();
 
   if (seriesIndex[action] >= 6) {
     progress[action] = true;
     updateGameProgress();
+    updateLevel();
 
     const status = document.getElementById("seriesStatus");
     status.textContent = i18n[currentLanguage].statusDone;
     status.classList.add("done");
 
-    if (action === "heal") {
-      setTimeout(() => showCurrentGrowth(currentLanguage === "de" ? `Ich bin wieder gesund! Vielen Dank!` : `Я снова здорова! Большое спасибо!`), 1450);
-    } else {
-      setTimeout(() => showCurrentGrowth(currentLanguage === "de" ? `Das Spielen war toll!` : `Играть было очень весело!`), 1450);
-    }
+    setTimeout(() => showBlockGrowth(action), 450);
 
     checkWholeGameFinished();
     setTimeout(() => showSeriesTask(action), 1500);
@@ -925,11 +987,19 @@ function updateSeriesProgress(action) {
 /* ---------- ОБЩЕЕ ---------- */
 function updateGameProgress() {
   const order = ["feed","play","heal"];
-  const completed = order.filter(k => progress[k]).length;
-  const percent = Math.round((completed / 3) * 100);
+  const totalTasks = 18;
+  // За каждое правильно выполненное задание начисляется 5 опыта.
+  // Поэтому общий прогресс всегда синхронизирован с реальным числом завершённых заданий.
+  const completedTasks = Math.min(totalTasks, Math.floor(state.experience / 5));
+  const percent = Math.round((completedTasks / totalTasks) * 100);
 
-  document.getElementById("gameProgressPercent").textContent = `${percent}%`;
-  document.getElementById("gameProgressFill").style.width = `${percent}%`;
+  const percentNode = document.getElementById("gameProgressPercent");
+  const fillNode = document.getElementById("gameProgressFill");
+  if (percentNode) percentNode.textContent = `${percent}%`;
+  if (fillNode) {
+    fillNode.style.width = `${percent}%`;
+    fillNode.setAttribute("aria-valuenow", String(percent));
+  }
 
   document.querySelectorAll("#gameProgressSteps .step").forEach((step, i) => {
     step.classList.toggle("done", progress[order[i]]);
@@ -941,22 +1011,15 @@ function checkWholeGameFinished() {
     openPanel("finish");
     document.getElementById("finishText").textContent =
       i18n[currentLanguage].finishText(state.petName);
-    showCurrentGrowth(currentLanguage === "de" ? `Ich bin gewachsen! Danke, dass du dich um mich gekümmert hast! 💛` : `Я выросла! Спасибо, что заботилась обо мне! 💛`);
+    showCurrentGrowth(currentLanguage === "de" ? `Ich bin gewachsen! Danke, dass du dich um mich gekümmert hast! 💛` : `Я вырос! Спасибо за твою заботу! 💛`);
   }
 }
 
 function updateLevel() {
-  const newLevel = Math.floor(state.experience / 30) + 1;
+  const newLevel = getCompletedBlocksCount() + 1;
   state.level = newLevel;
-
-  if (newLevel > previousLevel) {
-    previousLevel = newLevel;
-    setTimeout(() => {
-      const stage = getGrowthStage();
-      setPetVisual(stage.key, currentLanguage === "de" ? "Ich bin gewachsen!" : "Я выросла!", currentLanguage === "de" ? `Hurra! Jetzt bin ich: ${stage.de}!` : `Ура! Теперь я — ${stage.ru}!`, true, 1800);
-      miniPetImage.src = petImages[stage.key];
-    }, 250);
-  }
+  previousLevel = newLevel;
+  renderStats();
 }
 
 function clampStats() {
@@ -1010,3 +1073,12 @@ function clamp(value,min,max) {
 }
 
 setLanguage("de");
+
+
+// Если сообщение Fooddy меняется, в увеличенном окне показывается тот же полный текст.
+const fooddyMessageNode = document.getElementById("fooddyMessage");
+if (fooddyMessageNode && fooddyModalMessage) {
+  const syncFooddyModal = () => { fooddyModalMessage.textContent = fooddyMessageNode.textContent; };
+  new MutationObserver(syncFooddyModal).observe(fooddyMessageNode, { childList: true, characterData: true, subtree: true });
+  syncFooddyModal();
+}

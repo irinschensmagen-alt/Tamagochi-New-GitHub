@@ -11,7 +11,7 @@
   <section class="birth-screen" id="birthScreen">
     <div class="birth-card">
       <div class="birth-visual" id="birthVisual">
-        <img id="birthImage" src="assets/images/anfisa_egg.png" alt="Kosmisches Ei">
+        <img id="birthImage" src="assets/images/tamagotchi_egg.png" alt="Kosmisches Ei">
         <div class="egg-cracks" id="eggCracks" aria-hidden="true">
           <i></i><i></i><i></i><i></i><i></i>
         </div>
@@ -29,7 +29,7 @@
         <p id="birthText">Da ist jemand drin … Gib deinem Tamagotchi einen Namen.</p>
 
         <div class="birth-controls" id="birthControls">
-          <input id="petName" type="text" maxlength="20" placeholder="Name" value="">
+          <input id="petName" type="text" maxlength="20" placeholder="Name des Tamagotchis" value="">
           <button id="startBtn" class="primary">Das Ei wecken</button>
         </div>
 
@@ -44,11 +44,11 @@
 
     <header class="topbar">
       <div class="mini-avatar">
-        <img id="miniPetImage" src="assets/images/anfisa_baby.png" alt="Tamagotchi">
+        <img id="miniPetImage" src="assets/images/tamagotchi_baby.png" alt="Tamagotchi">
       </div>
 
       <div class="title-block">
-        <p class="eyebrow" id="demoLabel">Demo-Webversion</p>
+        <p class="eyebrow" id="demoLabel"></p>
         <h1>Tamagotchi</h1>
         <p id="welcomeText">Dein Tamagotchi ist geboren!</p>
       </div>
@@ -60,7 +60,7 @@
         </div>
 
         <div class="level-badge">
-          <span id="levelLabel">🏆 Level</span>
+          <span id="levelLabel">🏆 Stufe</span>
           <strong id="level">1</strong>
         </div>
       </div>
@@ -118,7 +118,7 @@
         </div>
 
         <div class="pet-picture">
-          <img id="petImage" src="assets/images/anfisa_baby.png" alt="Tamagotchi">
+          <img id="petImage" src="assets/images/tamagotchi_baby.png" alt="Tamagotchi">
           <div class="pet-sparkles" id="petSparkles">✨</div>
         </div>
 
@@ -161,13 +161,14 @@
 
           <div class="fooddy-box" id="fooddyBox">
             <div class="fooddy-layout">
-              <div class="fooddy-visual">
+              <button class="fooddy-visual fooddy-zoom-trigger" id="fooddyZoomTrigger" type="button" aria-label="Fooddy vergrößern">
                 <img src="assets/images/fooddy_feeder.png" alt="Robo-Futterautomat Fooddy">
+                <span class="fooddy-zoom-hint" id="fooddyZoomHint">🔍 Vergrößern</span>
                 <div class="food-pellets" id="foodPellets" aria-hidden="true">
                   <span>●</span><span>●</span><span>●</span><span>●</span><span>●</span>
                 </div>
                 <div class="fooddy-dispense-label" id="fooddyDispenseLabel">Fooddy ist bereit</div>
-              </div>
+              </button>
 
               <div class="fooddy-content">
             <div class="fooddy-heading">
@@ -245,7 +246,7 @@
         <div id="finishArea" hidden>
           <div class="finish-box">
             <div class="finish-icon">🏆</div>
-            <h2 id="finishTitle">Demo geschafft!</h2>
+            <h2 id="finishTitle">Geschafft!</h2>
             <p id="finishText"></p>
             <button id="continueBtn" class="primary">Tamagotchi ansehen</button>
           </div>
@@ -253,6 +254,23 @@
       </section>
     </section>
   </main>
+
+  <div class="fooddy-modal" id="fooddyModal" hidden role="dialog" aria-modal="true" aria-labelledby="fooddyModalTitle">
+    <div class="fooddy-modal-backdrop" data-close-fooddy-modal></div>
+    <div class="fooddy-modal-card">
+      <button class="fooddy-modal-close" id="fooddyModalClose" type="button" aria-label="Schließen">×</button>
+      <h2 id="fooddyModalTitle">Fooddy</h2>
+      <div class="fooddy-modal-grid">
+        <div class="fooddy-modal-image-wrap">
+          <img id="fooddyModalImage" src="assets/images/fooddy_feeder.png" alt="Fooddy">
+        </div>
+        <div class="fooddy-modal-copy">
+          <p class="fooddy-modal-label" id="fooddyModalLabel">Nachricht von Fooddy</p>
+          <p class="fooddy-modal-message" id="fooddyModalMessage"></p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
