@@ -1808,3 +1808,51 @@ body{
 .stat.changed{box-shadow:0 0 0 3px rgba(73,215,123,.26),0 0 24px rgba(73,215,123,.35)!important}
 .fooddy-modal-card{border:2px solid #d7c1ff!important;box-shadow:0 25px 80px rgba(43,22,83,.40),0 0 40px rgba(145,105,255,.26)!important}
 .fooddy-modal-image{object-fit:contain!important;background:linear-gradient(135deg,#eee7ff,#e9f7ff)!important}
+
+/* === FINAL VISUAL FIX: FOODDY — show the approved robot-feeder completely === */
+.fooddy-layout{
+  grid-template-columns:minmax(210px,28%) minmax(0,1fr)!important;
+  gap:14px!important;
+  align-items:stretch!important;
+}
+.fooddy-visual{
+  min-height:220px!important;
+  padding:8px!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:linear-gradient(145deg,#efe9ff,#f8f3ff)!important;
+}
+.fooddy-visual img,
+.fooddy-visual.fooddy-zoom-trigger img{
+  width:100%!important;
+  height:220px!important;
+  min-height:0!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  transform:none!important;
+  border-radius:16px!important;
+}
+.fooddy-message{
+  font-size:clamp(15px,1.05vw,19px)!important;
+  line-height:1.35!important;
+  padding:10px 12px!important;
+  margin:7px 0!important;
+  overflow:visible!important;
+}
+.fooddy-content h3,
+.fooddy-title,
+.fooddy-heading h3{
+  font-size:clamp(20px,1.35vw,26px)!important;
+  line-height:1.15!important;
+}
+.attempt-line{font-size:14px!important;line-height:1.25!important}
+.guess-row input{font-size:16px!important;padding:10px 12px!important}
+.guess-row .primary{font-size:16px!important;padding:10px 16px!important}
+
+@media (max-width:900px){
+  .fooddy-layout{grid-template-columns:1fr!important}
+  .fooddy-visual img,.fooddy-visual.fooddy-zoom-trigger img{height:min(42vh,360px)!important}
+}
