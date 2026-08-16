@@ -153,12 +153,12 @@ const localizedTasks = {
       {title:"AUFGABE 1", question:"___ Apfel", answers:["der","die","das"], correct:"der", success:"Richtig! Der Apfel."},
       {title:"AUFGABE 2", question:"Was trinkt man?", answers:["Wasser","Brot","Käse"], correct:"Wasser", success:"Richtig! Man trinkt Wasser."},
       {title:"AUFGABE 3", question:"Zum Frühstück esse ich Brot mit ...", answers:["Käse","Wasser","Saft"], correct:"Käse", success:"Richtig! Brot mit Käse."},
-      {title:"AUFGABE 4", question:"Möchtest du einen Tee?", answers:["Ja, gern.","Ich heiße Anna.","Das ist mein Bruder."], correct:"Ja, gern.", success:"Richtig! Ja, gern."},
+      {title:"AUFGABE 4", question:"Möchtest du einen Tee?", answers:["Ja, gern.","Ich bin zwölf Jahre alt.","Das ist mein Bruder."], correct:"Ja, gern.", success:"Richtig! Ja, gern."},
       {title:"AUFGABE 5", question:"Was passt nicht?", answers:["die Banane","der Apfel","die Orange","die Milch"], correct:"die Milch", success:"Richtig! Die Milch passt nicht."},
       {title:"AUFGABE 6", question:"Ich möchte eine Pizza ...", answers:["bestellen","trinken","fahren"], correct:"bestellen", success:"Richtig! Ich möchte eine Pizza bestellen."}
     ],
     play: [
-      {title:"AUFGABE 1", question:"Anna ___ gern Fußball.", answers:["spiele","spielt","spielen"], correct:"spielt", success:"Richtig! Anna spielt gern Fußball."},
+      {title:"AUFGABE 1", question:"Sie ___ gern Fußball.", answers:["spiele","spielt","spielen"], correct:"spielt", success:"Richtig! Sie spielt gern Fußball."},
       {title:"AUFGABE 2", question:"Was macht man in der Freizeit?", answers:["Musik hören","Fieber haben","Medizin nehmen"], correct:"Musik hören", success:"Richtig! Musik hören."},
       {title:"AUFGABE 3", question:"Wir ___ am Wochenende Tennis.", answers:["spielen","spielt","spielst"], correct:"spielen", success:"Richtig! Wir spielen am Wochenende Tennis."},
       {title:"AUFGABE 4", question:"Ich ___ gern Bücher.", answers:["lese","liest","lesen"], correct:"lese", success:"Richtig! Ich lese gern Bücher."},
@@ -180,7 +180,7 @@ const localizedTasks = {
       {title:"ЗАДАНИЕ 1", question:"Какой продукт является фруктом?", answers:["яблоко","вода","сыр"], correct:"яблоко", success:"Правильно! Яблоко — фрукт."},
       {title:"ЗАДАНИЕ 2", question:"Что обычно пьют?", answers:["воду","хлеб","сыр"], correct:"воду", success:"Правильно! Пьют воду."},
       {title:"ЗАДАНИЕ 3", question:"Что можно положить на хлеб?", answers:["сыр","воду","сок"], correct:"сыр", success:"Правильно! Хлеб с сыром."},
-      {title:"ЗАДАНИЕ 4", question:"Что ответить на предложение чая?", answers:["Да, с удовольствием.","Меня зовут Анна.","Это мой брат."], correct:"Да, с удовольствием.", success:"Правильно!"},
+      {title:"ЗАДАНИЕ 4", question:"Что ответить на предложение чая?", answers:["Да, с удовольствием.","Мне двенадцать лет.","Это мой брат."], correct:"Да, с удовольствием.", success:"Правильно!"},
       {title:"ЗАДАНИЕ 5", question:"Что лишнее?", answers:["банан","яблоко","апельсин","молоко"], correct:"молоко", success:"Правильно! Молоко — не фрукт."},
       {title:"ЗАДАНИЕ 6", question:"Что можно сделать с пиццей?", answers:["заказать","выпить","поехать"], correct:"заказать", success:"Правильно! Пиццу можно заказать."}
     ],
@@ -408,6 +408,10 @@ function startBirthSequence() {
   const chosenName = petNameInput.value.trim();
   const t = i18n[currentLanguage];
 
+  if (birthVisual) {
+    birthVisual.className = "birth-visual";
+  }
+
   if (!chosenName) {
     birthText.textContent = t.nameRequired;
     petNameInput.focus();
@@ -421,21 +425,24 @@ function startBirthSequence() {
   state.petName = chosenName;
   birthControls.hidden = true;
   birthContinueBtn.hidden = true;
-  birthVisual.className = "birth-visual egg-awake";
+  if (birthVisual) birthVisual.className = "birth-visual egg-awake";
   birthImage.src = petImages.egg;
   birthTitle.textContent = t.birthTitleWake;
   birthText.textContent = t.birthTextWake;
 
   // 1. Яйцо оживает и начинает трескаться.
   setTimeout(() => {
-    birthVisual.classList.add("cracking");
+    if (birthVisual) birthVisual.classList.add("cracking");
     birthTitle.textContent = currentLanguage === "de" ? "Das Ei bekommt Risse …" : "На яйце появляются трещинки…";
     birthText.textContent = currentLanguage === "de" ? "Da bewegt sich etwas!" : "Внутри кто-то двигается!";
   }, 900);
 
   // 2. Скорлупа раскалывается на отдельные кусочки.
   setTimeout(() => {
-    birthVisual.classList.add("burst");
+    if (birthVisual) {
+      birthVisual.classList.remove("cracking");
+      birthVisual.classList.add("burst");
+    }
     birthImage.src = petImages.hatching;
     birthTitle.textContent = currentLanguage === "de" ? "Es schlüpft!" : "Он вылупляется!";
     birthText.textContent = currentLanguage === "de" ? "Die Schale springt auseinander …" : "Скорлупа разлетается на кусочки…";
@@ -443,7 +450,10 @@ function startBirthSequence() {
 
   // 3. Новорождённый остаётся на экране, пока ребёнок сам не продолжит.
   setTimeout(() => {
-    birthVisual.classList.add("born");
+    if (birthVisual) {
+      birthVisual.classList.remove("burst");
+      birthVisual.classList.add("born");
+    }
     birthTitle.textContent = t.birthBorn(state.petName);
     birthText.textContent = t.birthBornText(state.petName);
     birthContinueBtn.textContent = currentLanguage === "de" ? `${state.petName} kennenlernen` : `Познакомиться с ${state.petName}`;
@@ -462,11 +472,16 @@ function enterGameAfterBirth() {
 
   renderStats();
   updateGameProgress();
+  updateFeedProgress();
+  updateFeedStatus();
   showCurrentGrowth(
     currentLanguage === "de"
       ? `Miau! Ich bin ${state.petName}. Kümmere dich um mich!`
       : `Мяу! Я ${state.petName}. Позаботься обо мне!`
   );
+
+  // Сразу открываем первое задание, чтобы ребёнок сразу видел, что делать дальше.
+  openAction("feed");
 }
 
 function getGrowthStage() {
