@@ -1936,3 +1936,67 @@ body{
   .fooddy-layout{grid-template-columns:1fr!important}
   .fooddy-visual.fooddy-zoom-trigger img{max-height:420px!important}
 }
+
+
+/* ===== FINAL PATCH: ending audio + visible third option in play/heal ===== */
+#seriesArea, #feedArea {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-bottom: 10px !important;
+}
+#seriesArea .german-box,
+#feedArea .german-box {
+  flex: 0 0 auto !important;
+  min-height: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+#seriesArea .answers,
+#feedArea .answers {
+  gap: 6px !important;
+}
+#seriesArea .answer-btn,
+#feedArea .answer-btn {
+  min-height: 36px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+#seriesArea .feedback,
+#feedArea .feedback {
+  margin-bottom: 8px !important;
+}
+.pet-picture.final-happy {
+  overflow: visible !important;
+}
+.pet-picture.final-happy img {
+  animation: pawReach 2.1s ease-in-out infinite;
+  transform-origin: 62% 88%;
+}
+.pet-picture.final-happy::after {
+  content: "🐾";
+  position: absolute;
+  right: 18px;
+  bottom: 22px;
+  font-size: 28px;
+  line-height: 1;
+  animation: pawFloat 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 6px 10px rgba(121,88,233,.18));
+}
+.pet-picture.final-sad img {
+  animation: sadNod 2.2s ease-in-out infinite;
+}
+@keyframes pawReach {
+  0%,100% { transform: translateX(0) translateY(0) scale(1); }
+  35% { transform: translateX(8px) translateY(-2px) scale(1.03); }
+  65% { transform: translateX(2px) translateY(0) scale(1.01); }
+}
+@keyframes pawFloat {
+  0%,100% { transform: translateY(0); opacity: .78; }
+  50% { transform: translateY(-5px); opacity: 1; }
+}
+@keyframes sadNod {
+  0%,100% { transform: translateY(0); }
+  25% { transform: translateY(1px) rotate(-1deg); }
+  50% { transform: translateY(2px) rotate(1deg); }
+  75% { transform: translateY(1px) rotate(-1deg); }
+}

@@ -11,6 +11,16 @@ const state = {
 
 const progress = { feed: false, play: false, heal: false };
 
+const performance = {
+  perfectRun: true,
+  frustratedEnding: false,
+  mistakes: {
+    feed: Array(6).fill(0),
+    play: Array(6).fill(0),
+    heal: Array(6).fill(0)
+  }
+};
+
 let currentLanguage = "de";
 
 const i18n = {
@@ -276,6 +286,7 @@ const startBtn = document.getElementById("startBtn");
 const birthContinueBtn = document.getElementById("birthContinueBtn");
 
 const petImage = document.getElementById("petImage");
+const petPicture = document.querySelector(".pet-picture");
 const miniPetImage = document.getElementById("miniPetImage");
 const petSpeech = document.getElementById("petSpeech");
 const growthLabel = document.getElementById("growthLabel");
@@ -306,6 +317,14 @@ let attemptsThisRound = 0;
 let codeSolved = false;
 let currentSeries = null;
 let seriesIndex = { play: 0, heal: 0 };
+
+const endingAudio = {
+  happy: new Audio("assets/audio/happy_purr.mp3"),
+  sad: new Audio("assets/audio/sad_meow.mp3")
+};
+Object.values(endingAudio).forEach(audio => {
+  audio.preload = "auto";
+});
 
 languageButtons.forEach(button => {
   button.addEventListener("click", () => setLanguage(button.dataset.lang));
@@ -347,10 +366,41 @@ document.addEventListener("keydown", e => {
 });
 
 document.getElementById("continueBtn").addEventListener("click", () => {
+  stopEndingAudio();
   openPanel("welcome");
   showCurrentGrowth(currentLanguage === "de" ? "Ich bin dank deiner Fürsorge gewachsen! ✨" : "Я выросла благодаря твоей заботе! ✨");
 });
 
+function markTaskMistake(action, index) {
+  if (!performance.mistakes[action] || performance.mistakes[action][index] == null) return;
+  performance.perfectRun = false;
+  performance.mistakes[action][index] += 1;
+  if (performance.mistakes[action][index] >= 3) {
+    performance.frustratedEnding = true;
+  }
+}
+
+function stopEndingAudio() {
+  Object.values(endingAudio).forEach(audio => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+}
+
+function playEndingAudio(mode) {
+  stopEndingAudio();
+  const audio = endingAudio[mode];
+  if (!audio) return;
+  const p = audio.play();
+  if (p && typeof p.catch === "function") p.catch(() => {});
+}
+
+function setEndingVisual(mode = null) {
+  if (!petPicture) return;
+  petPicture.classList.remove("final-happy", "final-sad");
+  if (mode === "happy") petPicture.classList.add("final-happy");
+  if (mode === "sad") petPicture.classList.add("final-sad");
+}
 
 function setLanguage(lang) {
   currentLanguage = lang;
@@ -538,6 +588,7 @@ function getBlockName(action) {
 }
 
 function showBlockGrowth(action) {
+  setEndingVisual(null);
   const stage = getGrowthStage();
   const blockName = getBlockName(action);
 
@@ -555,6 +606,7 @@ function showBlockGrowth(action) {
 }
 
 function showCurrentGrowth(message = null) {
+  setEndingVisual(null);
   const stage = getGrowthStage();
   setPetVisual(stage.key, stage[currentLanguage], message || defaultGrowthSpeech(stage.key), false);
   miniPetImage.src = petImages[stage.key];
@@ -637,6 +689,8 @@ function setActiveAction(action) {
 }
 
 function openAction(action) {
+  stopEndingAudio();
+  setEndingVisual(null);
   setActiveAction(action);
 
   if (action === "feed") {
@@ -763,6 +817,7 @@ function checkGermanFeedAnswer(task, answer, clickedButton) {
   const feedbackBox = document.getElementById("germanFeedback");
 
   if (answer !== task.correct) {
+    markTaskMistake("feed", currentFeedTaskIndex);
     feedbackBox.textContent = i18n[currentLanguage].wrong;
     feedbackBox.className = "feedback bad";
 
@@ -914,6 +969,7 @@ function checkSeriesAnswer(action, task, answer, clickedButton) {
   const feedback = document.getElementById("seriesFeedback");
 
   if (answer !== task.correct) {
+    markTaskMistake(action, seriesIndex[action]);
     feedback.textContent = i18n[currentLanguage].wrong;
     feedback.className = "feedback bad";
 
@@ -1011,7 +1067,24 @@ function checkWholeGameFinished() {
     openPanel("finish");
     document.getElementById("finishText").textContent =
       i18n[currentLanguage].finishText(state.petName);
-    showCurrentGrowth(currentLanguage === "de" ? `Ich bin gewachsen! Danke, dass du dich um mich gekümmert hast! 💛` : `Я вырос! Спасибо за твою заботу! 💛`);
+
+    const endingMood = performance.frustratedEnding ? "sad" : "happy";
+    setEndingVisual(endingMood);
+
+    const reaction = currentLanguage === "de"
+      ? (endingMood === "happy" ? "Schnurrt" : "Maunzt")
+      : (endingMood === "happy" ? "Мурлычет" : "Мяукает");
+
+    const speech = currentLanguage === "de"
+      ? (endingMood === "happy"
+          ? "Mrrr... Ich strecke dir zufrieden meine Pfote entgegen!"
+          : "Miau... Heute war es schwer. Beim nächsten Mal schaffen wir es noch besser!")
+      : (endingMood === "happy"
+          ? "Мурр... Я довольно тяну к тебе лапку!"
+          : "Мяу... Сегодня было трудновато. В следующий раз получится ещё лучше!");
+
+    setPetVisual("adult", reaction, speech, false);
+    playEndingAudio(endingMood);
   }
 }
 
