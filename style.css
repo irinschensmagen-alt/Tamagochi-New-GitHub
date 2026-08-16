@@ -747,3 +747,339 @@ h3 { margin: 0; font-size: 19px; }
     min-height: 140px;
   }
 }
+
+
+/* ===== v3: Анфиса всегда показывается целиком ===== */
+.pet-stage {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+}
+
+.pet-picture {
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  padding: 6px 10px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fbf6ff, #f7f3ff);
+}
+
+.pet-picture img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  display: block;
+  border-radius: 12px;
+}
+
+/* Реплика всегда отдельным блоком, не перекрывает картинку */
+.pet-speech {
+  position: relative;
+  z-index: 2;
+  margin-top: 5px;
+  min-height: 44px;
+}
+
+/* На небольших ноутбуках немного уменьшаем изображение,
+   чтобы лапки и хвост точно помещались */
+@media (max-height: 760px) and (min-width: 900px) {
+  .pet-picture {
+    padding: 4px 14px;
+  }
+
+  .pet-picture img {
+    transform: scale(.90);
+  }
+
+  .pet-picture img.pop {
+    transform: scale(.94);
+  }
+}
+
+
+/* =========================================================
+   v4 — ЖЁСТКОЕ ИСПРАВЛЕНИЕ ОБРЕЗКИ АНФИСЫ
+   Картинка и реплика больше физически не могут перекрываться.
+   ========================================================= */
+
+.pet-stage {
+  display: grid !important;
+  grid-template-rows: 34px minmax(0, 1fr) 58px !important;
+  gap: 6px !important;
+  padding: 9px !important;
+  overflow: hidden !important;
+}
+
+.pet-stage-top {
+  height: 34px;
+  min-height: 34px;
+  align-items: center;
+}
+
+/* Отдельное окно исключительно для изображения */
+.pet-picture {
+  position: relative !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border-radius: 14px !important;
+  background: linear-gradient(180deg, #fbf6ff, #f5f0ff) !important;
+}
+
+/* Само изображение не участвует в расчёте сетки.
+   Оно вписывается строго внутрь окна целиком. */
+.pet-picture > img#petImage {
+  position: absolute !important;
+  inset: 7px !important;
+  width: calc(100% - 14px) !important;
+  height: calc(100% - 14px) !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  object-fit: contain !important;
+  object-position: center center !important;
+
+  transform: none !important;
+  border-radius: 10px !important;
+}
+
+/* Реакция может слегка увеличиться, но только внутри своего окна */
+.pet-picture > img#petImage.pop {
+  transform: scale(.97) !important;
+}
+
+/* Реплика — отдельная фиксированная строка */
+.pet-speech {
+  position: static !important;
+  z-index: auto !important;
+  box-sizing: border-box !important;
+
+  height: 58px !important;
+  min-height: 58px !important;
+  max-height: 58px !important;
+
+  margin: 0 !important;
+  padding: 8px 10px !important;
+
+  display: flex !important;
+  align-items: center !important;
+
+  overflow: hidden !important;
+  border-radius: 12px !important;
+  background: #f8f7ff !important;
+
+  font-size: 13px !important;
+  line-height: 1.22 !important;
+}
+
+/* На экранах высотой около пользовательского скриншота
+   отдаём Анфисе больше вертикального места */
+@media (min-width: 900px) and (max-height: 900px) {
+  .game-shell {
+    grid-template-rows:
+      72px
+      66px
+      50px
+      46px
+      minmax(0, 1fr) !important;
+  }
+
+  .content-zone {
+    min-height: 0 !important;
+  }
+
+  .pet-stage {
+    grid-template-rows: 32px minmax(0, 1fr) 54px !important;
+  }
+
+  .pet-speech {
+    height: 54px !important;
+    min-height: 54px !important;
+    max-height: 54px !important;
+  }
+}
+
+
+/* =========================================================
+   v5 — финальное исправление изображения Анфисы
+   Никакого absolute и никакого увеличения.
+   ========================================================= */
+
+.pet-stage {
+  grid-template-rows: 34px minmax(0, 1fr) 58px !important;
+  gap: 6px !important;
+}
+
+.pet-picture {
+  position: static !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+
+  padding: 8px 12px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+.pet-picture > img#petImage {
+  position: static !important;
+  inset: auto !important;
+
+  width: auto !important;
+  height: auto !important;
+
+  max-width: 88% !important;
+  max-height: 96% !important;
+
+  min-width: 0 !important;
+  min-height: 0 !important;
+
+  margin: auto !important;
+  padding: 0 !important;
+
+  object-fit: contain !important;
+  object-position: center center !important;
+
+  transform: none !important;
+}
+
+/* Реакции не должны приближать изображение */
+.pet-picture > img#petImage.pop {
+  transform: none !important;
+}
+
+/* Для невысоких экранов оставляем ещё больший запас */
+@media (min-width: 900px) and (max-height: 900px) {
+  .pet-picture > img#petImage {
+    max-width: 82% !important;
+    max-height: 90% !important;
+  }
+}
+
+/* =========================================================
+   v5 — заметная зелёная подсветка изменившихся показателей
+   ========================================================= */
+
+.stat.changed {
+  background: #dfffe8 !important;
+  border: 2px solid #36b95f !important;
+  box-shadow:
+    0 0 0 3px rgba(54,185,95,.20),
+    0 0 18px rgba(54,185,95,.42) !important;
+  transform: scale(1.035) !important;
+}
+
+.stat.changed strong,
+.stat.changed b {
+  color: #147a36 !important;
+}
+
+.stat.changed b::after {
+  content: " ✓";
+  color: #20a34c;
+  font-size: .8em;
+}
+
+
+/* ===== v6: все варианты ответа одинаково кликабельны ===== */
+.answer-btn {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  user-select: none;
+}
+
+.answer-btn:not(:disabled):hover {
+  background: #eaf0ff !important;
+  border-color: #b8c7eb !important;
+  transform: translateY(-1px);
+}
+
+.answer-btn:not(:disabled):active {
+  transform: translateY(0) scale(.995);
+}
+
+.answer-btn.wrong-answer {
+  background: #fff0f1 !important;
+  border-color: #e66a76 !important;
+  color: #9c2632 !important;
+  animation: wrongShake .28s ease-in-out 2;
+}
+
+.answer-btn:disabled {
+  cursor: default !important;
+  pointer-events: none !important;
+}
+
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+
+/* ===== v8: RU / DE language switch ===== */
+.top-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-switch {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 12px;
+  background: #eef2fb;
+  border: 1px solid #dde3f1;
+}
+
+.birth-language-switch {
+  width: fit-content;
+  margin-bottom: 10px;
+}
+
+.lang-btn {
+  min-width: 42px;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #59627c;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.lang-btn.active {
+  background: #6f65d8;
+  color: white;
+  box-shadow: 0 3px 8px rgba(71,61,156,.22);
+}
+
+@media (max-width: 900px) {
+  .top-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .language-switch {
+    justify-content: center;
+  }
+}

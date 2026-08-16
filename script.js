@@ -1,5 +1,5 @@
 const state = {
-  petName: "Анфиса",
+  petName: "Anfisa",
   health: 70,
   hunger: 60,
   mood: 55,
@@ -10,6 +10,195 @@ const state = {
 };
 
 const progress = { feed: false, play: false, heal: false };
+
+let currentLanguage = "de";
+
+const i18n = {
+  de: {
+    demoLabel: "Demo-Webversion",
+    levelLabel: "🏆 Level",
+    overallProgressLabel: "Gesamtfortschritt",
+    careTitle: "Für Anfisa sorgen",
+    stepFeedLabel: "🍎 Füttern",
+    stepPlayLabel: "🎮 Spielen",
+    stepHealLabel: "💊 Gesundheit",
+    healthLabel: "Gesundheit",
+    hungerLabel: "Hunger",
+    moodLabel: "Stimmung",
+    energyLabel: "Energie",
+    coinsLabel: "Münzen",
+    experienceLabel: "Erfahrung",
+    feedButton: "🍎 Füttern",
+    playButton: "🎮 Spielen",
+    healButton: "💊 Heilen",
+    welcomeActionTitle: "Wähle eine Aktion",
+    welcomeActionText: "Füttere Anfisa, spiele mit ihr oder hilf ihr, wieder gesund zu werden.",
+    feedTitle: "Füttere Anfisa",
+    satietyLabel: "Sättigung",
+    fooddyStepLabel: "🤖 Schritt 1. Robo-Futterautomat Fooddy",
+    fooddyTitle: "Errate den Geheimcode",
+    roundLabel: "Runde",
+    attemptsLabel: "Gültige Versuche:",
+    deStepLabel: "🇩🇪 Schritt 2. Deutsch",
+    portionLabel: "Portion",
+    taskNumberLabel: "Aufgabe",
+    finishTitle: "Demo geschafft!",
+    startBtn: "Das Ei wecken",
+    birthContinueBtn: "Anfisa kennenlernen",
+    birthTitleEgg: "Kosmisches Ei",
+    birthTextEgg: "Da ist jemand drin … Gib deinem Tamagotchi einen Namen.",
+    birthTitleWake: "Das Ei wacht auf …",
+    birthTextWake: "Das Neonlicht wird heller. Schau genau hin!",
+    birthBorn: name => `${name} ist geboren!`,
+    birthBornText: "Da ist sie – die neugeborene Anfisa! Schau sie dir in Ruhe an und klicke weiter, wenn du bereit bist.",
+    welcomeText: name => `${name} ist geboren! Löse Aufgaben und kümmere dich um dein Tamagotchi.`,
+    statusDone: "Erledigt",
+    statusNotDone: "Nicht erledigt",
+    calm: "Ruhig",
+    fooddyReady: "Fooddy ist bereit",
+    fooddyDispensing: "Fooddy gibt eine Portion aus!",
+    fooddyDispensed: "Portion ausgegeben ✓",
+    codePrompt: n => `Fooddy: „Piep-piep! Code Nr. ${n} ist versteckt. Errate eine Zahl von 1 bis 100!“`,
+    invalidNumber: i18n[currentLanguage].invalidNumber,
+    tooLow: i18n[currentLanguage].tooLow,
+    tooHigh: i18n[currentLanguage].tooHigh,
+    codeCorrect: i18n[currentLanguage].codeCorrect,
+    wrong: i18n[currentLanguage].wrong,
+    correctPortion: name => `${name} bekommt eine Portion Futter!`,
+    hungerChanged: value => `Richtig! Fooddy gibt eine Portion aus. Hunger: ${value}.`,
+    fullyFed: i18n[currentLanguage].fullyFed,
+    feedComplete: name => `Geschafft! ${name} hat alle 6 Portionen bekommen.`,
+    playTopic: "🎮 Hobbys und Freizeit",
+    healTopic: "💊 Gesundheit",
+    playTitle: "Spiele mit Anfisa",
+    healTitle: "Hilf Anfisa, wieder gesund zu werden",
+    playProgress: "Spielfortschritt",
+    healProgress: "Heilungsfortschritt",
+    finishText: name => `${name} ist satt, gesund, glücklich und dank deiner Fürsorge gewachsen!`,
+    continueBtn: "Anfisa ansehen"
+  },
+
+  ru: {
+    demoLabel: "Пробная веб-версия",
+    levelLabel: "🏆 Уровень",
+    overallProgressLabel: "Общий прогресс",
+    careTitle: "Забота об Анфисе",
+    stepFeedLabel: "🍎 Еда",
+    stepPlayLabel: "🎮 Игра",
+    stepHealLabel: "💊 Здоровье",
+    healthLabel: "Здоровье",
+    hungerLabel: "Голод",
+    moodLabel: "Настроение",
+    energyLabel: "Энергия",
+    coinsLabel: "Монеты",
+    experienceLabel: "Опыт",
+    feedButton: "🍎 Покормить",
+    playButton: "🎮 Поиграть",
+    healButton: "💊 Лечить",
+    welcomeActionTitle: "Выбери действие",
+    welcomeActionText: "Покорми Анфису, поиграй с ней или помоги ей выздороветь.",
+    feedTitle: "Покорми Анфису",
+    satietyLabel: "Сытость",
+    fooddyStepLabel: "🤖 Шаг 1. Робо-Кормушка Фудди",
+    fooddyTitle: "Угадай секретный код",
+    roundLabel: "Раунд",
+    attemptsLabel: "Допустимых попыток:",
+    deStepLabel: "🇷🇺 Шаг 2. Задание",
+    portionLabel: "Порция",
+    taskNumberLabel: "Задание",
+    finishTitle: "Пробная часть пройдена!",
+    startBtn: "Разбудить яйцо",
+    birthContinueBtn: "Познакомиться с Анфисой",
+    birthTitleEgg: "Космическое яйцо",
+    birthTextEgg: "Внутри кто-то есть… Дай будущему Тамагочи имя.",
+    birthTitleWake: "Яйцо просыпается…",
+    birthTextWake: "Неоновый свет становится ярче. Смотри внимательно!",
+    birthBorn: name => `${name} родилась!`,
+    birthBornText: "Вот она — новорождённая Анфиса! Рассмотри её и нажми кнопку, когда будешь готов продолжить.",
+    welcomeText: name => `${name} родилась! Выполняй задания и заботься о питомце.`,
+    statusDone: "Выполнено",
+    statusNotDone: "Не выполнено",
+    calm: "Спокойна",
+    fooddyReady: "Фудди готова",
+    fooddyDispensing: "Фудди выдаёт порцию!",
+    fooddyDispensed: "Порция выдана ✓",
+    codePrompt: n => `Фудди: «Бип-бип! Код №${n} спрятан. Угадай число от 1 до 100!»`,
+    invalidNumber: "Фудди: «Бип-бип! Введи целое число от 1 до 100.»",
+    tooLow: "Фудди: «Слишком мало! Мой код БОЛЬШЕ!»",
+    tooHigh: "Фудди: «Слишком много! Мой код МЕНЬШЕ!»",
+    codeCorrect: "Фудди: «Отлично! Код верный. Теперь выполни задание!»",
+    wrong: "Неправильно. Попробуй ещё раз.",
+    correctPortion: name => `${name} получает порцию корма!`,
+    hungerChanged: value => `Правильно! Фудди выдаёт порцию. Голод: ${value}.`,
+    fullyFed: "Я сыта! Спасибо!",
+    feedComplete: name => `Готово! ${name} получила все 6 порций.`,
+    playTopic: "🎮 Игры и досуг",
+    healTopic: "💊 Здоровье",
+    playTitle: "Поиграй с Анфисой",
+    healTitle: "Помоги Анфисе выздороветь",
+    playProgress: "Прогресс игры",
+    healProgress: "Прогресс лечения",
+    finishText: name => `${name} сыта, здорова, счастлива и выросла благодаря твоей заботе!`,
+    continueBtn: "Посмотреть на Анфису"
+  }
+};
+
+const localizedTasks = {
+  de: {
+    feed: [
+      {title:"AUFGABE 1", question:"___ Apfel", answers:["der","die","das"], correct:"der", success:"Richtig! Der Apfel."},
+      {title:"AUFGABE 2", question:"Was trinkt man?", answers:["Wasser","Brot","Käse"], correct:"Wasser", success:"Richtig! Man trinkt Wasser."},
+      {title:"AUFGABE 3", question:"Zum Frühstück esse ich Brot mit ...", answers:["Käse","Wasser","Saft"], correct:"Käse", success:"Richtig! Brot mit Käse."},
+      {title:"AUFGABE 4", question:"Möchtest du einen Tee?", answers:["Ja, gern.","Ich heiße Anna.","Das ist mein Bruder."], correct:"Ja, gern.", success:"Richtig! Ja, gern."},
+      {title:"AUFGABE 5", question:"Was passt nicht?", answers:["die Banane","der Apfel","die Orange","die Milch"], correct:"die Milch", success:"Richtig! Die Milch passt nicht."},
+      {title:"AUFGABE 6", question:"Ich möchte eine Pizza ...", answers:["bestellen","trinken","fahren"], correct:"bestellen", success:"Richtig! Ich möchte eine Pizza bestellen."}
+    ],
+    play: [
+      {title:"AUFGABE 1", question:"Anna ___ gern Fußball.", answers:["spiele","spielt","spielen"], correct:"spielt", success:"Richtig! Anna spielt gern Fußball."},
+      {title:"AUFGABE 2", question:"Was macht man in der Freizeit?", answers:["Musik hören","Fieber haben","Medizin nehmen"], correct:"Musik hören", success:"Richtig! Musik hören."},
+      {title:"AUFGABE 3", question:"Wir ___ am Wochenende Tennis.", answers:["spielen","spielt","spielst"], correct:"spielen", success:"Richtig! Wir spielen am Wochenende Tennis."},
+      {title:"AUFGABE 4", question:"Ich ___ gern Bücher.", answers:["lese","liest","lesen"], correct:"lese", success:"Richtig! Ich lese gern Bücher."},
+      {title:"AUFGABE 5", question:"Was passt zu einem Hobby?", answers:["fotografieren","Kopfschmerzen","Tabletten"], correct:"fotografieren", success:"Richtig! Fotografieren ist ein Hobby."},
+      {title:"AUFGABE 6", question:"Am Samstag ___ wir ins Kino.", answers:["gehen","geht","gehst"], correct:"gehen", success:"Richtig! Am Samstag gehen wir ins Kino."}
+    ],
+    heal: [
+      {title:"AUFGABE 1", question:"Anfisa hat Kopfschmerzen. Sie ist ...", answers:["krank","lecker","sportlich"], correct:"krank", success:"Richtig! Anfisa ist krank."},
+      {title:"AUFGABE 2", question:"Was hilft bei Krankheit?", answers:["Medizin","Fußball","Pizza"], correct:"Medizin", success:"Richtig! Medizin hilft."},
+      {title:"AUFGABE 3", question:"Der Arzt sagt: Du sollst im Bett ...", answers:["bleiben","tanzen","fahren"], correct:"bleiben", success:"Richtig! Du sollst im Bett bleiben."},
+      {title:"AUFGABE 4", question:"Ich habe Halsschmerzen. Ich trinke warmen ...", answers:["Tee","Ball","Schuh"], correct:"Tee", success:"Richtig! Ich trinke warmen Tee."},
+      {title:"AUFGABE 5", question:"Bei Fieber soll man sich ...", answers:["ausruhen","beeilen","verabreden"], correct:"ausruhen", success:"Richtig! Man soll sich ausruhen."},
+      {title:"AUFGABE 6", question:"Der Arzt untersucht den ...", answers:["Patienten","Kuchen","Fußball"], correct:"Patienten", success:"Richtig! Der Arzt untersucht den Patienten."}
+    ]
+  },
+
+  ru: {
+    feed: [
+      {title:"ЗАДАНИЕ 1", question:"Какой продукт является фруктом?", answers:["яблоко","вода","сыр"], correct:"яблоко", success:"Правильно! Яблоко — фрукт."},
+      {title:"ЗАДАНИЕ 2", question:"Что обычно пьют?", answers:["воду","хлеб","сыр"], correct:"воду", success:"Правильно! Пьют воду."},
+      {title:"ЗАДАНИЕ 3", question:"Что можно положить на хлеб?", answers:["сыр","воду","сок"], correct:"сыр", success:"Правильно! Хлеб с сыром."},
+      {title:"ЗАДАНИЕ 4", question:"Что ответить на предложение чая?", answers:["Да, с удовольствием.","Меня зовут Анна.","Это мой брат."], correct:"Да, с удовольствием.", success:"Правильно!"},
+      {title:"ЗАДАНИЕ 5", question:"Что лишнее?", answers:["банан","яблоко","апельсин","молоко"], correct:"молоко", success:"Правильно! Молоко — не фрукт."},
+      {title:"ЗАДАНИЕ 6", question:"Что можно сделать с пиццей?", answers:["заказать","выпить","поехать"], correct:"заказать", success:"Правильно! Пиццу можно заказать."}
+    ],
+    play: [
+      {title:"ЗАДАНИЕ 1", question:"Что относится к активному отдыху?", answers:["футбол","лекарство","температура"], correct:"футбол", success:"Правильно! Футбол — активная игра."},
+      {title:"ЗАДАНИЕ 2", question:"Что можно делать в свободное время?", answers:["слушать музыку","болеть","принимать лекарство"], correct:"слушать музыку", success:"Правильно!"},
+      {title:"ЗАДАНИЕ 3", question:"Во что играют ракеткой и мячом?", answers:["теннис","шахматы","лото"], correct:"теннис", success:"Правильно! Это теннис."},
+      {title:"ЗАДАНИЕ 4", question:"Что можно читать?", answers:["книги","мяч","лекарство"], correct:"книги", success:"Правильно! Читают книги."},
+      {title:"ЗАДАНИЕ 5", question:"Что является хобби?", answers:["фотографировать","болеть","лечиться"], correct:"фотографировать", success:"Правильно! Фотография может быть хобби."},
+      {title:"ЗАДАНИЕ 6", question:"Куда можно пойти смотреть фильм?", answers:["в кино","в аптеку","к врачу"], correct:"в кино", success:"Правильно! Фильм смотрят в кино."}
+    ],
+    heal: [
+      {title:"ЗАДАНИЕ 1", question:"У Анфисы болит голова. Она ...", answers:["болеет","вкусная","спортивная"], correct:"болеет", success:"Правильно! Анфиса болеет."},
+      {title:"ЗАДАНИЕ 2", question:"Что помогает при болезни?", answers:["лекарство","футбол","пицца"], correct:"лекарство", success:"Правильно! Лекарство помогает."},
+      {title:"ЗАДАНИЕ 3", question:"Что советуют делать при болезни?", answers:["отдыхать","танцевать","бегать"], correct:"отдыхать", success:"Правильно! Нужно отдыхать."},
+      {title:"ЗАДАНИЕ 4", question:"Что можно пить при больном горле?", answers:["тёплый чай","мяч","ботинок"], correct:"тёплый чай", success:"Правильно!"},
+      {title:"ЗАДАНИЕ 5", question:"Что делать при высокой температуре?", answers:["отдыхать","торопиться","играть весь день"], correct:"отдыхать", success:"Правильно! Нужно отдыхать."},
+      {title:"ЗАДАНИЕ 6", question:"Кого осматривает врач?", answers:["пациента","торт","футбольный мяч"], correct:"пациента", success:"Правильно! Врач осматривает пациента."}
+    ]
+  }
+};
+
 
 const petImages = {
   egg: "assets/images/anfisa_egg.png",
@@ -25,44 +214,30 @@ const petImages = {
 };
 
 const growthStages = [
-  { minLevel: 1, key: "baby", label: "Малышка" },
-  { minLevel: 2, key: "kitten", label: "Котёнок" },
-  { minLevel: 3, key: "growing", label: "Подрастает" },
-  { minLevel: 4, key: "adult", label: "Взрослая" }
+  { minLevel: 1, key: "baby", de: "Baby", ru: "Малышка" },
+  { minLevel: 2, key: "kitten", de: "Kätzchen", ru: "Котёнок" },
+  { minLevel: 3, key: "growing", de: "Wächst", ru: "Подрастает" },
+  { minLevel: 4, key: "adult", de: "Erwachsen", ru: "Взрослая" }
 ];
 
 let previousRenderedState = null;
 let previousLevel = 1;
 let reactionTimer = null;
 
-const germanFeedTasks = [
-  { title:"AUFGABE 1", question:"___ Apfel", answers:["der","die","das"], correct:"der", success:"Richtig! Der Apfel." },
-  { title:"AUFGABE 2", question:"Was trinkt man?", answers:["Wasser","Brot","Käse"], correct:"Wasser", success:"Richtig! Man trinkt Wasser." },
-  { title:"AUFGABE 3", question:"Zum Frühstück esse ich Brot mit ...", answers:["Käse","Wasser","Saft"], correct:"Käse", success:"Richtig! Brot mit Käse." },
-  { title:"AUFGABE 4", question:"Möchtest du einen Tee?", answers:["Ja, gern.","Ich heiße Anna.","Das ist mein Bruder."], correct:"Ja, gern.", success:"Richtig! Ja, gern." },
-  { title:"AUFGABE 5", question:"Was passt nicht?", answers:["die Banane","der Apfel","die Orange","die Milch"], correct:"die Milch", success:"Richtig! Die Milch passt nicht." },
-  { title:"AUFGABE 6", question:"Ich möchte eine Pizza ...", answers:["bestellen","trinken","fahren"], correct:"bestellen", success:"Richtig! Ich möchte eine Pizza bestellen." }
-];
+function getFeedTasks() {
+  return localizedTasks[currentLanguage].feed;
+}
 
-const playTasks = [
-  { title:"AUFGABE 1", question:"Anna ___ gern Fußball.", answers:["spiele","spielt","spielen"], correct:"spielt", success:"Richtig! Anna spielt gern Fußball." },
-  { title:"AUFGABE 2", question:"Was macht man in der Freizeit?", answers:["Musik hören","Fieber haben","Medizin nehmen"], correct:"Musik hören", success:"Richtig! Musik hören." },
-  { title:"AUFGABE 3", question:"Wir ___ am Wochenende Tennis.", answers:["spielen","spielt","spielst"], correct:"spielen", success:"Richtig! Wir spielen am Wochenende Tennis." },
-  { title:"AUFGABE 4", question:"Ich ___ gern Bücher.", answers:["lese","liest","lesen"], correct:"lese", success:"Richtig! Ich lese gern Bücher." },
-  { title:"AUFGABE 5", question:"Was passt zu einem Hobby?", answers:["fotografieren","Kopfschmerzen","Tabletten"], correct:"fotografieren", success:"Richtig! Fotografieren ist ein Hobby." },
-  { title:"AUFGABE 6", question:"Am Samstag ___ wir ins Kino.", answers:["gehen","geht","gehst"], correct:"gehen", success:"Richtig! Am Samstag gehen wir ins Kino." }
-];
+function getPlayTasks() {
+  return localizedTasks[currentLanguage].play;
+}
 
-const healTasks = [
-  { title:"AUFGABE 1", question:"Anfisa hat Kopfschmerzen. Sie ist ...", answers:["krank","lecker","sportlich"], correct:"krank", success:"Richtig! Anfisa ist krank." },
-  { title:"AUFGABE 2", question:"Was hilft bei Krankheit?", answers:["Medizin","Fußball","Pizza"], correct:"Medizin", success:"Richtig! Medizin hilft." },
-  { title:"AUFGABE 3", question:"Der Arzt sagt: Du sollst im Bett ...", answers:["bleiben","tanzen","fahren"], correct:"bleiben", success:"Richtig! Du sollst im Bett bleiben." },
-  { title:"AUFGABE 4", question:"Ich habe Halsschmerzen. Ich trinke warmen ...", answers:["Tee","Ball","Schuh"], correct:"Tee", success:"Richtig! Ich trinke warmen Tee." },
-  { title:"AUFGABE 5", question:"Bei Fieber soll man sich ...", answers:["ausruhen","beeilen","verabreden"], correct:"ausruhen", success:"Richtig! Man soll sich ausruhen." },
-  { title:"AUFGABE 6", question:"Der Arzt untersucht den ...", answers:["Patienten","Kuchen","Fußball"], correct:"Patienten", success:"Richtig! Der Arzt untersucht den Patienten." }
-];
+function getHealTasks() {
+  return localizedTasks[currentLanguage].heal;
+}
 
 const birthScreen = document.getElementById("birthScreen");
+const languageButtons = document.querySelectorAll(".lang-btn");
 const gameShell = document.getElementById("gameShell");
 const birthImage = document.getElementById("birthImage");
 const birthTitle = document.getElementById("birthTitle");
@@ -98,6 +273,10 @@ let codeSolved = false;
 let currentSeries = null;
 let seriesIndex = { play: 0, heal: 0 };
 
+languageButtons.forEach(button => {
+  button.addEventListener("click", () => setLanguage(button.dataset.lang));
+});
+
 startBtn.addEventListener("click", startBirthSequence);
 birthContinueBtn.addEventListener("click", enterGameAfterBirth);
 petNameInput.addEventListener("keydown", e => {
@@ -115,23 +294,100 @@ guessInput.addEventListener("keydown", e => {
 
 document.getElementById("continueBtn").addEventListener("click", () => {
   openPanel("welcome");
-  showCurrentGrowth("Я выросла благодаря твоей заботе! ✨");
+  showCurrentGrowth("Ich bin dank deiner Fürsorge gewachsen! ✨");
 });
 
+
+function setLanguage(lang) {
+  currentLanguage = lang;
+
+  document.documentElement.lang = lang;
+
+  languageButtons.forEach(button => {
+    button.classList.toggle("active", button.dataset.lang === lang);
+  });
+
+  const t = i18n[lang];
+
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+
+  setText("demoLabel", t.demoLabel);
+  setText("levelLabel", t.levelLabel);
+  setText("overallProgressLabel", t.overallProgressLabel);
+  setText("careTitle", t.careTitle);
+  setText("stepFeedLabel", t.stepFeedLabel);
+  setText("stepPlayLabel", t.stepPlayLabel);
+  setText("stepHealLabel", t.stepHealLabel);
+  setText("healthLabel", t.healthLabel);
+  setText("hungerLabel", t.hungerLabel);
+  setText("moodLabel", t.moodLabel);
+  setText("energyLabel", t.energyLabel);
+  setText("coinsLabel", t.coinsLabel);
+  setText("experienceLabel", t.experienceLabel);
+  setText("feedButton", t.feedButton);
+  setText("playButton", t.playButton);
+  setText("healButton", t.healButton);
+  setText("welcomeActionTitle", t.welcomeActionTitle);
+  setText("welcomeActionText", t.welcomeActionText);
+  setText("feedTitle", t.feedTitle);
+  setText("satietyLabel", t.satietyLabel);
+  setText("fooddyStepLabel", t.fooddyStepLabel);
+  setText("fooddyTitle", t.fooddyTitle);
+  setText("roundLabel", t.roundLabel);
+  setText("attemptsLabel", t.attemptsLabel);
+  setText("deStepLabel", t.deStepLabel);
+  setText("portionLabel", t.portionLabel);
+  setText("taskNumberLabel", t.taskNumberLabel);
+  setText("finishTitle", t.finishTitle);
+
+  startBtn.textContent = t.startBtn;
+  birthContinueBtn.textContent = t.birthContinueBtn;
+  document.getElementById("continueBtn").textContent = t.continueBtn;
+
+  if (!birthControls.hidden) {
+    birthTitle.textContent = t.birthTitleEgg;
+    birthText.textContent = t.birthTextEgg;
+  }
+
+  if (!gameShell.hidden) {
+    document.getElementById("welcomeText").textContent = t.welcomeText(state.petName);
+    reactionLabel.textContent = t.calm;
+    updateFeedStatus();
+    updateGameProgress();
+
+    if (!feedArea.hidden) {
+      if (!germanBox.hidden && currentFeedTaskIndex < 6) {
+        showGermanFeedTask();
+      } else if (!fooddyBox.hidden && !progress.feed) {
+        document.getElementById("fooddyMessage").textContent =
+          t.codePrompt(currentFeedTaskIndex + 1);
+      }
+    }
+
+    if (!seriesArea.hidden && currentSeries) {
+      showSeriesTask(currentSeries);
+    }
+
+    showCurrentGrowth();
+  }
+}
+
 function startBirthSequence() {
-  state.petName = petNameInput.value.trim() || "Анфиса";
+  state.petName = petNameInput.value.trim() || "Anfisa";
 
   birthControls.hidden = true;
   birthContinueBtn.hidden = true;
-  birthTitle.textContent = "Яйцо просыпается…";
-  birthText.textContent = "Неоновый свет становится ярче. Смотри внимательно!";
+  birthTitle.textContent = i18n[currentLanguage].birthTitleWake;
+  birthText.textContent = i18n[currentLanguage].birthTextWake;
   birthImage.src = petImages.egg;
 
   setTimeout(() => {
     birthImage.src = petImages.hatching;
-    birthTitle.textContent = `${state.petName} родилась!`;
-    birthText.textContent =
-      "Вот она — новорождённая Анфиса! Рассмотри её и нажми кнопку, когда будешь готов продолжить.";
+    birthTitle.textContent = i18n[currentLanguage].birthBorn(state.petName);
+    birthText.textContent = i18n[currentLanguage].birthBornText;
     birthContinueBtn.hidden = false;
   }, 1200);
 }
@@ -141,11 +397,11 @@ function enterGameAfterBirth() {
   gameShell.hidden = false;
 
   document.getElementById("welcomeText").textContent =
-    `${state.petName} родилась! Выполняй задания и заботься о питомце.`;
+    i18n[currentLanguage].welcomeText(state.petName);
 
   renderStats();
   updateGameProgress();
-  showCurrentGrowth(`Мяу! Я ${state.petName}. Позаботься обо мне!`);
+  showCurrentGrowth(`Miau! Ich bin ${state.petName}. Kümmere dich um mich!`);
 }
 
 function getGrowthStage() {
@@ -164,12 +420,21 @@ function showCurrentGrowth(message = null) {
 
 function defaultGrowthSpeech(key) {
   const lines = {
-    baby: "Мяу! Я ещё совсем маленькая.",
-    kitten: "Смотри, я уже подросла!",
-    growing: "Я становлюсь всё взрослее!",
-    adult: "Я выросла! Спасибо за твою заботу."
+    de: {
+      baby: "Miau! Ich bin noch ganz klein.",
+      kitten: "Schau, ich bin schon gewachsen!",
+      growing: "Ich werde immer größer!",
+      adult: "Ich bin groß geworden! Danke für deine Fürsorge."
+    },
+    ru: {
+      baby: "Мяу! Я ещё совсем маленькая.",
+      kitten: "Смотри, я уже подросла!",
+      growing: "Я становлюсь всё взрослее!",
+      adult: "Я выросла! Спасибо за твою заботу."
+    }
   };
-  return lines[key];
+
+  return lines[currentLanguage][key];
 }
 
 function setPetVisual(key, reaction, speech, temporary = true, duration = 1400) {
@@ -188,22 +453,31 @@ function setPetVisual(key, reaction, speech, temporary = true, duration = 1400) 
       petSparkles.classList.remove("show");
       petImage.classList.remove("pop");
       showCurrentGrowth();
-      reactionLabel.textContent = "Спокойна";
+      reactionLabel.textContent = i18n[currentLanguage].calm;
     }, duration);
   } else {
     setTimeout(() => petSparkles.classList.remove("show"), 700);
-    reactionLabel.textContent = "Спокойна";
+    reactionLabel.textContent = i18n[currentLanguage].calm;
   }
 }
 
 function showReaction(type) {
   const reactions = {
-    eating: ["eating", "Ест", "Lecker! Мне очень вкусно!"],
-    playing: ["playing", "Играет", "Das macht Spaß! Ещё раз!"],
-    sick: ["sick", "Болеет", "Мне нездоровится… Помоги мне."],
-    healing: ["healing", "Лучше!", "Mir geht es besser! Спасибо!"]
+    de: {
+      eating: ["eating", "Frisst", "Lecker! Das schmeckt mir!"],
+      playing: ["playing", "Spielt", "Das macht Spaß! Noch einmal!"],
+      sick: ["sick", "Krank", "Mir geht es nicht gut … Hilf mir bitte."],
+      healing: ["healing", "Besser!", "Mir geht es besser! Danke!"]
+    },
+    ru: {
+      eating: ["eating", "Ест", "Вкусно! Мне очень нравится!"],
+      playing: ["playing", "Играет", "Как весело! Ещё раз!"],
+      sick: ["sick", "Болеет", "Мне нездоровится… Помоги мне."],
+      healing: ["healing", "Лучше!", "Мне уже лучше! Спасибо!"]
+    }
   };
-  const [imageKey, label, speech] = reactions[type];
+
+  const [imageKey, label, speech] = reactions[currentLanguage][type];
   setPetVisual(imageKey, label, speech, true);
 }
 
@@ -225,7 +499,7 @@ function openAction(action) {
 
   if (action === "feed") {
     openPanel("feed");
-    showCurrentGrowth("Фудди хранит еду. Помоги мне получить порцию!");
+    showCurrentGrowth("Fooddy bewacht das Futter. Hilf mir, eine Portion zu bekommen!");
     if (!progress.feed && feedCount === 0 && currentFeedTaskIndex === 0 && !codeSolved) {
       startFooddyRound();
     }
@@ -240,7 +514,7 @@ function openAction(action) {
   if (action === "heal" && !progress.heal) {
     showReaction("sick");
   } else {
-    showCurrentGrowth(action === "play" ? "Поиграем? Я готова!" : "Спасибо, мне уже лучше!");
+    showCurrentGrowth(action === "play" ? "Spielen wir? Ich bin bereit!" : "Danke, mir geht es schon besser!");
   }
 
   showSeriesTask(action);
@@ -248,14 +522,14 @@ function openAction(action) {
 
 
 function dispenseFooddyPortion() {
-  fooddyDispenseLabel.textContent = "Фудди выдаёт порцию!";
+  fooddyDispenseLabel.textContent = i18n[currentLanguage].fooddyDispensing;
   foodPellets.classList.remove("dispensing");
   void foodPellets.offsetWidth;
   foodPellets.classList.add("dispensing");
 
   setTimeout(() => {
     foodPellets.classList.remove("dispensing");
-    fooddyDispenseLabel.textContent = "Порция выдана ✓";
+    fooddyDispenseLabel.textContent = i18n[currentLanguage].fooddyDispensed;
   }, 1000);
 }
 
@@ -271,9 +545,9 @@ function startFooddyRound() {
   document.getElementById("roundNumber").textContent = currentFeedTaskIndex + 1;
   document.getElementById("attempts").textContent = 0;
   document.getElementById("fooddyMessage").textContent =
-    `Фудди: «Бип-бип! Код №${currentFeedTaskIndex + 1} спрятан. Угадай число от 1 до 100!»`;
+    i18n[currentLanguage].codePrompt(currentFeedTaskIndex + 1);
 
-  fooddyDispenseLabel.textContent = "Фудди готова";
+  fooddyDispenseLabel.textContent = i18n[currentLanguage].fooddyReady;
   guessInput.value = "";
   guessInput.disabled = false;
   guessBtn.disabled = false;
@@ -287,7 +561,7 @@ function checkGuess() {
 
   if (!Number.isInteger(value) || value < 1 || value > 100) {
     document.getElementById("fooddyMessage").textContent =
-      "Фудди: «Бип-бип! Введи целое число от 1 до 100.»";
+      i18n[currentLanguage].invalidNumber;
     return;
   }
 
@@ -295,15 +569,15 @@ function checkGuess() {
   document.getElementById("attempts").textContent = attemptsThisRound;
 
   if (value < secretNumber) {
-    document.getElementById("fooddyMessage").textContent = "Фудди: «Слишком мало! Мой код БОЛЬШЕ!»";
+    document.getElementById("fooddyMessage").textContent = i18n[currentLanguage].tooLow;
   } else if (value > secretNumber) {
-    document.getElementById("fooddyMessage").textContent = "Фудди: «Ого, перелёт! Мой код МЕНЬШЕ!»";
+    document.getElementById("fooddyMessage").textContent = i18n[currentLanguage].tooHigh;
   } else {
     codeSolved = true;
     guessInput.disabled = true;
     guessBtn.disabled = true;
     document.getElementById("fooddyMessage").textContent =
-      "Фудди: «Super! Der Code stimmt. Jetzt löse die Aufgabe!»";
+      i18n[currentLanguage].codeCorrect;
     showGermanFeedTask();
   }
 
@@ -311,7 +585,7 @@ function checkGuess() {
 }
 
 function showGermanFeedTask() {
-  const task = germanFeedTasks[currentFeedTaskIndex];
+  const task = getFeedTasks()[currentFeedTaskIndex];
   fooddyBox.hidden = true;
   germanBox.hidden = false;
 
@@ -326,24 +600,35 @@ function showGermanFeedTask() {
 
   shuffle([...task.answers]).forEach(answer => {
     const button = document.createElement("button");
+    button.type = "button";
     button.className = "answer-btn";
     button.textContent = answer;
-    button.addEventListener("click", () => checkGermanFeedAnswer(task, answer));
+    button.disabled = false;
+    button.addEventListener("click", () => checkGermanFeedAnswer(task, answer, button));
     box.appendChild(button);
   });
 }
 
-function checkGermanFeedAnswer(task, answer) {
+function checkGermanFeedAnswer(task, answer, clickedButton) {
   const feedbackBox = document.getElementById("germanFeedback");
 
   if (answer !== task.correct) {
-    feedbackBox.textContent = "Leider falsch. Versuch es noch einmal.";
+    feedbackBox.textContent = i18n[currentLanguage].wrong;
     feedbackBox.className = "feedback bad";
+
+    clickedButton.classList.remove("wrong-answer");
+    void clickedButton.offsetWidth;
+    clickedButton.classList.add("wrong-answer");
+
+    setTimeout(() => {
+      clickedButton.classList.remove("wrong-answer");
+    }, 700);
+
     return;
   }
 
   document.querySelectorAll("#germanAnswers button").forEach(b => b.disabled = true);
-  feedbackBox.textContent = `${task.success} ${state.petName} получает порцию еды!`;
+  feedbackBox.textContent = `${task.success} ${i18n[currentLanguage].correctPortion(state.petName)}`;
   feedbackBox.className = "feedback ok";
 
   feedCount++;
@@ -358,6 +643,9 @@ function checkGermanFeedAnswer(task, answer) {
   clampStats();
   renderStats();
   updateFeedProgress();
+
+  // Голод изменился только сейчас — после правильного немецкого ответа.
+  petSpeech.textContent = i18n[currentLanguage].hungerChanged(state.hunger);
 
   // Сначала Фудди физически выдаёт порцию, затем Анфиса её ест.
   dispenseFooddyPortion();
@@ -386,11 +674,11 @@ function finishFeedBlock() {
   germanBox.hidden = true;
   fooddyBox.hidden = false;
   document.getElementById("fooddyMessage").textContent =
-    `Geschafft! ${state.petName} hat alle 6 Portionen bekommen.`;
+    i18n[currentLanguage].feedComplete(state.petName);
 
   guessInput.disabled = true;
   guessBtn.disabled = true;
-  showCurrentGrowth("Я полностью сыта! Danke!");
+  showCurrentGrowth(i18n[currentLanguage].fullyFed);
   checkWholeGameFinished();
 }
 
@@ -405,30 +693,32 @@ function updateFeedProgress() {
 
 function updateFeedStatus() {
   const badge = document.getElementById("feedStatus");
-  badge.textContent = progress.feed ? "Выполнено" : "Не выполнено";
+  badge.textContent = progress.feed ? i18n[currentLanguage].statusDone : i18n[currentLanguage].statusNotDone;
   badge.classList.toggle("done", progress.feed);
 }
 
 /* ---------- ИГРА / ЛЕЧЕНИЕ ---------- */
 function getSeriesTasks(action) {
-  return action === "play" ? playTasks : healTasks;
+  return action === "play" ? getPlayTasks() : getHealTasks();
 }
 
 function showSeriesTask(action) {
   const tasks = getSeriesTasks(action);
   const index = seriesIndex[action];
 
+  const t = i18n[currentLanguage];
+
   document.getElementById("seriesTopic").textContent =
-    action === "play" ? "🎮 Hobbys und Freizeit" : "💊 Gesundheit";
+    action === "play" ? t.playTopic : t.healTopic;
 
   document.getElementById("seriesTitle").textContent =
-    action === "play" ? "Поиграй с Анфисой" : "Помоги Анфисе выздороветь";
+    action === "play" ? t.playTitle : t.healTitle;
 
   document.getElementById("seriesProgressLabel").textContent =
-    action === "play" ? "Игровой прогресс" : "Прогресс лечения";
+    action === "play" ? t.playProgress : t.healProgress;
 
   const status = document.getElementById("seriesStatus");
-  status.textContent = progress[action] ? "Выполнено" : "Не выполнено";
+  status.textContent = progress[action] ? i18n[currentLanguage].statusDone : i18n[currentLanguage].statusNotDone;
   status.classList.toggle("done", progress[action]);
 
   updateSeriesProgress(action);
@@ -455,19 +745,30 @@ function showSeriesTask(action) {
 
   shuffle([...task.answers]).forEach(answer => {
     const button = document.createElement("button");
+    button.type = "button";
     button.className = "answer-btn";
     button.textContent = answer;
-    button.addEventListener("click", () => checkSeriesAnswer(action, task, answer));
+    button.disabled = false;
+    button.addEventListener("click", () => checkSeriesAnswer(action, task, answer, button));
     answers.appendChild(button);
   });
 }
 
-function checkSeriesAnswer(action, task, answer) {
+function checkSeriesAnswer(action, task, answer, clickedButton) {
   const feedback = document.getElementById("seriesFeedback");
 
   if (answer !== task.correct) {
-    feedback.textContent = "Leider falsch. Versuch es noch einmal.";
+    feedback.textContent = i18n[currentLanguage].wrong;
     feedback.className = "feedback bad";
+
+    clickedButton.classList.remove("wrong-answer");
+    void clickedButton.offsetWidth;
+    clickedButton.classList.add("wrong-answer");
+
+    setTimeout(() => {
+      clickedButton.classList.remove("wrong-answer");
+    }, 700);
+
     return;
   }
 
@@ -500,13 +801,13 @@ function checkSeriesAnswer(action, task, answer) {
     updateGameProgress();
 
     const status = document.getElementById("seriesStatus");
-    status.textContent = "Выполнено";
+    status.textContent = i18n[currentLanguage].statusDone;
     status.classList.add("done");
 
     if (action === "heal") {
-      setTimeout(() => showCurrentGrowth("Я снова здорова! Vielen Dank!"), 1450);
+      setTimeout(() => showCurrentGrowth("Ich bin wieder gesund! Vielen Dank!"), 1450);
     } else {
-      setTimeout(() => showCurrentGrowth("Как здорово мы поиграли!"), 1450);
+      setTimeout(() => showCurrentGrowth("Das Spielen war toll!"), 1450);
     }
 
     checkWholeGameFinished();
@@ -547,8 +848,8 @@ function checkWholeGameFinished() {
   if (progress.feed && progress.play && progress.heal) {
     openPanel("finish");
     document.getElementById("finishText").textContent =
-      `${state.petName} сыта, здорова, счастлива и выросла благодаря твоей заботе!`;
-    showCurrentGrowth("Я выросла! Спасибо, что заботился обо мне! 💛");
+      i18n[currentLanguage].finishText(state.petName);
+    showCurrentGrowth("Ich bin gewachsen! Danke, dass du dich um mich gekümmert hast! 💛");
   }
 }
 
@@ -560,7 +861,7 @@ function updateLevel() {
     previousLevel = newLevel;
     setTimeout(() => {
       const stage = getGrowthStage();
-      setPetVisual(stage.key, "Я выросла!", `Ура! Теперь я — ${stage.label.toLowerCase()}!`, true, 1800);
+      setPetVisual(stage.key, "Ich bin gewachsen!", `Hurra! Jetzt bin ich: ${stage.label}!`, true, 1800);
       miniPetImage.src = petImages[stage.key];
     }, 250);
   }
@@ -587,7 +888,7 @@ function renderStats() {
       card.classList.remove("changed");
       void card.offsetWidth;
       card.classList.add("changed");
-      setTimeout(() => card.classList.remove("changed"), 1150);
+      setTimeout(() => card.classList.remove("changed"), 2500);
     }
   });
 
@@ -615,3 +916,5 @@ function shuffle(items) {
 function clamp(value,min,max) {
   return Math.min(max,Math.max(min,value));
 }
+
+setLanguage("de");
