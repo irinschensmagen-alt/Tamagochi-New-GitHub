@@ -56,7 +56,7 @@ const i18n = {
     satietyLabel: "Sättigung",
     fooddyStepLabel: "🤖 Schritt 1. Robo-Futterautomat Fooddy",
     fooddyTitle: "Errate den Geheimcode",
-    roundLabel: "Runde",
+    roundLabel: "Zugangscode",
     attemptsLabel: "Gültige Versuche:",
     deStepLabel: "🇩🇪 Schritt 2. Deutsch",
     portionLabel: "Portion",
@@ -80,7 +80,7 @@ const i18n = {
     closeLabel: "Schließen",
     fooddyDispensing: "Fooddy gibt eine Portion aus!",
     fooddyDispensed: "Portion ausgegeben ✓",
-    codePrompt: n => `Fooddy: „Piep-piep! Code Nr. ${n} ist versteckt. Errate eine Zahl von 1 bis 100!“`,
+    codePrompt: () => `Fooddy: „Piep-piep! Errate einmal den Zugangscode von 1 bis 100. Danach öffnet sich die Futterstation für alle 6 Aufgaben!“`,
     invalidNumber: "Fooddy: „Piep-piep! Gib eine ganze Zahl von 1 bis 100 ein.“",
     tooLow: "Fooddy: „Zu klein! Mein Code ist GRÖSSER!“",
     tooHigh: "Fooddy: „Zu groß! Mein Code ist KLEINER!“",
@@ -130,7 +130,7 @@ const i18n = {
     satietyLabel: "Сытость",
     fooddyStepLabel: "🤖 Шаг 1. Робо-Кормушка Фудди",
     fooddyTitle: "Угадай секретный код",
-    roundLabel: "Раунд",
+    roundLabel: "Код доступа",
     attemptsLabel: "Допустимых попыток:",
     deStepLabel: "🇷🇺 Шаг 2. Задание",
     portionLabel: "Порция",
@@ -154,7 +154,7 @@ const i18n = {
     closeLabel: "Закрыть",
     fooddyDispensing: "Фудди выдаёт порцию!",
     fooddyDispensed: "Порция выдана ✓",
-    codePrompt: n => `Фудди: «Бип-бип! Код №${n} спрятан. Угадай число от 1 до 100!»`,
+    codePrompt: () => `Фудди: «Бип-бип! Один раз угадай код доступа от 1 до 100. После этого кормушка откроется для всех 6 заданий!»`,
     invalidNumber: "Фудди: «Бип-бип! Введи целое число от 1 до 100.»",
     tooLow: "Фудди: «Слишком мало! Мой код БОЛЬШЕ!»",
     tooHigh: "Фудди: «Слишком много! Мой код МЕНЬШЕ!»",
@@ -646,7 +646,7 @@ function setLanguage(lang) {
         showGermanFeedTask();
       } else if (!fooddyBox.hidden && !progress.feed) {
         document.getElementById("fooddyMessage").textContent =
-          t.codePrompt(currentFeedTaskIndex + 1);
+          t.codePrompt();
       }
     }
 
@@ -914,10 +914,10 @@ function startFooddyRound() {
   fooddyBox.hidden = false;
   germanBox.hidden = true;
 
-  document.getElementById("roundNumber").textContent = currentFeedTaskIndex + 1;
+  document.getElementById("roundNumber").textContent = 1;
   document.getElementById("attempts").textContent = 0;
   document.getElementById("fooddyMessage").textContent =
-    i18n[currentLanguage].codePrompt(currentFeedTaskIndex + 1);
+    i18n[currentLanguage].codePrompt();
 
   fooddyDispenseLabel.textContent = i18n[currentLanguage].fooddyReady;
   guessInput.value = "";
@@ -1032,7 +1032,9 @@ function checkGermanFeedAnswer(task, answer, clickedButton) {
   if (feedCount >= 6) {
     setTimeout(finishFeedBlock, 1700);
   } else {
-    setTimeout(startFooddyRound, 2100);
+    // Код доступа угадывается только один раз. После первой разблокировки
+    // ребёнок выполняет оставшиеся задания подряд и за каждое получает порцию.
+    setTimeout(showGermanFeedTask, 1700);
   }
 }
 

@@ -2104,3 +2104,37 @@ h1, h2, h3, .primary, .secondary-btn, .action-btn, .answer-btn, .status-badge, .
 @media (max-width: 980px) {
   .early-end-btn { padding: 7px 10px; font-size: 13px; }
 }
+
+
+/* ===== FINAL PATCH: one Fooddy code + no clipped answer/button content ===== */
+.task-stage {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-gutter: stable;
+}
+#feedArea, #seriesArea, #finishArea {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding-bottom: 12px !important;
+}
+#feedArea .german-box, #seriesArea .german-box {
+  height: auto !important;
+  min-height: max-content !important;
+  overflow: visible !important;
+}
+#feedArea .answers, #seriesArea .answers {
+  padding-bottom: 8px !important;
+}
+#feedArea .answer-btn, #seriesArea .answer-btn {
+  min-height: 38px !important;
+}
+.finish-box {
+  padding-bottom: 18px !important;
+}
+@media (min-width:900px) and (max-height:820px) {
+  #feedArea .section-heading, #seriesArea .section-heading { min-height: 42px !important; }
+  #feedArea .progress-wrap, #seriesArea .progress-wrap { margin: 3px 0 5px !important; padding: 5px 8px !important; }
+  #feedArea .task-question, #seriesArea .task-question { margin: 5px 0 7px !important; font-size: 18px !important; }
+  #feedArea .answer-btn, #seriesArea .answer-btn { min-height: 34px !important; padding: 6px 10px !important; font-size: 15px !important; }
+  #feedArea .answers, #seriesArea .answers { gap: 5px !important; }
+}
