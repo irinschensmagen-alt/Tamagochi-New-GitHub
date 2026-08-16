@@ -287,6 +287,19 @@
     </div>
   </div>
 
+
+  <div class="pet-closeup-modal" id="petCloseupModal" hidden role="dialog" aria-modal="true" aria-labelledby="petCloseupTitle">
+    <div class="pet-closeup-backdrop" data-close-pet-closeup></div>
+    <div class="pet-closeup-card">
+      <button class="pet-closeup-close" id="petCloseupClose" type="button" aria-label="Schließen">×</button>
+      <h2 id="petCloseupTitle">Tamagotchi</h2>
+      <div class="pet-closeup-image-wrap">
+        <img id="petCloseupImage" src="assets/images/tamagotchi_adult.png" alt="Tamagotchi">
+      </div>
+      <p id="petCloseupText"></p>
+    </div>
+  </div>
+
   <div id="encouragementToast" class="encouragement-toast" hidden></div>
   <audio id="bgMusic" src="assets/audio/cartoon_theme.wav" loop preload="auto"></audio>
   <audio id="victoryFanfare" src="assets/audio/victory_fanfare.wav" preload="auto"></audio>

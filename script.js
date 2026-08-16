@@ -14,6 +14,7 @@ const progress = { feed: false, play: false, heal: false };
 const performance = {
   perfectRun: true,
   frustratedEnding: false,
+  failedByMistakes: false,
   totalWrong: 0,
   totalCorrect: 0,
   mistakes: {
@@ -93,7 +94,7 @@ const i18n = {
     tooLow: "Fooddy: „Zu klein! Mein Code ist GRÖSSER!“",
     tooHigh: "Fooddy: „Zu groß! Mein Code ist KLEINER!“",
     codeCorrect: "Fooddy: „Super! Der Code stimmt. Jetzt löse die Aufgabe!“",
-    wrong: "Leider falsch. Versuch es noch einmal.",
+    wrong: "Falsch! Fehler! Mach die Aufgabe noch einmal!",
     correctPortion: name => `${name} bekommt eine Portion Futter!`,
     hungerChanged: value => `Richtig! Fooddy gibt eine Portion aus. Hunger: ${value}.`,
     fullyFed: "Ich bin satt! Danke!",
@@ -105,7 +106,10 @@ const i18n = {
     playProgress: "Spielfortschritt",
     healProgress: "Heilungsfortschritt",
     finishText: name => `${name} ist satt, gesund, glücklich und dank deiner Fürsorge gewachsen!`,
-    continueBtn: "Tamagotchi ansehen"
+    continueBtn: "Tamagotchi ansehen",
+    threeMistakesTitle: "Dein Tamagotchi ist eingeschlafen!",
+    threeMistakesText: name => `Dein Tamagotchi ist eingeschlafen! Starte das Spiel von vorn!`,
+    restartAfterFail: "Neu anfangen"
   },
 
   ru: {
@@ -167,7 +171,7 @@ const i18n = {
     tooLow: "Фудди: «Слишком мало! Мой код БОЛЬШЕ!»",
     tooHigh: "Фудди: «Слишком много! Мой код МЕНЬШЕ!»",
     codeCorrect: "Фудди: «Отлично! Код верный. Теперь выполни задание!»",
-    wrong: "Неправильно. Попробуй ещё раз.",
+    wrong: "Неверно! Ошибка! Выполни задание повторно!",
     correctPortion: name => `Выдана порция корма!`,
     hungerChanged: value => `Правильно! Фудди выдаёт порцию. Голод: ${value}.`,
     fullyFed: "Голод утолён! Спасибо!",
@@ -179,7 +183,10 @@ const i18n = {
     playProgress: "Прогресс игры",
     healProgress: "Прогресс лечения",
     finishText: name => `Все задания выполнены! Тамагочи ${name} вырос благодаря твоей заботе!`,
-    continueBtn: "Посмотреть на Тамагочи"
+    continueBtn: "Посмотреть на Тамагочи",
+    threeMistakesTitle: "Питомец уснул!",
+    threeMistakesText: name => `Питомец уснул! Начни играть сначала!`,
+    restartAfterFail: "Начать игру заново"
   }
 };
 
@@ -586,10 +593,51 @@ document.getElementById("continueBtn").addEventListener("click", () => {
 });
 
 function markTaskMistake(action, index) {
-  if (!performance.mistakes[action] || performance.mistakes[action][index] == null) return;
+  if (!performance.mistakes[action] || performance.mistakes[action][index] == null) return false;
   performance.perfectRun = false;
   performance.mistakes[action][index] += 1;
   performance.totalWrong += 1;
+  updateGameProgress();
+
+  if (performance.totalWrong >= 3) {
+    performance.failedByMistakes = true;
+    setTimeout(() => failGameFromMistakes(), 420);
+    return true;
+  }
+  return false;
+}
+
+function failGameFromMistakes() {
+  stopEndingAudio();
+  if (bgMusic) bgMusic.pause();
+  openPanel("finish");
+  setEndingVisual("sleep");
+  setPetActionBadge("");
+
+  const t = i18n[currentLanguage];
+  const finishTitleNode = document.getElementById("finishTitle");
+  const finishTextNode = document.getElementById("finishText");
+  const continueNode = document.getElementById("continueBtn");
+  const playAgainNode = document.getElementById("playAgainBtn");
+
+  if (finishTitleNode) finishTitleNode.textContent = t.threeMistakesTitle;
+  if (finishTextNode) finishTextNode.textContent = t.threeMistakesText(state.petName);
+  if (continueNode) continueNode.hidden = true;
+  if (playAgainNode) {
+    playAgainNode.hidden = false;
+    playAgainNode.textContent = t.restartAfterFail;
+  }
+
+  setPetVisual(
+    "egg",
+    currentLanguage === "de" ? "Schläft" : "Спит",
+    currentLanguage === "de"
+      ? "Miau... Zzz... Bitte pass beim nächsten Mal besser auf mich auf."
+      : "Мяу... З-з-з... В следующий раз, пожалуйста, береги меня внимательнее.",
+    false
+  );
+  if (miniPetImage) miniPetImage.src = petImages.egg;
+  playEndingAudio("sad");
 }
 
 function markTaskCorrect() {
@@ -647,6 +695,7 @@ function resetGameState() {
   seriesIndex = { play: 0, heal: 0 };
   performance.perfectRun = true;
   performance.frustratedEnding = false;
+  performance.failedByMistakes = false;
   performance.totalWrong = 0;
   performance.totalCorrect = 0;
   performance.mistakes.feed.fill(0);
@@ -659,6 +708,14 @@ function resetGameState() {
 }
 
 function restartGame() {
+  if (performance.failedByMistakes) {
+    endGame();
+    return;
+  }
+  const continueNode = document.getElementById("continueBtn");
+  const playAgainNode = document.getElementById("playAgainBtn");
+  if (continueNode) continueNode.hidden = false;
+  if (playAgainNode) playAgainNode.hidden = false;
   resetGameState();
   renderStats();
   updateGameProgress();
@@ -782,6 +839,16 @@ function setLanguage(lang) {
   }
 
   if (!gameShell.hidden) {
+    if (performance.failedByMistakes) {
+      const finishTitleNode = document.getElementById("finishTitle");
+      const finishTextNode = document.getElementById("finishText");
+      const continueNode = document.getElementById("continueBtn");
+      const playAgainNode = document.getElementById("playAgainBtn");
+      if (finishTitleNode) finishTitleNode.textContent = t.threeMistakesTitle;
+      if (finishTextNode) finishTextNode.textContent = t.threeMistakesText(state.petName);
+      if (continueNode) continueNode.hidden = true;
+      if (playAgainNode) playAgainNode.textContent = t.restartAfterFail;
+    }
     document.getElementById("welcomeText").textContent = t.welcomeText(state.petName);
     document.getElementById("careTitle").textContent = getCareTitle();
     document.getElementById("welcomeActionText").textContent = getWelcomeIntro();
@@ -1136,6 +1203,18 @@ function showFeedTaskReaction(taskIndex) {
 function showPetCloseup() {
   stopEndingAudio();
   const stage = getCurrentStage();
+  if (!petCloseupModal || !petCloseupImage || !petCloseupTitle || !petCloseupText) {
+    setPetVisual(
+      stage.key,
+      currentLanguage === "de" ? "Schnurrt" : "Мурлычет",
+      currentLanguage === "de"
+        ? "Mrrr... Ich schnurre zufrieden und freue mich, dich zu sehen!"
+        : "Мурр... Я довольно мурлычу и рада тебя видеть!",
+      false
+    );
+    playEndingAudio("happy");
+    return;
+  }
   petCloseupImage.src = petImages[stage.key];
   petCloseupTitle.textContent = currentLanguage === "de"
     ? `${state.petName} ganz nah`
@@ -1143,16 +1222,20 @@ function showPetCloseup() {
   petCloseupText.textContent = currentLanguage === "de"
     ? "Mrrr... Ich schnurre zufrieden und freue mich, dich zu sehen!"
     : "Мурр... Я довольно мурлычу и рада тебя видеть!";
-  petCloseupClose.setAttribute("aria-label", currentLanguage === "de" ? "Schließen" : "Закрыть");
+  if (petCloseupClose) petCloseupClose.setAttribute("aria-label", currentLanguage === "de" ? "Schließen" : "Закрыть");
   petCloseupModal.hidden = false;
+  petCloseupModal.removeAttribute("hidden");
+  petCloseupModal.style.display = "grid";
   document.body.classList.add("modal-open");
   playEndingAudio("happy");
-  petCloseupClose.focus();
+  if (petCloseupClose) petCloseupClose.focus();
 }
 
 function closePetCloseup() {
   if (!petCloseupModal || petCloseupModal.hidden) return;
   petCloseupModal.hidden = true;
+  petCloseupModal.setAttribute("hidden", "");
+  petCloseupModal.style.display = "none";
   document.body.classList.remove("modal-open");
   stopEndingAudio();
 }
@@ -1307,7 +1390,7 @@ function checkGermanFeedAnswer(task, answer, clickedButton) {
   const feedbackBox = document.getElementById("germanFeedback");
 
   if (answer !== task.correct) {
-    markTaskMistake("feed", currentFeedTaskIndex);
+    const gameFailed = markTaskMistake("feed", currentFeedTaskIndex);
     feedbackBox.textContent = i18n[currentLanguage].wrong;
     feedbackBox.className = "feedback bad";
 
@@ -1319,6 +1402,9 @@ function checkGermanFeedAnswer(task, answer, clickedButton) {
       clickedButton.classList.remove("wrong-answer");
     }, 700);
 
+    if (gameFailed) {
+      document.querySelectorAll("#germanAnswers button").forEach(b => b.disabled = true);
+    }
     return;
   }
 
@@ -1472,7 +1558,7 @@ function checkSeriesAnswer(action, task, answer, clickedButton) {
   const feedback = document.getElementById("seriesFeedback");
 
   if (answer !== task.correct) {
-    markTaskMistake(action, seriesIndex[action]);
+    const gameFailed = markTaskMistake(action, seriesIndex[action]);
     feedback.textContent = i18n[currentLanguage].wrong;
     feedback.className = "feedback bad";
 
@@ -1484,6 +1570,9 @@ function checkSeriesAnswer(action, task, answer, clickedButton) {
       clickedButton.classList.remove("wrong-answer");
     }, 700);
 
+    if (gameFailed) {
+      document.querySelectorAll("#seriesAnswers button").forEach(b => b.disabled = true);
+    }
     return;
   }
 
@@ -1563,7 +1652,8 @@ function updateActionFlow() {
 
 function updateGameProgress() {
   const totalTasks = 18;
-  const completedTasks = Math.min(totalTasks, Math.floor(state.experience / 5));
+  const correctlyCompleted = Math.min(totalTasks, Math.floor(state.experience / 5));
+  const completedTasks = Math.max(0, correctlyCompleted - performance.totalWrong);
   const percent = Math.round((completedTasks / totalTasks) * 100);
 
   const percentNode = document.getElementById("gameProgressPercent");
@@ -1578,8 +1668,13 @@ function updateGameProgress() {
 }
 
 function checkWholeGameFinished() {
+  if (performance.failedByMistakes) return;
   if (progress.feed && progress.play && progress.heal) {
     openPanel("finish");
+    const continueNode = document.getElementById("continueBtn");
+    const playAgainNode = document.getElementById("playAgainBtn");
+    if (continueNode) continueNode.hidden = false;
+    if (playAgainNode) playAgainNode.textContent = i18n[currentLanguage].playAgainBtn;
 
     const errorRate = getErrorRate();
     const sleepyEnding = errorRate >= 0.5;
@@ -1616,7 +1711,7 @@ function checkWholeGameFinished() {
 }
 
 function updateLevel() {
-  const newLevel = getCompletedBlocksCount() + 1;
+  const newLevel = Math.min(3, getCompletedBlocksCount() + 1);
   state.level = newLevel;
   previousLevel = newLevel;
   renderStats();
@@ -1647,7 +1742,7 @@ function renderStats() {
     }
   });
 
-  document.getElementById("level").textContent = state.level;
+  document.getElementById("level").textContent = Math.min(3, state.level);
   updateGrowthChip();
 
   previousRenderedState = {
