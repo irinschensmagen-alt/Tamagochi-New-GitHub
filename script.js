@@ -25,6 +25,14 @@ const performance = {
 
 let currentLanguage = "de";
 
+function isFemaleRussianName(name = "") {
+  const n = name.trim().toLowerCase();
+  if (!n) return true;
+  const maleExceptions = ["никита","илья","кузьма","фома","лука","савва","данила","миша","паша","саша","женя"];
+  if (maleExceptions.includes(n)) return false;
+  return /[ая]$/.test(n);
+}
+
 const i18n = {
   de: {
     demoLabel: "",
@@ -142,7 +150,7 @@ const i18n = {
     birthTextEgg: "Внутри кто-то есть… Дай будущему Тамагочи имя.",
     birthTitleWake: "Яйцо просыпается…",
     birthTextWake: "Неоновый свет становится ярче. Смотри внимательно!",
-    birthBorn: name => `Тамагочи ${name} родился!`,
+    birthBorn: name => `Тамагочи ${name} ${isFemaleRussianName(name) ? "родилась" : "родился"}!`,
     birthBornText: name => `Вот твой Тамагочи — ${name}! Рассмотри питомца и нажми кнопку, когда будешь готов продолжить.`,
     welcomeText: name => `Тамагочи ${name} уже с тобой! Выполняй задания и заботься о питомце.`,
     statusDone: "Выполнено",
@@ -198,8 +206,8 @@ const localizedTasks = {
       {title:"AUFGABE 2", question:"Was hilft bei Krankheit?", answers:["Medizin","Fußball","Pizza"], correct:"Medizin", success:"Richtig! Medizin hilft."},
       {title:"AUFGABE 3", question:"Der Arzt sagt: Du sollst im Bett ...", answers:["bleiben","tanzen","fahren"], correct:"bleiben", success:"Richtig! Du sollst im Bett bleiben."},
       {title:"AUFGABE 4", question:"Ich habe Halsschmerzen. Ich trinke warmen ...", answers:["Tee","Ball","Schuh"], correct:"Tee", success:"Richtig! Ich trinke warmen Tee."},
-      {title:"AUFGABE 5", question:"Bei Fieber soll man sich ...", answers:["ausruhen","beeilen","verabreden"], correct:"ausruhen", success:"Richtig! Man soll sich ausruhen."},
-      {title:"AUFGABE 6", question:"Der Arzt untersucht den ...", answers:["Patienten","Kuchen","Fußball"], correct:"Patienten", success:"Richtig! Der Arzt untersucht den Patienten."}
+      {title:"AUFGABE 5", question:"Womit misst man die Temperatur?", answers:["mit dem Thermometer","mit dem Ball","mit dem Buch"], correct:"mit dem Thermometer", success:"Richtig! Die Temperatur misst man mit dem Thermometer."},
+      {title:"AUFGABE 6", question:"Was hört die Tierärztin mit dem Stethoskop ab?", answers:["die Atmung","den Kuchen","den Fußball"], correct:"die Atmung", success:"Richtig! Die Tierärztin hört die Atmung ab."}
     ]
   },
 
@@ -225,8 +233,8 @@ const localizedTasks = {
       {title:"ЗАДАНИЕ 2", question:"Что помогает при болезни?", answers:["лекарство","футбол","пицца"], correct:"лекарство", success:"Правильно! Лекарство помогает."},
       {title:"ЗАДАНИЕ 3", question:"Что советуют делать при болезни?", answers:["отдыхать","танцевать","бегать"], correct:"отдыхать", success:"Правильно! Нужно отдыхать."},
       {title:"ЗАДАНИЕ 4", question:"Что можно пить при больном горле?", answers:["тёплый чай","мяч","ботинок"], correct:"тёплый чай", success:"Правильно!"},
-      {title:"ЗАДАНИЕ 5", question:"Что делать при высокой температуре?", answers:["отдыхать","торопиться","играть весь день"], correct:"отдыхать", success:"Правильно! Нужно отдыхать."},
-      {title:"ЗАДАНИЕ 6", question:"Кого осматривает врач?", answers:["пациента","торт","футбольный мяч"], correct:"пациента", success:"Правильно! Врач осматривает пациента."}
+      {title:"ЗАДАНИЕ 5", question:"Чем измеряют температуру?", answers:["градусником","мячом","книгой"], correct:"градусником", success:"Правильно! Температуру измеряют градусником."},
+      {title:"ЗАДАНИЕ 6", question:"Что ветеринар слушает стетоскопом?", answers:["дыхание","торт","футбольный мяч"], correct:"дыхание", success:"Правильно! Ветеринар слушает дыхание пациента."}
     ]
   }
 };
@@ -273,10 +281,10 @@ const taskSceneImages = {
 };
 
 const growthStages = [
-  { minLevel: 1, key: "baby", de: "Baby", ru: "Малыш" },
-  { minLevel: 2, key: "kitten", de: "Kätzchen", ru: "Котёнок" },
-  { minLevel: 3, key: "growing", de: "Jungtier", ru: "Подросток" },
-  { minLevel: 4, key: "adult", de: "Erwachsen", ru: "Взрослый" }
+  { key: "baby", de: "Baby", ru: "Младенец" },
+  { key: "growing", de: "Jungtier", ru: "Подросток" },
+  { key: "adult", de: "Erwachsen", ru: "Взрослая" },
+  { key: "adult", de: "Erwachsen", ru: "Взрослая" }
 ];
 
 let previousRenderedState = null;
@@ -449,6 +457,85 @@ Object.values(endingAudio).forEach(audio => {
   audio.preload = "auto";
 });
 
+const bgMusic = document.getElementById("bgMusic");
+const victoryFanfare = document.getElementById("victoryFanfare");
+const musicToggleBtn = document.getElementById("musicToggleBtn");
+const musicVolume = document.getElementById("musicVolume");
+const musicLabel = document.getElementById("musicLabel");
+const rewardStars = document.getElementById("rewardStars");
+const rewardCount = document.getElementById("rewardCount");
+const encouragementToast = document.getElementById("encouragementToast");
+let musicPlaying = false;
+let earnedStars = 0;
+
+function initRewards() {
+  if (!rewardStars) return;
+  rewardStars.innerHTML = "";
+  for (let i = 0; i < 18; i++) {
+    const star = document.createElement("span");
+    star.className = "reward-star";
+    star.textContent = "★";
+    rewardStars.appendChild(star);
+  }
+  updateRewardShelf();
+}
+
+function updateRewardShelf() {
+  if (rewardCount) rewardCount.textContent = `${earnedStars}/18`;
+  if (!rewardStars) return;
+  [...rewardStars.children].forEach((star, i) => star.classList.toggle("earned", i < earnedStars));
+}
+
+function awardGoldenStar() {
+  if (earnedStars >= 18) return;
+  const shelf = document.getElementById("rewardShelf");
+  if (shelf) {
+    const flying = document.createElement("div");
+    flying.className = "flying-star";
+    flying.textContent = "★";
+    document.body.appendChild(flying);
+    const target = shelf.getBoundingClientRect();
+    flying.style.setProperty("--star-x", `${target.left + target.width/2 - window.innerWidth/2}px`);
+    flying.style.setProperty("--star-y", `${target.top + target.height/2 - window.innerHeight/2}px`);
+    setTimeout(() => flying.remove(), 950);
+  }
+  setTimeout(() => { earnedStars++; updateRewardShelf(); }, 650);
+}
+
+function showEncouragement() {
+  if (!encouragementToast) return;
+  const words = currentLanguage === "de" ? ["Bravo!", "Richtig!", "Super!"] : ["Молодец!", "Верно!", "Отлично!"];
+  encouragementToast.textContent = words[Math.floor(Math.random() * words.length)];
+  encouragementToast.hidden = false;
+  encouragementToast.classList.remove("show");
+  void encouragementToast.offsetWidth;
+  encouragementToast.classList.add("show");
+  setTimeout(() => { encouragementToast.classList.remove("show"); encouragementToast.hidden = true; }, 1150);
+}
+
+function toggleMusic() {
+  if (!bgMusic) return;
+  if (bgMusic.paused) {
+    const p = bgMusic.play();
+    if (p && p.catch) p.catch(() => {});
+  } else {
+    bgMusic.pause();
+  }
+  musicPlaying = !bgMusic.paused;
+  if (musicToggleBtn) musicToggleBtn.textContent = musicPlaying ? "Ⅱ" : "▶";
+}
+
+if (musicToggleBtn) musicToggleBtn.addEventListener("click", toggleMusic);
+if (musicVolume && bgMusic) {
+  bgMusic.volume = Number(musicVolume.value);
+  musicVolume.addEventListener("input", () => { bgMusic.volume = Number(musicVolume.value); });
+}
+if (bgMusic) {
+  bgMusic.addEventListener("play", () => { musicPlaying = true; if (musicToggleBtn) musicToggleBtn.textContent = "Ⅱ"; });
+  bgMusic.addEventListener("pause", () => { musicPlaying = false; if (musicToggleBtn) musicToggleBtn.textContent = "▶"; });
+}
+initRewards();
+
 languageButtons.forEach(button => {
   button.addEventListener("click", () => setLanguage(button.dataset.lang));
 });
@@ -489,6 +576,12 @@ document.addEventListener("keydown", e => {
 });
 
 document.getElementById("continueBtn").addEventListener("click", () => {
+  if (victoryFanfare && !document.querySelector(".pet-picture.final-sleep")) {
+    victoryFanfare.currentTime = 0;
+    victoryFanfare.volume = 0.7;
+    const p = victoryFanfare.play();
+    if (p && p.catch) p.catch(() => {});
+  }
   showPetCloseup();
 });
 
@@ -501,6 +594,8 @@ function markTaskMistake(action, index) {
 
 function markTaskCorrect() {
   performance.totalCorrect += 1;
+  awardGoldenStar();
+  showEncouragement();
 }
 
 function getErrorRate() {
@@ -678,6 +773,8 @@ function setLanguage(lang) {
   document.getElementById("continueBtn").textContent = state.petName
     ? (currentLanguage === "de" ? `${state.petName} ansehen` : `Посмотреть на ${ruName("acc")}`)
     : t.continueBtn;
+  if (musicLabel) musicLabel.textContent = currentLanguage === "de" ? "Musik" : "Музыка";
+  if (musicVolume) musicVolume.setAttribute("aria-label", currentLanguage === "de" ? "Lautstärke" : "Громкость");
 
   if (!birthControls.hidden) {
     birthTitle.textContent = t.birthTitleEgg;
@@ -799,7 +896,9 @@ function getCurrentStage() {
 }
 
 function getStageLabelForLanguage(stage) {
-  return stage ? stage[currentLanguage] : "";
+  if (!stage) return "";
+  if (currentLanguage === "ru" && stage.key === "adult") return isFemaleRussianName(state.petName) ? "Взрослая" : "Взрослый";
+  return stage[currentLanguage];
 }
 
 function updateGrowthChip() {
@@ -828,7 +927,7 @@ function showBlockGrowth(action) {
 
   const message = currentLanguage === "de"
     ? `Geschafft! Der Block „${blockName}“ ist mit 6 von 6 Aufgaben abgeschlossen. Neuer Status für ${state.petName}: ${stage.de}.`
-    : `Ура! Блок «${blockName}» пройден: 6 из 6 заданий. Новый статус для ${ruName("gen")}: ${stage.ru}.`;
+    : `Ура! Блок «${blockName}» пройден: 6 из 6 заданий. Новый статус для ${ruName("gen")}: ${getStageLabelForLanguage(stage)}.`;
 
   setPetVisual(
     stage.key,
@@ -891,9 +990,9 @@ function setPetVisual(key, reaction, speech, temporary = true, duration = 1400) 
     }, duration);
   } else {
     setTimeout(() => petSparkles.classList.remove("show"), 700);
-    if (!reaction && stage) {
-      reactionLabel.hidden = false;
-      reactionLabel.textContent = getStageLabelForLanguage(stage);
+    if (!reaction) {
+      reactionLabel.hidden = true;
+      reactionLabel.textContent = "";
     }
   }
 }
@@ -936,8 +1035,8 @@ function showTaskReaction(action, taskIndex) {
         ["Nimmt Medizin", "Die Medizin hilft mir."],
         ["Ruht sich aus", "Ich bleibe im Bett und ruhe mich aus."],
         ["Trinkt Tee", "Warmer Tee tut gut."],
-        ["Erholt sich", "Ich ruhe mich bei Fieber aus."],
-        ["Beim Arzt", "Der Arzt untersucht mich."]
+        ["Misst Temperatur", "Meine Temperatur wird mit dem Thermometer gemessen."],
+        ["Beim Tierarzt", "Die Tierärztin hört meine Atmung mit dem Stethoskop ab."]
       ]
     },
     ru: {
@@ -954,8 +1053,8 @@ function showTaskReaction(action, taskIndex) {
         ["Принимает лекарство", "Лекарство помогает мне."],
         ["Отдыхает", "Я отдыхаю в кроватке."],
         ["Пьёт чай", "Тёплый чай меня согревает."],
-        ["Лечится", "Я отдыхаю и выздоравливаю."],
-        ["У врача", "Доктор меня осматривает."]
+        ["Измеряет температуру", "Мне измеряют температуру градусником."],
+        ["У ветеринара", "Ветеринар слушает моё дыхание стетоскопом."]
       ]
     }
   };
@@ -1001,7 +1100,7 @@ function showFeedTaskReaction(taskIndex) {
         ["Trinkt Wasser", "Schluck, schluck! Wasser tut gut."],
         ["Frühstück", "Brot mit Käse schmeckt mir!"],
         ["Trinkt Tee", "Ja, gern! Ein warmer Tee."],
-        ["Obst", "Jetzt kenne ich Obst noch besser!"],
+        ["Milch", "Milch ist kein Obst. Jetzt weiß ich es!"],
         ["Bestellt Essen", "Die Bestellung ist da. Guten Appetit!"]
       ]
     : [
@@ -1009,7 +1108,7 @@ function showFeedTaskReaction(taskIndex) {
         ["Пьёт воду", "Хлюп-хлюп! Вода очень нужна."],
         ["Завтракает", "Хлеб с сыром — вкусно!"],
         ["Пьёт чай", "Да, с удовольствием! Тёплый чай."],
-        ["Фрукты", "Теперь я ещё лучше знаю фрукты!"],
+        ["Молоко", "Молоко — не фрукт. Теперь я это знаю!"],
         ["Получает заказ", "Заказ готов. Приятного аппетита!"]
       ];
 
