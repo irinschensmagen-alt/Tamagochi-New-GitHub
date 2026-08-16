@@ -44,7 +44,7 @@ const i18n = {
     deStepLabel: "🇩🇪 Schritt 2. Deutsch",
     portionLabel: "Portion",
     taskNumberLabel: "Aufgabe",
-    finishTitle: "Demo geschafft!",
+    finishTitle: "Geschafft!",
     startBtn: "Das Ei wecken",
     birthContinueBtn: "Weiter",
     birthTitleEgg: "Kosmisches Ei",
@@ -110,7 +110,7 @@ const i18n = {
     deStepLabel: "🇷🇺 Шаг 2. Задание",
     portionLabel: "Порция",
     taskNumberLabel: "Задание",
-    finishTitle: "Пробная часть пройдена!",
+    finishTitle: "Готово!",
     startBtn: "Разбудить яйцо",
     birthContinueBtn: "Дальше",
     birthTitleEgg: "Космическое яйцо",
@@ -259,6 +259,9 @@ const birthScreen = document.getElementById("birthScreen");
 const languageButtons = document.querySelectorAll(".lang-btn");
 const gameShell = document.getElementById("gameShell");
 const birthImage = document.getElementById("birthImage");
+const birthVisual = document.getElementById("birthVisual");
+const eggCracks = document.getElementById("eggCracks");
+const shellShards = document.getElementById("shellShards");
 const birthTitle = document.getElementById("birthTitle");
 const birthText = document.getElementById("birthText");
 const birthControls = document.getElementById("birthControls");
@@ -403,9 +406,10 @@ function setLanguage(lang) {
 
 function startBirthSequence() {
   const chosenName = petNameInput.value.trim();
+  const t = i18n[currentLanguage];
 
   if (!chosenName) {
-    birthText.textContent = i18n[currentLanguage].nameRequired;
+    birthText.textContent = t.nameRequired;
     petNameInput.focus();
     petNameInput.classList.remove("name-error");
     void petNameInput.offsetWidth;
@@ -415,22 +419,36 @@ function startBirthSequence() {
   }
 
   state.petName = chosenName;
-
   birthControls.hidden = true;
   birthContinueBtn.hidden = true;
-  birthTitle.textContent = i18n[currentLanguage].birthTitleWake;
-  birthText.textContent = i18n[currentLanguage].birthTextWake;
+  birthVisual.className = "birth-visual egg-awake";
   birthImage.src = petImages.egg;
+  birthTitle.textContent = t.birthTitleWake;
+  birthText.textContent = t.birthTextWake;
 
+  // 1. Яйцо оживает и начинает трескаться.
   setTimeout(() => {
+    birthVisual.classList.add("cracking");
+    birthTitle.textContent = currentLanguage === "de" ? "Das Ei bekommt Risse …" : "На яйце появляются трещинки…";
+    birthText.textContent = currentLanguage === "de" ? "Da bewegt sich etwas!" : "Внутри кто-то двигается!";
+  }, 900);
+
+  // 2. Скорлупа раскалывается на отдельные кусочки.
+  setTimeout(() => {
+    birthVisual.classList.add("burst");
     birthImage.src = petImages.hatching;
-    birthTitle.textContent = i18n[currentLanguage].birthBorn(state.petName);
-    birthText.textContent = i18n[currentLanguage].birthBornText(state.petName);
-    birthContinueBtn.textContent = state.petName
-    ? (currentLanguage === "de" ? `${state.petName} kennenlernen` : `Познакомиться с ${state.petName}`)
-    : (currentLanguage === "de" ? "Weiter" : "Дальше");
+    birthTitle.textContent = currentLanguage === "de" ? "Es schlüpft!" : "Он вылупляется!";
+    birthText.textContent = currentLanguage === "de" ? "Die Schale springt auseinander …" : "Скорлупа разлетается на кусочки…";
+  }, 1900);
+
+  // 3. Новорождённый остаётся на экране, пока ребёнок сам не продолжит.
+  setTimeout(() => {
+    birthVisual.classList.add("born");
+    birthTitle.textContent = t.birthBorn(state.petName);
+    birthText.textContent = t.birthBornText(state.petName);
+    birthContinueBtn.textContent = currentLanguage === "de" ? `${state.petName} kennenlernen` : `Познакомиться с ${state.petName}`;
     birthContinueBtn.hidden = false;
-  }, 1200);
+  }, 3100);
 }
 
 function enterGameAfterBirth() {

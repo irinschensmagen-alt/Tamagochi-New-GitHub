@@ -1229,3 +1229,149 @@ h3 { font-size: 17px !important; }
   .pet-speech { height: 60px !important; min-height: 60px !important; max-height: 60px !important; }
 }
 \n\n/* ===== v12: player chooses the pet name ===== */\n.birth-controls input.name-error {\n  border-color: #ef6680 !important;\n  box-shadow: 0 0 0 4px rgba(239,102,128,.16) !important;\n  animation: nameShake .28s ease-in-out 2;\n}\n\n@keyframes nameShake {\n  0%, 100% { transform: translateX(0); }\n  25% { transform: translateX(-5px); }\n  75% { transform: translateX(5px); }\n}\n
+
+/* ============================================================
+   FINAL v14 — approved child-friendly magical UI
+   ============================================================ */
+:root {
+  --violet:#7665e8;
+  --violet-dark:#5039b7;
+  --pink:#ff83c9;
+  --cream:#fff9ff;
+  --panel:rgba(255,255,255,.92);
+  --line:#e7d9ff;
+  --shadow:0 8px 26px rgba(103,73,175,.16);
+}
+body {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255,184,234,.34), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(132,116,255,.22), transparent 30%),
+    linear-gradient(135deg,#fff5fd,#f1f5ff);
+}
+#demoLabel { display:none !important; }
+
+/* ---------- BIRTH ---------- */
+.birth-screen {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(128,92,255,.32), transparent 28%),
+    radial-gradient(circle at 80% 80%, rgba(247,105,211,.22), transparent 26%),
+    #0d1030;
+  padding:18px;
+}
+.birth-card {
+  width:min(1460px,96vw);
+  height:min(800px,94vh);
+  grid-template-columns:minmax(0,1.08fr) minmax(390px,.92fr);
+  border:2px solid rgba(231,219,255,.95);
+  border-radius:36px;
+  background:linear-gradient(145deg,#fffaff,#f5efff);
+  box-shadow:0 28px 90px rgba(16,9,63,.42),0 0 30px rgba(154,122,255,.20);
+}
+.birth-visual {
+  position:relative;
+  min-width:0; min-height:0;
+  overflow:hidden;
+  border-radius:34px 0 0 34px;
+  background:#11153c;
+  display:grid; place-items:center;
+}
+.birth-visual>img {
+  width:100%; height:100%; object-fit:contain; object-position:center;
+  padding:20px;
+  transition:transform .45s ease, filter .45s ease, opacity .25s ease;
+}
+.birth-visual.egg-awake>img { animation:eggFloat 1.8s ease-in-out infinite; filter:drop-shadow(0 0 24px rgba(174,122,255,.35)); }
+.birth-visual.cracking>img { animation:eggShake .18s linear 6; filter:drop-shadow(0 0 36px rgba(255,145,234,.75)); }
+.birth-visual.burst>img { animation:none; transform:scale(.98); }
+.birth-stars { position:absolute; inset:8%; color:#fff; font-size:28px; letter-spacing:42px; opacity:.65; animation:twinkle 1.4s ease-in-out infinite; pointer-events:none; }
+.egg-cracks { position:absolute; inset:20% 26%; opacity:0; pointer-events:none; }
+.egg-cracks i { position:absolute; width:4px; height:110px; background:linear-gradient(#fff,#d793ff); box-shadow:0 0 13px #fff; transform-origin:top; clip-path:polygon(42% 0,100% 0,58% 35%,100% 48%,52% 100%,0 100%,40% 54%,0 40%); }
+.egg-cracks i:nth-child(1){left:47%;top:3%;transform:rotate(8deg)}
+.egg-cracks i:nth-child(2){left:34%;top:25%;transform:rotate(-48deg)}
+.egg-cracks i:nth-child(3){left:61%;top:24%;transform:rotate(52deg)}
+.egg-cracks i:nth-child(4){left:42%;top:48%;transform:rotate(18deg)}
+.egg-cracks i:nth-child(5){left:57%;top:49%;transform:rotate(-18deg)}
+.birth-visual.cracking .egg-cracks{opacity:1;animation:crackFlash .9s ease both}
+.shell-shards{position:absolute;inset:0;pointer-events:none}
+.shell-shards b{position:absolute;left:48%;top:48%;width:58px;height:46px;background:linear-gradient(135deg,#9f73ff,#432ba9);border:3px solid #e9caff;clip-path:polygon(0 35%,32% 0,100% 18%,79% 100%,20% 85%);opacity:0;box-shadow:0 0 18px rgba(219,169,255,.8)}
+.birth-visual.burst .shell-shards b{opacity:1;animation:shardFly 1.05s ease-out forwards}
+.birth-visual.burst .shell-shards b:nth-child(1){--x:-310px;--y:-210px;--r:-70deg}
+.birth-visual.burst .shell-shards b:nth-child(2){--x:300px;--y:-180px;--r:80deg}
+.birth-visual.burst .shell-shards b:nth-child(3){--x:-360px;--y:70px;--r:-120deg}
+.birth-visual.burst .shell-shards b:nth-child(4){--x:350px;--y:90px;--r:130deg}
+.birth-visual.burst .shell-shards b:nth-child(5){--x:-230px;--y:240px;--r:-150deg}
+.birth-visual.burst .shell-shards b:nth-child(6){--x:250px;--y:230px;--r:160deg}
+.birth-copy { padding:34px 46px; background:linear-gradient(160deg,#fffaff,#f3eaff); }
+.birth-copy .brand-word{font-size:44px!important;line-height:1;margin-bottom:18px;color:#7658d5;text-shadow:0 3px 0 #fff,0 7px 16px rgba(118,88,213,.18)}
+.birth-copy h1{font-size:clamp(38px,4vw,62px);color:#31255c;margin:6px 0 12px}
+.birth-copy p{font-size:19px;color:#544a78}
+.birth-controls{margin-top:22px}
+.birth-controls input{background:#fff;border:2px solid #dacbff;box-shadow:inset 0 2px 6px rgba(83,54,146,.06);padding:15px 16px}
+.primary{background:linear-gradient(180deg,#ff83c9,#e85aac);border:2px solid #ffd1ec;box-shadow:0 8px 18px rgba(227,82,163,.25),inset 0 1px 0 #fff;color:#fff;text-shadow:0 1px 2px rgba(100,23,81,.25)}
+.primary:hover{transform:translateY(-1px);filter:brightness(1.04)}
+.birth-continue{font-size:18px}
+.language-switch{background:#efeaff;border:1px solid #d8ccff;box-shadow:0 4px 10px rgba(78,55,147,.10)}
+.lang-btn.active{background:linear-gradient(180deg,#806ce9,#6754d8);box-shadow:0 5px 12px rgba(93,71,191,.30)}
+
+/* ---------- GAME: use every pixel ---------- */
+.game-shell{
+  width:min(1600px,calc(100% - 12px));
+  height:calc(100dvh - 12px);
+  margin:6px auto;
+  grid-template-rows:58px 42px 50px 44px minmax(0,1fr)!important;
+  gap:5px!important;
+}
+.topbar,.game-progress-panel,.stats-panel,.actions-panel,.pet-stage,.task-stage{border:2px solid rgba(223,210,255,.95);box-shadow:var(--shadow);background:var(--panel)}
+.topbar{border-radius:18px;padding:5px 10px!important;grid-template-columns:48px 1fr auto;gap:9px}
+.mini-avatar{width:46px;height:46px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #d8c6ff,0 5px 13px rgba(77,54,147,.14)}
+.brand-title{font-size:26px!important;color:#6b51cf!important;text-shadow:0 2px 0 #fff;margin:0!important}
+.title-block p:last-child{font-size:11px!important;line-height:1.1;color:#625b78}
+.level-badge{padding:4px 10px;border:1px solid #decfff;background:linear-gradient(180deg,#fff,#f2edff);min-width:86px}
+.level-badge span{font-size:11px}.level-badge strong{font-size:18px;color:#6c51d7}
+.game-progress-panel{border-radius:15px;padding:4px 10px!important;display:grid;grid-template-columns:210px 1fr 58px;align-items:center;gap:10px}
+.game-progress-head{display:contents}.game-progress-head>div{min-width:0}.game-progress-head .eyebrow{display:none}.compact-title{font-size:14px!important;color:#6654bb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game-progress-percent{font-size:16px!important;color:#6a54d5;text-align:right;grid-column:3}.main-track{grid-column:2;grid-row:1;height:8px!important;background:#eae6f3!important;box-shadow:inset 0 1px 3px rgba(46,27,89,.10)}
+.main-fill{background:linear-gradient(90deg,#ff9dcf,#ffcb73,#82d6ff,#8c7cff)!important;box-shadow:0 0 12px rgba(133,103,255,.45)}
+.game-steps{display:none!important}
+.stats-panel{border-radius:15px;padding:4px 6px!important}.stats-grid{gap:5px}.stat{padding:4px 6px!important;border:1px solid #eadfff;background:linear-gradient(180deg,#fff,#faf7ff);border-radius:13px}.stat span{font-size:17px}.stat strong{font-size:11px!important}.stat b{font-size:13px!important;color:#614bc7}
+.stat.changed{background:#eaffed!important;border-color:#68de85!important;box-shadow:0 0 14px rgba(83,212,113,.36)!important}
+.actions-panel{border-radius:15px;padding:4px!important}.action-btn{border:1px solid #ddd3ff;background:linear-gradient(180deg,#f8f5ff,#efebff);font-size:14px;color:#59499c}.action-btn.active{background:linear-gradient(180deg,#dcd4ff,#c9beff);box-shadow:0 0 12px rgba(117,89,224,.24)}
+.content-zone{grid-template-columns:minmax(230px,28%) minmax(0,1fr);gap:5px!important}
+.pet-stage,.task-stage{border-radius:18px;padding:7px!important}
+.pet-stage{grid-template-rows:28px minmax(0,1fr) 55px!important;gap:5px!important;background:linear-gradient(160deg,#fff,#f5efff)}
+.pet-stage-top{height:28px!important;min-height:28px!important}.stage-chip,.reaction-chip{padding:4px 7px;font-size:10px}
+.pet-picture{padding:3px!important;background:radial-gradient(circle at 50% 35%,#fff 0,#f2e9ff 68%,#e6d9ff 100%)!important;border:1px solid #e4d5ff!important}
+.pet-picture>img#petImage{max-width:78%!important;max-height:78%!important;animation:petBreath 3s ease-in-out infinite!important;filter:drop-shadow(0 8px 10px rgba(70,48,111,.16))}
+.pet-picture>img#petImage.pop{animation:petHappy .55s ease,petBreath 3s ease-in-out .55s infinite!important}
+.pet-speech{height:55px!important;min-height:55px!important;max-height:55px!important;font-size:11px!important;padding:6px 8px!important;background:#fff9ff!important;border:1px solid #eadfff}
+.task-stage{overflow:hidden!important;background:linear-gradient(150deg,#fff,#faf5ff);align-content:start!important}
+.compact-welcome{min-height:56px!important;padding:8px 10px!important;border:1px solid #e4d8ff;background:linear-gradient(90deg,#faf7ff,#fff)}
+.compact-welcome .welcome-icon{font-size:24px!important}.compact-welcome h2{font-size:17px!important}.compact-welcome p{font-size:11px!important}
+.feed-progress-wrap,.series-progress-wrap{display:none!important}
+#feedArea,#seriesArea,#finishArea{max-width:none!important;margin:0!important;height:100%;overflow:hidden}
+.section-heading{align-items:center;padding:1px 2px 4px}.section-heading h2{font-size:18px!important;margin:0!important;color:#553cae}.task-topic{font-size:11px;margin:0!important}.status-badge,.round-badge{padding:4px 7px!important;font-size:10px!important}
+.fooddy-box,.german-box{padding:7px!important;border-radius:14px;border:1px solid #e6d7ff;background:linear-gradient(145deg,#fff,#fff8fc)}
+.fooddy-layout{grid-template-columns:160px minmax(0,1fr)!important;gap:8px!important}.fooddy-visual,.fooddy-visual img{min-height:124px!important}.fooddy-visual{border:1px solid #d8c8ff;background:#f2edff}.fooddy-content{align-content:start!important}.fooddy-heading{gap:6px}h3{font-size:15px!important}.fooddy-message{font-size:11px!important;padding:6px 7px!important;margin:5px 0!important}.guess-row{gap:5px}.guess-row input{padding:7px 8px!important;font-size:12px}.guess-row .primary{padding:7px 10px!important;font-size:12px}.attempt-line{font-size:10px!important;margin-top:3px!important}
+.task-question{font-size:15px!important;margin:5px 0!important}.answers{gap:3px!important}.answer-btn{min-height:27px!important;padding:5px 8px!important;font-size:12px!important;border-color:#e0d7f2;background:#fcfbff}.feedback{min-height:16px!important;font-size:10px!important;margin-top:3px!important}
+.finish-box{padding-top:12px}.finish-icon{font-size:40px}.finish-box h2{color:#5d46c1}
+
+@keyframes eggFloat{0%,100%{transform:translateY(0) scale(.96)}50%{transform:translateY(-10px) scale(.98)}}
+@keyframes eggShake{0%{transform:translateX(0) rotate(0)}25%{transform:translateX(-7px) rotate(-1deg)}75%{transform:translateX(7px) rotate(1deg)}100%{transform:translateX(0) rotate(0)}}
+@keyframes crackFlash{0%{opacity:0}30%{opacity:1}100%{opacity:1}}
+@keyframes shardFly{0%{transform:translate(0,0) rotate(0) scale(.5);opacity:1}100%{transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1.05);opacity:0}}
+@keyframes twinkle{0%,100%{opacity:.25;transform:scale(.94)}50%{opacity:.9;transform:scale(1.04)}}
+@keyframes petBreath{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.012)}}
+@keyframes petHappy{0%{transform:scale(1)}50%{transform:scale(1.06) rotate(-1deg)}100%{transform:scale(1)}}
+
+@media (min-width:900px) and (max-height:760px){
+  .game-shell{grid-template-rows:52px 38px 46px 40px minmax(0,1fr)!important}
+  .topbar{grid-template-columns:42px 1fr auto}.mini-avatar{width:40px;height:40px}.brand-title{font-size:22px!important}
+  .game-progress-panel{grid-template-columns:170px 1fr 50px}.compact-title{font-size:12px!important}
+  .stat strong{font-size:10px!important}.stat b{font-size:12px!important}.action-btn{font-size:12px}
+  .content-zone{grid-template-columns:minmax(210px,27%) minmax(0,1fr)}
+  .pet-stage{grid-template-rows:25px minmax(0,1fr) 48px!important}.pet-speech{height:48px!important;min-height:48px!important;max-height:48px!important}
+  .fooddy-layout{grid-template-columns:135px minmax(0,1fr)!important}.fooddy-visual,.fooddy-visual img{min-height:105px!important}
+  .answer-btn{min-height:24px!important;padding:4px 7px!important}.task-question{font-size:13px!important}.section-heading h2{font-size:16px!important}
+}
+
+html{height:100%;overflow:hidden!important;} body{height:100%;overflow:hidden!important;}
