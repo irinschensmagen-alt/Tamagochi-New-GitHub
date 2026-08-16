@@ -3,21 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tamagotchi Deutsch — Demo</title>
+  <title>Tamagotchi Deutsch — Anfisa</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="game-shell">
+
+  <section class="birth-screen" id="birthScreen">
+    <div class="birth-card">
+      <img id="birthImage" src="assets/images/anfisa_egg.png" alt="Космическое яйцо">
+      <div class="birth-copy">
+        <p class="eyebrow">Tamagotchi Deutsch</p>
+        <h1 id="birthTitle">Космическое яйцо</h1>
+        <p id="birthText">Внутри кто-то есть… Дай будущему Тамагочи имя.</p>
+
+        <div class="birth-controls" id="birthControls">
+          <input id="petName" type="text" maxlength="20" placeholder="Анфиса" value="Анфиса">
+          <button id="startBtn" class="primary">Разбудить яйцо</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="game-shell" id="gameShell" hidden>
 
     <header class="topbar">
-      <div class="pet-avatar">
-        <img src="assets/images/anfisa-baby.png.png" alt="">
+      <div class="mini-avatar">
+        <img id="miniPetImage" src="assets/images/anfisa_baby.png" alt="Анфиса">
       </div>
 
       <div class="title-block">
         <p class="eyebrow">Пробная веб-версия</p>
         <h1>Tamagotchi Deutsch</h1>
-        <p id="welcomeText">Познакомься со своим питомцем и заботься о нём.</p>
+        <p id="welcomeText">Анфиса родилась! Заботься о ней и выполняй задания.</p>
       </div>
 
       <div class="level-badge">
@@ -26,18 +43,10 @@
       </div>
     </header>
 
-    <section class="name-panel" id="nameCard">
-      <label for="petName">Имя питомца</label>
-      <div class="name-row">
-        <input id="petName" type="text" maxlength="20" placeholder="Анфиса">
-        <button id="startBtn" class="primary">Начать игру</button>
-      </div>
-    </section>
-
-    <section class="game-progress-panel" id="gameProgressPanel" hidden>
+    <section class="game-progress-panel">
       <div class="game-progress-head">
         <div>
-          <p class="eyebrow">Общий прогресс игры</p>
+          <p class="eyebrow">Общий прогресс</p>
           <h2 class="compact-title">Забота об Анфисе</h2>
         </div>
         <strong class="game-progress-percent" id="gameProgressPercent">0%</strong>
@@ -49,51 +58,60 @@
 
       <div class="game-steps" id="gameProgressSteps">
         <button class="step" type="button" data-main-action="feed">
-          <span class="step-dot"></span>
-          <small>🍎 Еда</small>
+          <span class="step-dot"></span><small>🍎 Еда</small>
         </button>
         <button class="step" type="button" data-main-action="play">
-          <span class="step-dot"></span>
-          <small>🎮 Игра</small>
+          <span class="step-dot"></span><small>🎮 Игра</small>
         </button>
         <button class="step" type="button" data-main-action="heal">
-          <span class="step-dot"></span>
-          <small>💊 Здоровье</small>
+          <span class="step-dot"></span><small>💊 Здоровье</small>
         </button>
       </div>
     </section>
 
-    <section class="main-panel" id="gameArea" hidden>
+    <section class="stats-panel">
+      <div class="stats-grid">
+        <div class="stat" data-stat="health"><span>❤️</span><strong>Здоровье</strong><b id="health">70</b></div>
+        <div class="stat" data-stat="hunger"><span>🍎</span><strong>Голод</strong><b id="hunger">60</b></div>
+        <div class="stat" data-stat="mood"><span>😊</span><strong>Настроение</strong><b id="mood">55</b></div>
+        <div class="stat" data-stat="energy"><span>⚡</span><strong>Энергия</strong><b id="energy">100</b></div>
+        <div class="stat" data-stat="coins"><span>💰</span><strong>Монеты</strong><b id="coins">0</b></div>
+        <div class="stat" data-stat="experience"><span>⭐</span><strong>Опыт</strong><b id="experience">0</b></div>
+      </div>
+    </section>
 
-      <section class="stats-panel">
-        <div class="stats-grid">
-          <div class="stat" data-stat="health"><span>❤️</span><strong>Здоровье</strong><b id="health">70</b></div>
-          <div class="stat" data-stat="hunger"><span>🍎</span><strong>Голод</strong><b id="hunger">60</b></div>
-          <div class="stat" data-stat="mood"><span>😊</span><strong>Настроение</strong><b id="mood">55</b></div>
-          <div class="stat" data-stat="energy"><span>⚡</span><strong>Энергия</strong><b id="energy">100</b></div>
-          <div class="stat" data-stat="coins"><span>💰</span><strong>Монеты</strong><b id="coins">0</b></div>
-          <div class="stat" data-stat="experience"><span>⭐</span><strong>Опыт</strong><b id="experience">0</b></div>
+    <section class="actions-panel">
+      <button class="action-btn" data-main-action="feed">🍎 Покормить</button>
+      <button class="action-btn" data-main-action="play">🎮 Поиграть</button>
+      <button class="action-btn" data-main-action="heal">💊 Лечить</button>
+    </section>
+
+    <section class="content-zone">
+
+      <aside class="pet-stage">
+        <div class="pet-stage-top">
+          <span class="stage-chip" id="growthLabel">Малышка</span>
+          <span class="reaction-chip" id="reactionLabel">Спокойна</span>
         </div>
-      </section>
 
-      <section class="actions-panel">
-        <button class="action-btn" data-main-action="feed">🍎 Покормить</button>
-        <button class="action-btn" data-main-action="play">🎮 Поиграть</button>
-        <button class="action-btn" data-main-action="heal">💊 Лечить</button>
-      </section>
+        <div class="pet-picture">
+          <img id="petImage" src="assets/images/anfisa_baby.png" alt="Анфиса">
+          <div class="pet-sparkles" id="petSparkles">✨</div>
+        </div>
 
-      <section class="play-panel">
+        <div class="pet-speech" id="petSpeech">
+          Мяу! Я Анфиса. Позаботься обо мне!
+        </div>
+      </aside>
+
+      <section class="task-stage">
 
         <div class="welcome-panel" id="welcomePanel">
           <div class="welcome-icon">🐾</div>
           <h2>Выбери действие</h2>
-          <p>
-            Каждый блок состоит из нескольких заданий.
-            Показатели Анфисы меняются после каждого правильного ответа.
-          </p>
+          <p>Анфиса всегда рядом. После каждого правильного ответа ты увидишь её реакцию и изменение показателей.</p>
         </div>
 
-        <!-- ЕДА -->
         <div id="feedArea" hidden>
           <div class="section-heading">
             <div>
@@ -102,11 +120,6 @@
             </div>
             <span class="status-badge" id="feedStatus">Не выполнено</span>
           </div>
-
-          <p class="intro-text">
-            Каждая порция еды открывается в два шага:
-            сначала разгадай код Фудди, затем выполни задание по немецкому языку.
-          </p>
 
           <div class="progress-wrap feed-progress-wrap">
             <div class="progress-label-row">
@@ -117,8 +130,7 @@
               <div class="progress-fill fooddy-fill" id="feedProgress"></div>
             </div>
             <div class="progress-dots" id="feedDots">
-              <span></span><span></span><span></span>
-              <span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span>
             </div>
           </div>
 
@@ -131,9 +143,7 @@
               <strong class="round-badge">Раунд <span id="roundNumber">1</span> / 6</strong>
             </div>
 
-            <p id="fooddyMessage" class="fooddy-message">
-              Фудди: «Бип-бип! Я спрятала код от 1 до 100.»
-            </p>
+            <p id="fooddyMessage" class="fooddy-message">Фудди: «Бип-бип! Я спрятала код от 1 до 100.»</p>
 
             <div class="guess-row">
               <input id="guessInput" type="number" min="1" max="100" placeholder="Введите число 1–100">
@@ -141,7 +151,7 @@
             </div>
 
             <div class="attempt-line">
-              Допустимых попыток в этом раунде: <strong id="attempts">0</strong>
+              Допустимых попыток: <strong id="attempts">0</strong>
             </div>
           </div>
 
@@ -153,14 +163,12 @@
               </div>
               <strong class="round-badge">Порция <span id="portionNumber">1</span> / 6</strong>
             </div>
-
             <p class="task-question" id="germanQuestion"></p>
             <div class="answers" id="germanAnswers"></div>
             <div class="feedback" id="germanFeedback"></div>
           </div>
         </div>
 
-        <!-- ИГРА / ЛЕЧЕНИЕ -->
         <div id="seriesArea" hidden>
           <div class="section-heading">
             <div>
@@ -179,8 +187,7 @@
               <div class="progress-fill series-fill" id="seriesProgress"></div>
             </div>
             <div class="progress-dots" id="seriesDots">
-              <span></span><span></span><span></span>
-              <span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span>
             </div>
           </div>
 
@@ -192,7 +199,6 @@
               </div>
               <strong class="round-badge">Задание <span id="seriesTaskNumber">1</span> / 6</strong>
             </div>
-
             <p class="task-question" id="seriesQuestion"></p>
             <div class="answers" id="seriesAnswers"></div>
             <div class="feedback" id="seriesFeedback"></div>
@@ -204,10 +210,9 @@
             <div class="finish-icon">🏆</div>
             <h2>Пробная часть пройдена!</h2>
             <p id="finishText"></p>
-            <button id="continueBtn" class="primary">Продолжить играть</button>
+            <button id="continueBtn" class="primary">Посмотреть на Анфису</button>
           </div>
         </div>
-
       </section>
     </section>
   </main>

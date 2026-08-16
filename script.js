@@ -9,20 +9,31 @@ const state = {
   level: 1
 };
 
-// Баланс пробной версии:
-// Еда: 6 порций × (голод -10, настроение +2, монеты +1, опыт +5)
-// Игра: 6 заданий × (настроение +5, энергия -5, монеты +1, опыт +5)
-// Лечение: 6 заданий × (здоровье +5, настроение +2, монеты +1, опыт +5)
-// Максимум за 18 успешных заданий: 18 монет и 90 опыта.
-// Уровень: +1 каждые 30 опыта → после полного прохождения уровень 4.
+const progress = { feed: false, play: false, heal: false };
 
-const progress = {
-  feed: false,
-  play: false,
-  heal: false
+const petImages = {
+  egg: "assets/images/anfisa_egg.png",
+  hatching: "assets/images/anfisa_hatching.png",
+  baby: "assets/images/anfisa_baby.png",
+  kitten: "assets/images/anfisa_kitten.png",
+  growing: "assets/images/anfisa_growing.png",
+  adult: "assets/images/anfisa_adult.png",
+  eating: "assets/images/anfisa_eating.png",
+  playing: "assets/images/anfisa_playing.png",
+  sick: "assets/images/anfisa_sick.png",
+  healing: "assets/images/anfisa_healing.png"
 };
 
+const growthStages = [
+  { minLevel: 1, key: "baby", label: "Малышка" },
+  { minLevel: 2, key: "kitten", label: "Котёнок" },
+  { minLevel: 3, key: "growing", label: "Подрастает" },
+  { minLevel: 4, key: "adult", label: "Взрослая" }
+];
+
 let previousRenderedState = null;
+let previousLevel = 1;
+let reactionTimer = null;
 
 const germanFeedTasks = [
   { title:"AUFGABE 1", question:"___ Apfel", answers:["der","die","das"], correct:"der", success:"Richtig! Der Apfel." },
@@ -34,107 +45,43 @@ const germanFeedTasks = [
 ];
 
 const playTasks = [
-  {
-    title:"AUFGABE 1",
-    question:"Anna ___ gern Fußball.",
-    answers:["spiele","spielt","spielen"],
-    correct:"spielt",
-    success:"Richtig! Anna spielt gern Fußball."
-  },
-  {
-    title:"AUFGABE 2",
-    question:"Was macht man in der Freizeit?",
-    answers:["Musik hören","Fieber haben","Medizin nehmen"],
-    correct:"Musik hören",
-    success:"Richtig! Musik hören."
-  },
-  {
-    title:"AUFGABE 3",
-    question:"Wir ___ am Wochenende Tennis.",
-    answers:["spielen","spielt","spielst"],
-    correct:"spielen",
-    success:"Richtig! Wir spielen am Wochenende Tennis."
-  },
-  {
-    title:"AUFGABE 4",
-    question:"Ich ___ gern Bücher.",
-    answers:["lese","liest","lesen"],
-    correct:"lese",
-    success:"Richtig! Ich lese gern Bücher."
-  },
-  {
-    title:"AUFGABE 5",
-    question:"Was passt zu einem Hobby?",
-    answers:["fotografieren","Kopfschmerzen","Tabletten"],
-    correct:"fotografieren",
-    success:"Richtig! Fotografieren ist ein Hobby."
-  },
-  {
-    title:"AUFGABE 6",
-    question:"Am Samstag ___ wir ins Kino.",
-    answers:["gehen","geht","gehst"],
-    correct:"gehen",
-    success:"Richtig! Am Samstag gehen wir ins Kino."
-  }
+  { title:"AUFGABE 1", question:"Anna ___ gern Fußball.", answers:["spiele","spielt","spielen"], correct:"spielt", success:"Richtig! Anna spielt gern Fußball." },
+  { title:"AUFGABE 2", question:"Was macht man in der Freizeit?", answers:["Musik hören","Fieber haben","Medizin nehmen"], correct:"Musik hören", success:"Richtig! Musik hören." },
+  { title:"AUFGABE 3", question:"Wir ___ am Wochenende Tennis.", answers:["spielen","spielt","spielst"], correct:"spielen", success:"Richtig! Wir spielen am Wochenende Tennis." },
+  { title:"AUFGABE 4", question:"Ich ___ gern Bücher.", answers:["lese","liest","lesen"], correct:"lese", success:"Richtig! Ich lese gern Bücher." },
+  { title:"AUFGABE 5", question:"Was passt zu einem Hobby?", answers:["fotografieren","Kopfschmerzen","Tabletten"], correct:"fotografieren", success:"Richtig! Fotografieren ist ein Hobby." },
+  { title:"AUFGABE 6", question:"Am Samstag ___ wir ins Kino.", answers:["gehen","geht","gehst"], correct:"gehen", success:"Richtig! Am Samstag gehen wir ins Kino." }
 ];
 
 const healTasks = [
-  {
-    title:"AUFGABE 1",
-    question:"Anfisa hat Kopfschmerzen. Sie ist ...",
-    answers:["krank","lecker","sportlich"],
-    correct:"krank",
-    success:"Richtig! Anfisa ist krank."
-  },
-  {
-    title:"AUFGABE 2",
-    question:"Was hilft bei Krankheit?",
-    answers:["Medizin","Fußball","Pizza"],
-    correct:"Medizin",
-    success:"Richtig! Medizin hilft."
-  },
-  {
-    title:"AUFGABE 3",
-    question:"Der Arzt sagt: Du sollst im Bett ...",
-    answers:["bleiben","tanzen","fahren"],
-    correct:"bleiben",
-    success:"Richtig! Du sollst im Bett bleiben."
-  },
-  {
-    title:"AUFGABE 4",
-    question:"Ich habe Halsschmerzen. Ich trinke warmen ...",
-    answers:["Tee","Ball","Schuh"],
-    correct:"Tee",
-    success:"Richtig! Ich trinke warmen Tee."
-  },
-  {
-    title:"AUFGABE 5",
-    question:"Bei Fieber soll man sich ...",
-    answers:["ausruhen","beeilen","verabreden"],
-    correct:"ausruhen",
-    success:"Richtig! Man soll sich ausruhen."
-  },
-  {
-    title:"AUFGABE 6",
-    question:"Der Arzt untersucht den ...",
-    answers:["Patienten","Kuchen","Fußball"],
-    correct:"Patienten",
-    success:"Richtig! Der Arzt untersucht den Patienten."
-  }
+  { title:"AUFGABE 1", question:"Anfisa hat Kopfschmerzen. Sie ist ...", answers:["krank","lecker","sportlich"], correct:"krank", success:"Richtig! Anfisa ist krank." },
+  { title:"AUFGABE 2", question:"Was hilft bei Krankheit?", answers:["Medizin","Fußball","Pizza"], correct:"Medizin", success:"Richtig! Medizin hilft." },
+  { title:"AUFGABE 3", question:"Der Arzt sagt: Du sollst im Bett ...", answers:["bleiben","tanzen","fahren"], correct:"bleiben", success:"Richtig! Du sollst im Bett bleiben." },
+  { title:"AUFGABE 4", question:"Ich habe Halsschmerzen. Ich trinke warmen ...", answers:["Tee","Ball","Schuh"], correct:"Tee", success:"Richtig! Ich trinke warmen Tee." },
+  { title:"AUFGABE 5", question:"Bei Fieber soll man sich ...", answers:["ausruhen","beeilen","verabreden"], correct:"ausruhen", success:"Richtig! Man soll sich ausruhen." },
+  { title:"AUFGABE 6", question:"Der Arzt untersucht den ...", answers:["Patienten","Kuchen","Fußball"], correct:"Patienten", success:"Richtig! Der Arzt untersucht den Patienten." }
 ];
 
-const nameCard = document.getElementById("nameCard");
-const gameArea = document.getElementById("gameArea");
-const gameProgressPanel = document.getElementById("gameProgressPanel");
+const birthScreen = document.getElementById("birthScreen");
+const gameShell = document.getElementById("gameShell");
+const birthImage = document.getElementById("birthImage");
+const birthTitle = document.getElementById("birthTitle");
+const birthText = document.getElementById("birthText");
+const birthControls = document.getElementById("birthControls");
+const petNameInput = document.getElementById("petName");
+const startBtn = document.getElementById("startBtn");
+
+const petImage = document.getElementById("petImage");
+const miniPetImage = document.getElementById("miniPetImage");
+const petSpeech = document.getElementById("petSpeech");
+const growthLabel = document.getElementById("growthLabel");
+const reactionLabel = document.getElementById("reactionLabel");
+const petSparkles = document.getElementById("petSparkles");
+
 const welcomePanel = document.getElementById("welcomePanel");
 const feedArea = document.getElementById("feedArea");
 const seriesArea = document.getElementById("seriesArea");
 const finishArea = document.getElementById("finishArea");
-
-const startBtn = document.getElementById("startBtn");
-const petNameInput = document.getElementById("petName");
-const welcomeText = document.getElementById("welcomeText");
-
 const fooddyBox = document.getElementById("fooddyBox");
 const germanBox = document.getElementById("germanBox");
 const guessInput = document.getElementById("guessInput");
@@ -145,21 +92,16 @@ let feedCount = 0;
 let currentFeedTaskIndex = 0;
 let attemptsThisRound = 0;
 let codeSolved = false;
-
 let currentSeries = null;
 let seriesIndex = { play: 0, heal: 0 };
 
-startBtn.addEventListener("click", startGame);
-
+startBtn.addEventListener("click", startBirthSequence);
 petNameInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") startGame();
+  if (e.key === "Enter") startBirthSequence();
 });
 
 document.querySelectorAll("[data-main-action]").forEach(button => {
-  button.addEventListener("click", () => {
-    if (!nameCard.hidden) startGame();
-    openAction(button.dataset.mainAction);
-  });
+  button.addEventListener("click", () => openAction(button.dataset.mainAction));
 });
 
 guessBtn.addEventListener("click", checkGuess);
@@ -169,20 +111,90 @@ guessInput.addEventListener("keydown", e => {
 
 document.getElementById("continueBtn").addEventListener("click", () => {
   openPanel("welcome");
+  showCurrentGrowth("Я выросла благодаря твоей заботе! ✨");
 });
 
-function startGame() {
+function startBirthSequence() {
   state.petName = petNameInput.value.trim() || "Анфиса";
 
-  welcomeText.textContent =
-    `${state.petName} появилась! Выполняй задания и заботься о питомце.`;
+  birthControls.hidden = true;
+  birthTitle.textContent = "Яйцо просыпается…";
+  birthText.textContent = "Неоновый свет становится ярче.";
 
-  nameCard.hidden = true;
-  gameArea.hidden = false;
-  gameProgressPanel.hidden = false;
+  setTimeout(() => {
+    birthImage.src = petImages.hatching;
+    birthTitle.textContent = `${state.petName} рождается!`;
+    birthText.textContent = "Из космического яйца появился маленький Тамагочи.";
+  }, 800);
 
-  renderStats();
-  updateGameProgress();
+  setTimeout(() => {
+    birthScreen.hidden = true;
+    gameShell.hidden = false;
+    document.getElementById("welcomeText").textContent =
+      `${state.petName} родилась! Выполняй задания и заботься о питомце.`;
+    renderStats();
+    updateGameProgress();
+    showCurrentGrowth(`Мяу! Я ${state.petName}. Позаботься обо мне!`);
+  }, 2000);
+}
+
+function getGrowthStage() {
+  let current = growthStages[0];
+  growthStages.forEach(stage => {
+    if (state.level >= stage.minLevel) current = stage;
+  });
+  return current;
+}
+
+function showCurrentGrowth(message = null) {
+  const stage = getGrowthStage();
+  setPetVisual(stage.key, stage.label, message || defaultGrowthSpeech(stage.key), false);
+  miniPetImage.src = petImages[stage.key];
+}
+
+function defaultGrowthSpeech(key) {
+  const lines = {
+    baby: "Мяу! Я ещё совсем маленькая.",
+    kitten: "Смотри, я уже подросла!",
+    growing: "Я становлюсь всё взрослее!",
+    adult: "Я выросла! Спасибо за твою заботу."
+  };
+  return lines[key];
+}
+
+function setPetVisual(key, reaction, speech, temporary = true, duration = 1400) {
+  clearTimeout(reactionTimer);
+
+  petImage.src = petImages[key];
+  reactionLabel.textContent = reaction;
+  petSpeech.textContent = speech;
+  petImage.classList.remove("pop");
+  void petImage.offsetWidth;
+  petImage.classList.add("pop");
+  petSparkles.classList.add("show");
+
+  if (temporary) {
+    reactionTimer = setTimeout(() => {
+      petSparkles.classList.remove("show");
+      petImage.classList.remove("pop");
+      showCurrentGrowth();
+      reactionLabel.textContent = "Спокойна";
+    }, duration);
+  } else {
+    setTimeout(() => petSparkles.classList.remove("show"), 700);
+    reactionLabel.textContent = "Спокойна";
+  }
+}
+
+function showReaction(type) {
+  const reactions = {
+    eating: ["eating", "Ест", "Lecker! Мне очень вкусно!"],
+    playing: ["playing", "Играет", "Das macht Spaß! Ещё раз!"],
+    sick: ["sick", "Болеет", "Мне нездоровится… Помоги мне."],
+    healing: ["healing", "Лучше!", "Mir geht es besser! Спасибо!"]
+  };
+  const [imageKey, label, speech] = reactions[type];
+  setPetVisual(imageKey, label, speech, true);
 }
 
 function openPanel(panel) {
@@ -203,11 +215,10 @@ function openAction(action) {
 
   if (action === "feed") {
     openPanel("feed");
-
+    showCurrentGrowth("Фудди хранит еду. Помоги мне получить порцию!");
     if (!progress.feed && feedCount === 0 && currentFeedTaskIndex === 0 && !codeSolved) {
       startFooddyRound();
     }
-
     updateFeedStatus();
     updateFeedProgress();
     return;
@@ -215,11 +226,17 @@ function openAction(action) {
 
   currentSeries = action;
   openPanel("series");
+
+  if (action === "heal" && !progress.heal) {
+    showReaction("sick");
+  } else {
+    showCurrentGrowth(action === "play" ? "Поиграем? Я готова!" : "Спасибо, мне уже лучше!");
+  }
+
   showSeriesTask(action);
 }
 
 /* ---------- ЕДА ---------- */
-
 function startFooddyRound() {
   codeSolved = false;
   attemptsThisRound = 0;
@@ -254,11 +271,9 @@ function checkGuess() {
   document.getElementById("attempts").textContent = attemptsThisRound;
 
   if (value < secretNumber) {
-    document.getElementById("fooddyMessage").textContent =
-      "Фудди: «Слишком мало! Мой код БОЛЬШЕ!»";
+    document.getElementById("fooddyMessage").textContent = "Фудди: «Слишком мало! Мой код БОЛЬШЕ!»";
   } else if (value > secretNumber) {
-    document.getElementById("fooddyMessage").textContent =
-      "Фудди: «Ого, перелёт! Мой код МЕНЬШЕ!»";
+    document.getElementById("fooddyMessage").textContent = "Фудди: «Ого, перелёт! Мой код МЕНЬШЕ!»";
   } else {
     codeSolved = true;
     guessInput.disabled = true;
@@ -273,7 +288,6 @@ function checkGuess() {
 
 function showGermanFeedTask() {
   const task = germanFeedTasks[currentFeedTaskIndex];
-
   fooddyBox.hidden = true;
   germanBox.hidden = false;
 
@@ -305,9 +319,7 @@ function checkGermanFeedAnswer(task, answer) {
   }
 
   document.querySelectorAll("#germanAnswers button").forEach(b => b.disabled = true);
-
-  feedbackBox.textContent =
-    `${task.success} ${state.petName} получает порцию еды!`;
+  feedbackBox.textContent = `${task.success} ${state.petName} получает порцию еды!`;
   feedbackBox.className = "feedback ok";
 
   feedCount++;
@@ -322,11 +334,12 @@ function checkGermanFeedAnswer(task, answer) {
   clampStats();
   renderStats();
   updateFeedProgress();
+  showReaction("eating");
 
   if (feedCount >= 6) {
-    finishFeedBlock();
+    setTimeout(finishFeedBlock, 900);
   } else {
-    setTimeout(startFooddyRound, 900);
+    setTimeout(startFooddyRound, 1500);
   }
 }
 
@@ -342,13 +355,12 @@ function finishFeedBlock() {
 
   germanBox.hidden = true;
   fooddyBox.hidden = false;
-
   document.getElementById("fooddyMessage").textContent =
     `Geschafft! ${state.petName} hat alle 6 Portionen bekommen.`;
 
   guessInput.disabled = true;
   guessBtn.disabled = true;
-
+  showCurrentGrowth("Я полностью сыта! Danke!");
   checkWholeGameFinished();
 }
 
@@ -356,7 +368,6 @@ function updateFeedProgress() {
   const percent = Math.round((feedCount / 6) * 100);
   document.getElementById("feedCount").textContent = feedCount;
   document.getElementById("feedProgress").style.width = `${percent}%`;
-
   document.querySelectorAll("#feedDots span").forEach((dot, i) => {
     dot.classList.toggle("done", i < feedCount);
   });
@@ -369,7 +380,6 @@ function updateFeedStatus() {
 }
 
 /* ---------- ИГРА / ЛЕЧЕНИЕ ---------- */
-
 function getSeriesTasks(action) {
   return action === "play" ? playTasks : healTasks;
 }
@@ -397,17 +407,13 @@ function showSeriesTask(action) {
     document.getElementById("seriesTaskTitle").textContent = "Geschafft!";
     document.getElementById("seriesTaskNumber").textContent = "6";
     document.getElementById("seriesQuestion").textContent =
-      action === "play"
-        ? "Alle Aufgaben sind richtig gelöst."
-        : "Anfisa ist wieder gesund.";
-
+      action === "play" ? "Alle Aufgaben sind richtig gelöst." : "Anfisa ist wieder gesund.";
     document.getElementById("seriesAnswers").innerHTML = "";
     document.getElementById("seriesFeedback").textContent = "";
     return;
   }
 
   const task = tasks[index];
-
   document.getElementById("seriesTaskTitle").textContent = task.title;
   document.getElementById("seriesTaskNumber").textContent = index + 1;
   document.getElementById("seriesQuestion").textContent = task.question;
@@ -440,23 +446,20 @@ function checkSeriesAnswer(action, task, answer) {
   feedback.className = "feedback ok";
 
   if (action === "play") {
-    // За каждое из 6 игровых заданий:
-    // настроение +5, энергия -5, 1 монета, 5 опыта.
     state.mood += 5;
     state.energy -= 5;
     state.coins += 1;
     state.experience += 5;
+    showReaction("playing");
   } else {
-    // За каждое из 6 заданий лечения:
-    // здоровье +5, настроение +2, 1 монета, 5 опыта.
     state.health += 5;
     state.mood += 2;
     state.coins += 1;
     state.experience += 5;
+    showReaction("healing");
   }
 
   seriesIndex[action]++;
-
   updateLevel();
   clampStats();
   renderStats();
@@ -464,37 +467,39 @@ function checkSeriesAnswer(action, task, answer) {
 
   if (seriesIndex[action] >= 6) {
     progress[action] = true;
-
-    clampStats();
-    renderStats();
     updateGameProgress();
 
     const status = document.getElementById("seriesStatus");
     status.textContent = "Выполнено";
     status.classList.add("done");
 
-    checkWholeGameFinished();
+    if (action === "heal") {
+      setTimeout(() => showCurrentGrowth("Я снова здорова! Vielen Dank!"), 1450);
+    } else {
+      setTimeout(() => showCurrentGrowth("Как здорово мы поиграли!"), 1450);
+    }
 
-    setTimeout(() => showSeriesTask(action), 700);
+    checkWholeGameFinished();
+    setTimeout(() => showSeriesTask(action), 1500);
   } else {
-    setTimeout(() => showSeriesTask(action), 700);
+    setTimeout(() => {
+      if (action === "heal") showReaction("sick");
+      showSeriesTask(action);
+    }, 1500);
   }
 }
 
 function updateSeriesProgress(action) {
   const count = seriesIndex[action];
   const percent = Math.round((count / 6) * 100);
-
   document.getElementById("seriesCount").textContent = count;
   document.getElementById("seriesProgress").style.width = `${percent}%`;
-
   document.querySelectorAll("#seriesDots span").forEach((dot, i) => {
     dot.classList.toggle("done", i < count);
   });
 }
 
 /* ---------- ОБЩЕЕ ---------- */
-
 function updateGameProgress() {
   const order = ["feed","play","heal"];
   const completed = order.filter(k => progress[k]).length;
@@ -512,12 +517,23 @@ function checkWholeGameFinished() {
   if (progress.feed && progress.play && progress.heal) {
     openPanel("finish");
     document.getElementById("finishText").textContent =
-      `${state.petName} сыта, здорова и в хорошем настроении. Все три блока заботы успешно пройдены!`;
+      `${state.petName} сыта, здорова, счастлива и выросла благодаря твоей заботе!`;
+    showCurrentGrowth("Я выросла! Спасибо, что заботился обо мне! 💛");
   }
 }
 
 function updateLevel() {
-  state.level = Math.floor(state.experience / 30) + 1;
+  const newLevel = Math.floor(state.experience / 30) + 1;
+  state.level = newLevel;
+
+  if (newLevel > previousLevel) {
+    previousLevel = newLevel;
+    setTimeout(() => {
+      const stage = getGrowthStage();
+      setPetVisual(stage.key, "Я выросла!", `Ура! Теперь я — ${stage.label.toLowerCase()}!`, true, 1800);
+      miniPetImage.src = petImages[stage.key];
+    }, 250);
+  }
 }
 
 function clampStats() {
@@ -528,25 +544,20 @@ function clampStats() {
 }
 
 function renderStats() {
-  const statKeys = ["health","hunger","mood","energy","coins","experience"];
+  const keys = ["health","hunger","mood","energy","coins","experience"];
 
-  statKeys.forEach(key => {
+  keys.forEach(key => {
     const element = document.getElementById(key);
     const card = document.querySelector(`[data-stat="${key}"]`);
-    const newValue = state[key];
+    const value = state[key];
 
-    if (element) {
-      element.textContent = newValue;
-    }
+    element.textContent = value;
 
-    if (card && previousRenderedState && previousRenderedState[key] !== newValue) {
+    if (card && previousRenderedState && previousRenderedState[key] !== value) {
       card.classList.remove("changed");
       void card.offsetWidth;
       card.classList.add("changed");
-
-      setTimeout(() => {
-        card.classList.remove("changed");
-      }, 1100);
+      setTimeout(() => card.classList.remove("changed"), 1150);
     }
   });
 
@@ -566,7 +577,7 @@ function renderStats() {
 function shuffle(items) {
   for (let i = items.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [items[i],items[j]] = [items[j],items[i]];
+    [items[i], items[j]] = [items[j], items[i]];
   }
   return items;
 }
